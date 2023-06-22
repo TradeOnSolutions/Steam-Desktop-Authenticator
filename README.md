@@ -1,43 +1,54 @@
 # TradeOnSDA
 
 Multi-platform desktop version of the authenticator, replacing the mobile app steam. Developed by the TradeOn team on a volunteer basis. You can integrate maFile from any SDA version and TradeOnSDA will work with it.
-## Disclaimer: We are in no way affiliated with Steam and this is not an official development. We do not provide personal support for TradeOnSDA and everything you see is done on a volunteer basis. Our development is open source and you can make sure that we do not receive any data from your accounts, so we are not responsible for any problems with your accounts that were added. Our application was created for experienced users who understand exactly why they need the desktop version of the authenticator
+## Disclaimer: We are in no way affiliated with Steam and this is not an official development. We do not provide personal support for TradeOnSDA and everything you see is done on a volunteer basis. Our development is open source and you can make sure that we do not receive any data from your accounts, so we are not responsible for any problems with your accounts that were added. Our application was created for experienced users who understand exactly why they need the dextop version of the authenticator
 
-# [Click to download](https://github.com/TradeOnSolutions/Steam-Desktop-Authenticator/releases/download/release_1_0/TradeOn.SDA.v_1_0.zip) 
+# [Click to download](https://github.com/TradeOnSolutions/Steam-Desktop-Authenticator/releases/download/release_1_1/TradeOn.SDA.v_1_1.zip)
 Now works on Windows, in the future on mac and linux.
 
-
-![enter image description here](https://img1.teletype.in/files/cd/90/cd90e028-c746-4b8e-ba50-0112e59667a6.png)
+![enter image description here](https://sun9-68.userapi.com/impg/LvYPbDvlNLgYQAHeBzy79WT2Ep9cEO3EZFWDPQ/lNxauA6UsgU.jpg?size=807x495&quality=96&sign=dca595a13a43240080942e3c61b5fee7&type=album)
+##  Update list:
+23.06.2023 - TradeOnSda 1.1 - added auto-confirmations of exchanges and expositions to the trading floor.
+##  How to update?
+1. Download the current version at the link below.
+2. Unzip the downloaded archive.
+3. Move contents of the archive with replacement into the folder with the previous version of TradeOnSda.
 
 ## Detailed setup instructions
 
- 1. **We recommend that you check your computer with an antivirus beforehand to make sure that you do not have malicious programs that can steal your accounts.**
- 2. Check the [latest versions page](https://github.com/TradeOnSolutions/Steam-Desktop-Authenticator/releases/latest), and download the latest .zip (not the source code one).
- 3. Run `TradeOnSda.exe` and click `import account`<br/>
-![enter image description here](https://img2.teletype.in/files/d3/f2/d3f2560b-9d57-4b03-a4da-6b969b2b013d.png)
- 4. After that, find the miFile files on your computer that you want to add to TradeOnSda (you can select many accounts at once)
- 5. After adding MaFile - you need to `enter the password` from the added steam account and click `Try login`. You will also be able to specify the HTTP Proxy, through which this account will work (this is not required, you can not specify a proxy) <br/> ![enter image description here](https://img2.teletype.in/files/18/1d/181d5f24-9206-4fed-8fea-ea3645253b2c.png)
- 6. **You are great!** Your account has now been added to TradeOnSDA, and you get authentication codes and have the ability to confirm actions in steam.<br/>
-![enter image description here](https://img2.teletype.in/files/55/bf/55bffa75-2c27-4aaa-a638-cdefdbb97119.png)
+1. **We recommend that you check your computer with an antivirus beforehand to make sure that you do not have malicious programs that can steal your accounts.**
+2. Check the [latest versions page](https://github.com/TradeOnSolutions/Steam-Desktop-Authenticator/releases), and download the latest .zip (not the source code one).
+3. Run `TradeOnSda.exe` and click `import account`
+   ![enter image description here](https://sun9-79.userapi.com/impg/hLepstRd4cHKVn-IZiYlY7q9kliotiXoZITVrA/8ZbWh-8I7pg.jpg?size=510x451&quality=96&sign=5ba90dfab68cfb3bbdb0a842c516c3f8&type=album)
+4. After that, find the miFile files on your computer that you want to add to TradeOnSda (you can select many accounts at once)
+5. After adding MaFile - you need to `enter the password` from the added steam account and click `Try login`. You will also be able to specify the HTTP Proxy, through which this account will work (this is not required, you can not specify a proxy)
+   You can also immediately enable auto-confirmation of exchanges for the added account (if necessary, you can turn off). The program itself will check every 60 seconds for unconfirmed exchanges or expositions to the trading floor steam, and if something needs to be confirmed - it will automatically confirm.
+   ![enter image description here](https://sun9-7.userapi.com/impg/e-yZci2P2_819_WCI61EM8UNWEJa7kTNwNi5kQ/HU1RJoIFX1M.jpg?size=807x593&quality=96&sign=675701da2ce1df5b759fe44307dd0cfc&type=album)
+7. **You are great!** Your account has now been added to TradeOnSDA, and you get authentication codes and have the ability to confirm actions in steam.
+   ![enter image description here](https://sun9-19.userapi.com/impg/43ilOTK_zYqXpTvXj_8xMhJMH9qZyYgF0VKI0Q/hYGPlwSXkAA.jpg?size=563x854&quality=96&sign=fb88de2ff71bce4e2856a8a244117ace&type=album)
 
 
-## Functions, features, and use of controls. 
+## Functions, features, and use of controls.
 
-1.  TradeOnSda supports proxy integration under each account. You can add a proxy when integrating an account, or you can do it after adding an account by clicking on the "proxy" icon and entering data in the format `IP:PORT:LOG:PASS `(HTTP only) <br/>
- ![enter image description here](https://img4.teletype.in/files/39/a8/39a87d80-6451-4216-9a95-3f3f22f6fefe.png)![enter image description here](https://img1.teletype.in/files/8e/ba/8eba6611-7e7a-4e3c-8bf6-76079428db1c.png)
-		
-2. You can receive authentication codes. In the background of the code you see a moving line that shows the time that the code will still be valid.<br/>
-![enter image description here](https://img2.teletype.in/files/9d/9e/9d9e6e1d-2ad0-4b34-b59a-98bd273c47f8.png)
-3. You can confirm outgoing exchanges or put items up for sale. To do this, click on the `exchanges` icon and a new window will open with offers waiting to be confirmed.<br/> ![enter image description here](https://img2.teletype.in/files/9a/41/9a415365-79d6-4139-816f-ecae3a62f19f.png)
->You can double-click on your account login, this will also open an exchange offer window. 
-4. TradeOnSDA automatically remembers the login:password you specified. In case you have lost your session - you can click `Re-login` and your session will be renewed automatically without any additional inputs. ![enter image description here](https://img1.teletype.in/files/03/fb/03fb4a59-2b1b-44dd-9972-372b8bf61dd2.png)
-5. By right-clicking on the account - you can remove it from TradeOnSda.<br/> ![enter image description here](https://img2.teletype.in/files/1c/1e/1c1e540b-222d-46e1-97c3-38457c1c4526.png)
-6. You can use TradeOnSda on different devices at the same time, using the same maFile.
-7. You can stretch the program window, adjusting the display to your own comfort.
+1.  TradeOnSda supports proxy integration under each account. You can add a proxy when integrating an account, or you can do it after adding an account by clicking on the "proxy" icon and entering data in the format `IP:PORT:LOG:PASS `(HTTP only)
+    ![enter image description here](https://sun9-67.userapi.com/impg/xLxNuuWQsgWxykkVwsvXYSdcMiu5m6xqrfJJew/0GT6yBE_EJ4.jpg?size=807x220&quality=96&sign=6930678d7866b715d1211ad5cc5e68bf&type=album)
+2. You can enable or disable auto-confirmation of exchanges and bids on the trading floor by clicking on the "Auto" icon. If the button is green - Auto Confirmations are on. White - off.
+   The program itself will check every 60 seconds for unconfirmed exchanges or expositions to the trading floor steam, and if something needs to be confirmed - will confirm it automatically.
+   ![enter image description here](https://sun9-38.userapi.com/impg/dTIru05FoU36VWzHbAgCs6cPwfY-68Zozc2RXw/RxTX0q9EPX0.jpg?size=519x316&quality=96&sign=36503d299f80928840c5ed665f8f5f01&type=album)
+3.  You can receive authentication codes. In the background of the code you see a moving line that shows the time that the code will still be valid.
+    ![enter image description here](https://sun9-12.userapi.com/impg/5NNRhTpk979y6AomTD-DYnlj9VhLvymCZn_AQw/jjUbdkANmas.jpg?size=549x312&quality=96&sign=b698bda314f93542b17ab03348a95858&type=album)
+4. You can confirm outgoing exchanges or put items up for sale. To do this, click on the `exchanges` icon and a new window will open with offers waiting to be confirmed.
+   ![enter image description here](https://sun9-42.userapi.com/impg/tbr0fk0CbI-u4dpxv2XeDGMhkhVGVfOMDNtPKg/SPscxrzbh8U.jpg?size=807x355&quality=96&sign=5748ad71de0945f42f645b87a53519b2&type=album)
+>You can double-click on your account login, this will also open an exchange offer window.
+5. TradeOnSDA automatically remembers the login:password you specified. In case you have lost your session - you can click `Re-login` and your session will be renewed automatically without any additional inputs.
+   ![enter image description here](https://sun9-53.userapi.com/impg/SDRskio2kx9VPF63y1skPddVbYDs9YqgjmXPow/3gg4CnIgesU.jpg?size=515x338&quality=96&sign=0b1b31e1dd72375d421c10a51a1ea44a&type=album)
+6. By right-clicking on the account - you can remove it from TradeOnSda.![enter image description here](https://img2.teletype.in/files/1c/1e/1c1e540b-222d-46e1-97c3-38457c1c4526.png)
+7. You can use TradeOnSda on different devices at the same time, using the same maFile.
+8. You can stretch the program window, adjusting the display to your own comfort.
 
-## Roadmap for developing and adding new features. 
+## Roadmap for developing and adding new features.
 
-Here you will see our upcoming upgrade plans. 
+Here you will see our upcoming upgrade plans.
 >We have a lot of work on the basic tools of TradeOnBots for autotrading in steam, so we cannot say exactly when new features will be introduced for TradeOnSda (we are doing this free development in our spare time)
 
 1. Mac and Linux versions.
@@ -51,7 +62,7 @@ Here you will see our upcoming upgrade plans.
 ## Additional useful information
 
 1. Be sure to resurrect your `maFile` from the accounts. If you lose your `maFile`, you may lose access to your accounts.
-2. If your computer will be infected with a virus - `fraudsters can steal your maFile`, be careful and do not download applications from unverified sources from the Internet. 
+2. If your computer will be infected with a virus - `fraudsters can steal your maFile`, be careful and do not download applications from unverified sources from the Internet.
 3. If you lost your `maFiles` OR lost your encryption key, go [here](https://store.steampowered.com/twofactor/manage) and click `Remove Authenticator` then enter your revocation code that you wrote down when you first added your account to SDA.
 4. If you did not follow the directions and did not write your revocation code down, you're well and truly screwed. The only option is beg to [Steam Support](https://support.steampowered.com/) and say you lost your mobile authenticator and the revocation code.
 

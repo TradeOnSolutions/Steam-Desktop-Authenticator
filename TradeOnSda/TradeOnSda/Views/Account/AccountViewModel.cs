@@ -5,7 +5,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Controls;
-using DynamicData.Binding;
 using Microsoft.Extensions.Logging.Abstractions;
 using ReactiveUI;
 using SteamAuthentication.LogicModels;

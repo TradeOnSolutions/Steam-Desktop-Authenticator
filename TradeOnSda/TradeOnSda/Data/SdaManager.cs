@@ -6,7 +6,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
-using ReactiveUI;
 using SteamAuthentication.LogicModels;
 using SteamAuthentication.Models;
 
