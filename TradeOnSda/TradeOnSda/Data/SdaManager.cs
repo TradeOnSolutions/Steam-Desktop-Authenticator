@@ -15,10 +15,6 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
 {
     private const string SettingsFileName = "settings.json";
 
-    public SdaManager()
-    {
-    }
-
     public void LoadFromDisk()
     {
         try
@@ -64,7 +60,7 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
                 }
             }
         }
-        catch (Exception e)
+        catch (Exception)
         {
             // ignored
         }

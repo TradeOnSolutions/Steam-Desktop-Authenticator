@@ -3,6 +3,7 @@ using SteamAuthentication.Trades.Responses.Converters;
 
 namespace SteamAuthentication.Trades.Requests;
 
+// ReSharper disable once InconsistentNaming
 internal class TradeStatusRequest
 {
     [JsonProperty("newversion")] public bool NewVersion { get; private set; }
@@ -23,6 +24,7 @@ internal class TradeStatusRequest
     }
 }
 
+// ReSharper disable once InconsistentNaming
 internal class TradeItemsRequest
 {
     [JsonProperty("assets")] public TradeAsset[] Assets { get; set; }
@@ -39,6 +41,7 @@ internal class TradeItemsRequest
     }
 }
 
+// ReSharper disable once InconsistentNaming
 public class TradeAsset : IEquatable<TradeAsset>
 {
     [JsonProperty("appid")] public int AppId { get; }

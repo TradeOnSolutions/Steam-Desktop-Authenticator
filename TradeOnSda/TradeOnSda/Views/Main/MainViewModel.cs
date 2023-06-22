@@ -157,7 +157,7 @@ public class MainViewModel : ViewModelBase
             {
                 try
                 {
-                    var path = file.Path.AbsolutePath;
+                    var path = file.Path.LocalPath;
                     var maFileName = file.Name;
 
                     var steamMaFile = JsonConvert.DeserializeObject<SteamMaFile>(await File.ReadAllTextAsync(path))!;
@@ -190,7 +190,7 @@ public class MainViewModel : ViewModelBase
 
                                 return true;
                             }
-                            catch (Exception e)
+                            catch (Exception)
                             {
                                 return false;
                             }

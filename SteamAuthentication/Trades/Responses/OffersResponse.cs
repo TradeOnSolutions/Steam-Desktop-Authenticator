@@ -3,6 +3,8 @@ using SteamAuthentication.Trades.Responses.Converters;
 
 namespace SteamAuthentication.Trades.Responses;
 
+#nullable disable
+
 // public class TradeOffersSummary
 // {
 //     [JsonProperty("pending_received_count", Required = Required.Always)]

@@ -26,6 +26,6 @@
                     MaterialOpacity="0.65" />
             </ExperimentalAcrylicBorder.Material>
         </ExperimentalAcrylicBorder>
-        <importAccounts:ImportAccountsView Margin="0, 20, 0, 0" DataContext="{Binding ImportAccountsViewModel}" />
+        <importAccounts:ImportAccountsView Margin="0, 0, 0, 0" DataContext="{Binding ImportAccountsViewModel}" />
     </Grid>
 </Window>

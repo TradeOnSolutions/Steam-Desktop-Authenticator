@@ -1,13 +1,9 @@
 using System.Collections.Specialized;
-using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
-using SteamAuthentication.Exceptions;
-using SteamAuthentication.LogicModels;
-using SteamAuthentication.Models;
 
 namespace SteamAuthentication.Logic;
 
-internal static partial class SdaConfirmationsLogic
+internal static class SdaConfirmationsLogic
 {
     // public static SdaConfirmation[] ParseConfirmations(string content, ILogger<SteamGuardAccount> logger)
     // {

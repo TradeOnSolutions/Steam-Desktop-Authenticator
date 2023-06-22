@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using Avalonia.Controls;
 using Microsoft.Extensions.Logging.Abstractions;
 using ReactiveUI;
 using SteamAuthentication.LogicModels;
+using SteamAuthentication.Models;
 using TradeOnSda.Data;
 using TradeOnSda.ViewModels;
 using TradeOnSda.Windows.Confirmations;
@@ -21,6 +23,8 @@ public class AccountViewModel : ViewModelBase
     private bool _isVisible;
     private bool _saveIconVisibility;
     private bool _rollbackIconVisibility;
+    private bool _proxyIconVisibility;
+    private bool _confirmationsIconVisibility;
 
     public SdaWithCredentials SdaWithCredentials { get; }
 
@@ -42,10 +46,23 @@ public class AccountViewModel : ViewModelBase
         set => RaiseAndSetIfPropertyChanged(ref _rollbackIconVisibility, value);
     }
 
+    public bool ProxyIconVisibility
+    {
+        get => _proxyIconVisibility;
+        set => RaiseAndSetIfPropertyChanged(ref _proxyIconVisibility, value);
+    }
+
+    public bool ConfirmationsIconVisibility
+    {
+        get => _confirmationsIconVisibility;
+        set => RaiseAndSetIfPropertyChanged(ref _confirmationsIconVisibility, value);
+    }
+
+    // ReSharper disable once UnusedAutoPropertyAccessor.Global
     public ICommand DoubleClickCommand { get; }
-    
+
     public ICommand RemoveCommand { get; }
-    
+
     public SdaManager SdaManager { get; }
 
     public Window OwnerWindow { get; }
@@ -62,7 +79,7 @@ public class AccountViewModel : ViewModelBase
         DefaultAccountViewCommandStrategy = new DefaultAccountViewCommandStrategy(this);
         EditProxyAccountViewCommandStrategy = new EditProxyAccountViewCommandStrategy(this);
 
-        SelectedAccountViewCommandStrategy = DefaultAccountViewCommandStrategy;
+        SelectStrategyAsync(DefaultAccountViewCommandStrategy).GetAwaiter().GetResult();
 
         FirstCommand = ReactiveCommand.CreateFromTask(async () =>
         {
@@ -83,7 +100,8 @@ public class AccountViewModel : ViewModelBase
         {
             try
             {
-                var confirmations = await SdaWithCredentials.SteamGuardAccount.FetchConfirmationAsync();
+                var confirmations = (await SdaWithCredentials.SteamGuardAccount.FetchConfirmationAsync()).Where(t =>
+                    t.ConfirmationType is ConfirmationType.Trade or ConfirmationType.MarketSellTransaction).ToArray();
 
                 var window = new ConfirmationsWindow(confirmations, SdaWithCredentials.SteamGuardAccount);
 
@@ -114,6 +132,8 @@ public class AccountViewModel : ViewModelBase
         DefaultAccountViewCommandStrategy = null!;
         EditProxyAccountViewCommandStrategy = null!;
         SelectedAccountViewCommandStrategy = null!;
+
+        RemoveCommand = null!;
     }
 
     public async Task SelectStrategyAsync(IAccountViewCommandStrategy strategy)
@@ -170,7 +190,9 @@ public class DefaultAccountViewCommandStrategy : IAccountViewCommandStrategy
     {
         try
         {
-            var confirmations = await _accountViewModel.SdaWithCredentials.SteamGuardAccount.FetchConfirmationAsync();
+            var confirmations = (await _accountViewModel.SdaWithCredentials.SteamGuardAccount.FetchConfirmationAsync())
+                .Where(t =>
+                    t.ConfirmationType is ConfirmationType.Trade or ConfirmationType.MarketSellTransaction).ToArray();
 
             var window = new ConfirmationsWindow(confirmations, _accountViewModel.SdaWithCredentials.SteamGuardAccount);
 
@@ -184,6 +206,11 @@ public class DefaultAccountViewCommandStrategy : IAccountViewCommandStrategy
 
     public Task OnSelectedAsync()
     {
+        _accountViewModel.ProxyIconVisibility = true;
+        _accountViewModel.ConfirmationsIconVisibility = true;
+        _accountViewModel.SaveIconVisibility = false;
+        _accountViewModel.RollbackIconVisibility = false;
+
         return Task.CompletedTask;
     }
 }
@@ -224,7 +251,7 @@ public class EditProxyAccountViewCommandStrategy : ViewModelBase, IAccountViewCo
                 return;
             }
 
-        _accountViewModel.SdaWithCredentials.Credentials.ProxyString = null;
+        _accountViewModel.SdaWithCredentials.Credentials.ProxyString = TextBoxText;
 
         var oldSda = _accountViewModel.SdaWithCredentials.SteamGuardAccount;
         var newSteamTime = new SteamTime();
@@ -245,6 +272,11 @@ public class EditProxyAccountViewCommandStrategy : ViewModelBase, IAccountViewCo
     public Task OnSelectedAsync()
     {
         TextBoxText = _accountViewModel.SdaWithCredentials.Credentials.ProxyString;
+
+        _accountViewModel.ProxyIconVisibility = false;
+        _accountViewModel.ConfirmationsIconVisibility = false;
+        _accountViewModel.SaveIconVisibility = true;
+        _accountViewModel.RollbackIconVisibility = true;
 
         return Task.CompletedTask;
     }

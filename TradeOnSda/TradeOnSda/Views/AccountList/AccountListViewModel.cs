@@ -76,6 +76,7 @@ public class AccountListViewModel : ViewModelBase
         SdaManager = new SdaManager();
         SearchText = "";
 
+        _allAccounts = null!;
         _visibleAccounts = null!;
     }
 }

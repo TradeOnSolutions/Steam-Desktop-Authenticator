@@ -2,6 +2,8 @@ using Newtonsoft.Json;
 
 namespace SteamAuthentication.Responses;
 
+#nullable disable
+
 public class NewLoginResponse
 {
     [JsonProperty("success")]

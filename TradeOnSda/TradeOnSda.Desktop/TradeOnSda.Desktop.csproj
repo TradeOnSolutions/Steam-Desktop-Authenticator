@@ -7,6 +7,13 @@
         <Nullable>enable</Nullable>
         <Version>1.0.0.0</Version>
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+        <ApplicationIcon>logo.ico</ApplicationIcon>
+        <IsPackable>false</IsPackable>
+        <Authors />
+        <Company>TradeOn</Company>
+        <Product>TradeOnSda</Product>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+        <FileVersion>1.0.0.0</FileVersion>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -15,7 +22,6 @@
 
     <ItemGroup>
         <PackageReference Include="Avalonia.Desktop" Version="11.0.0-rc1.1" />
-        <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
         <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.0-rc1.1" />
         <PackageReference Include="Dotnet.Bundle" Version="0.9.13" />
     </ItemGroup>
@@ -26,7 +32,6 @@
 
     <ItemGroup>
       <None Update="TradeOnLogo.icns">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
     </ItemGroup>
 

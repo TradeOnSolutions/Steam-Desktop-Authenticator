@@ -43,8 +43,6 @@
                                 Classes.ProxyIcon="{Binding ProxyIconVisibility}"
                                 Command="{Binding FirstCommand}"
                                 Grid.Column="0">
-                                <Svg
-                                    Path="/Assets/save2.svg" />
                             </Button>
                             <Button
                                 Background="Transparent"
@@ -53,9 +51,6 @@
                                 Classes.RollbackIcon="{Binding RollbackIconVisibility}"
                                 Command="{Binding SecondCommand}"
                                 Grid.Column="1">
-                                <Svg
-                                    Margin="3"
-                                    Path="/Assets/rollback1.svg" />
                             </Button>
                         </Grid>
                     </Grid>
@@ -78,6 +73,7 @@
                     <Interaction.Behaviors>
                         <EventTriggerBehavior EventName="DoubleTapped">
                             <!-- ReSharper disable once Xaml.PossibleNullReferenceException -->
+                            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                             <InvokeCommandAction
                                 Command="{Binding DataContext.DoubleClickCommand, RelativeSource={RelativeSource AncestorType={x:Type controls:AccountView}}}" />
                         </EventTriggerBehavior>
@@ -86,12 +82,14 @@
             </ControlTemplate>
         </Setter>
     </Style>
-    
+
     <Style Selector="Button.SaveIcon">
         <Setter Property="Content">
             <Setter.Value>
-                <Svg
-                    Path="/Assets/save2.svg" />
+                <Template>
+                    <Svg
+                        Path="/Assets/save2.svg" />
+                </Template>
             </Setter.Value>
         </Setter>
     </Style>
@@ -99,30 +97,36 @@
     <Style Selector="Button.ProxyIcon">
         <Setter Property="Content">
             <Setter.Value>
-                <Svg
-                    Path="/Assets/proxy7.svg" />
+                <Template>
+                    <Svg
+                        Path="/Assets/proxy7.svg" />
+                </Template>
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <Style Selector="Button.ConfirmationsIcon">
         <Setter Property="Content">
             <Setter.Value>
-                <Svg
-                    Path="/Assets/confirmations12.svg" />
+                <Template>
+                    <Svg
+                        Path="/Assets/confirmations12.svg" />
+                </Template>
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <Style Selector="Button.RollbackIcon">
         <Setter Property="Content">
             <Setter.Value>
-                <Svg
-                    Path="/Assets/rollback1.svg" />
+                <Template>
+                    <Svg
+                        Path="/Assets/rollback1.svg" />
+                </Template>
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <Style Selector="Button.AccountRightButton">
         <Setter Property="Height" Value="45" />
         <Setter Property="Width" Value="45" />

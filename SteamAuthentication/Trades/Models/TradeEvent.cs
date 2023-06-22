@@ -2,6 +2,7 @@ using SteamAuthentication.Trades.Responses;
 
 namespace SteamAuthentication.Trades.Models;
 
+// ReSharper disable once InconsistentNaming
 public class TradeEvent
 {
     public Offer? PreviousState { get; }

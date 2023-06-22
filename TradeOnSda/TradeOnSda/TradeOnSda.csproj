@@ -4,6 +4,8 @@
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
         <AvaloniaUseCompiledBindingsByDefault>false</AvaloniaUseCompiledBindingsByDefault>
+        <Title>TradeOn</Title>
+        <Authors>TradeOn</Authors>
     </PropertyGroup>
 
 

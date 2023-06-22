@@ -1,5 +1,4 @@
 using Newtonsoft.Json;
-using SteamAuthentication.Models;
 
 namespace TradeOnSda.Data;
 
