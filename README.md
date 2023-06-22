@@ -16,7 +16,7 @@ Now works on Windows, in the future on mac and linux.
  3. Run `TradeOnSda.exe` and click `import account`<br/>
 ![enter image description here](https://img2.teletype.in/files/d3/f2/d3f2560b-9d57-4b03-a4da-6b969b2b013d.png)
  4. After that, find the miFile files on your computer that you want to add to TradeOnSda (you can select many accounts at once)
- 5. After adding MaFile - you need to `enter the password` from the added steam account and click `Try login`. You will also be able to specify the HTTP Proxy, through which this account will work (this is not required, you can not specify a proxy)![enter image description here](https://img2.teletype.in/files/18/1d/181d5f24-9206-4fed-8fea-ea3645253b2c.png)
+ 5. After adding MaFile - you need to `enter the password` from the added steam account and click `Try login`. You will also be able to specify the HTTP Proxy, through which this account will work (this is not required, you can not specify a proxy) <br/> ![enter image description here](https://img2.teletype.in/files/18/1d/181d5f24-9206-4fed-8fea-ea3645253b2c.png)
  6. **You are great!** Your account has now been added to TradeOnSDA, and you get authentication codes and have the ability to confirm actions in steam.<br/>
 ![enter image description here](https://img2.teletype.in/files/55/bf/55bffa75-2c27-4aaa-a638-cdefdbb97119.png)
 
