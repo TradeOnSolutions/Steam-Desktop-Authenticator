@@ -166,7 +166,7 @@ public class MainViewModel : ViewModelBase
                         steamMaFile.Session.SteamId,
                         steamMaFile.AccountName,
                         maFileName,
-                        async (password, proxy, proxyString) =>
+                        async (password, proxy, proxyString, sdaSettings) =>
                         {
                             try
                             {
@@ -186,7 +186,7 @@ public class MainViewModel : ViewModelBase
                                 if (loginAgainResult != LoginResult.LoginOkay)
                                     return false;
 
-                                await SdaManager.AddAccountAsync(sda, maFileCredentials);
+                                await SdaManager.AddAccountAsync(sda, maFileCredentials, sdaSettings);
 
                                 return true;
                             }
@@ -195,11 +195,11 @@ public class MainViewModel : ViewModelBase
                                 return false;
                             }
                         },
-                        _ownerWindow);
+                        _ownerWindow, SdaManager);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    await NotificationsMessageWindow.ShowWindow("invalid mafile", _ownerWindow);
+                    await NotificationsMessageWindow.ShowWindow($"Invalid mafile. Error: {e.Message}", _ownerWindow);
                 }
             }
         });

@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
+using ReactiveUI;
 using SteamAuthentication.LogicModels;
 using SteamAuthentication.Models;
 
@@ -14,61 +15,98 @@ namespace TradeOnSda.Data;
 public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
 {
     private const string SettingsFileName = "settings.json";
+    private const string GlobalSettingsFileName = "globalSettings.json";
+
+    public GlobalSettings GlobalSettings { get; private set; }
+
+    public SdaManager()
+    {
+        GlobalSettings = new GlobalSettings();
+    }
 
     public void LoadFromDisk()
     {
-        try
+        LoadSettings();
+
+        LoadGlobalSettings();
+
+        void LoadGlobalSettings()
         {
-            if (!File.Exists(SettingsFileName))
-                return;
-
-            var settingsContent = File.ReadAllText(SettingsFileName);
-
-            var savedSdaDtos = JsonConvert.DeserializeObject<SavedSdaDto[]>(settingsContent)
-                               ?? throw new Exception();
-
-            foreach (var dto in savedSdaDtos)
+            try
             {
-                try
-                {
-                    var maFileName = $"{dto.SteamId}.json";
-                    var maFilePath = Path.Combine(Directory.GetCurrentDirectory(), "MaFiles", maFileName);
+                if (!File.Exists(GlobalSettingsFileName))
+                    return;
 
-                    if (!File.Exists(maFilePath))
-                        continue;
+                var settingsContent = File.ReadAllText(GlobalSettingsFileName);
 
-                    var proxy = ProxyLogic.ParseWebProxy(dto.ProxyString);
+                var globalSettings = JsonConvert.DeserializeObject<GlobalSettings>(settingsContent)
+                                     ?? throw new Exception();
 
-                    var maFileContent = File.ReadAllText(maFilePath);
-
-                    var maFile = JsonConvert.DeserializeObject<SteamMaFile>(maFileContent) ??
-                                 throw new Exception("SteamMaFile is null");
-
-                    var steamTime = new SteamTime();
-
-                    var sda = new SteamGuardAccount(
-                        maFile,
-                        new SteamRestClient(new HttpClient(), proxy),
-                        steamTime,
-                        NullLogger<SteamGuardAccount>.Instance);
-
-                    _items.Add(new SdaWithCredentials(sda, new MaFileCredentials(dto.ProxyString, dto.Password)));
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
+                GlobalSettings = globalSettings;
+            }
+            catch (Exception)
+            {
+                // ignored
             }
         }
-        catch (Exception)
+
+        void LoadSettings()
         {
-            // ignored
+            try
+            {
+                if (!File.Exists(SettingsFileName))
+                    return;
+
+                var settingsContent = File.ReadAllText(SettingsFileName);
+
+                var savedSdaDtos = JsonConvert.DeserializeObject<SavedSdaDto[]>(settingsContent)
+                                   ?? throw new Exception();
+
+                foreach (var dto in savedSdaDtos)
+                {
+                    try
+                    {
+                        var maFileName = $"{dto.SteamId}.json";
+                        var maFilePath = Path.Combine(Directory.GetCurrentDirectory(), "MaFiles", maFileName);
+
+                        if (!File.Exists(maFilePath))
+                            continue;
+
+                        var proxy = ProxyLogic.ParseWebProxy(dto.ProxyString);
+
+                        var maFileContent = File.ReadAllText(maFilePath);
+
+                        var maFile = JsonConvert.DeserializeObject<SteamMaFile>(maFileContent) ??
+                                     throw new Exception("SteamMaFile is null");
+
+                        var steamTime = new SteamTime();
+
+                        var sda = new SteamGuardAccount(
+                            maFile,
+                            new SteamRestClient(new HttpClient(), proxy),
+                            steamTime,
+                            NullLogger<SteamGuardAccount>.Instance);
+
+                        _items.Add(new SdaWithCredentials(sda, new MaFileCredentials(dto.ProxyString, dto.Password),
+                            new SdaSettings(dto.AutoConfirm), this));
+                    }
+                    catch (Exception)
+                    {
+                        // ignored
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
     }
 
-    public async Task AddAccountAsync(SteamGuardAccount steamGuardAccount, MaFileCredentials maFileCredentials)
+    public async Task AddAccountAsync(SteamGuardAccount steamGuardAccount, MaFileCredentials maFileCredentials,
+        SdaSettings sdaSettings)
     {
-        _items.Add(new SdaWithCredentials(steamGuardAccount, maFileCredentials));
+        _items.Add(new SdaWithCredentials(steamGuardAccount, maFileCredentials, sdaSettings, this));
 
         await SaveSettingsAsync();
 
@@ -80,7 +118,7 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
         Directory.CreateDirectory(directoryPath);
 
         var maFilePath = Path.Combine(directoryPath,
-            $"{steamGuardAccount.MaFile.Session.SteamId}.json");
+            $"{steamGuardAccount.MaFile.Session.SteamId}.maFile");
 
         await File.WriteAllTextAsync(maFilePath, maFileContent);
     }
@@ -109,7 +147,7 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
         {
             Debug.Assert(t != null, nameof(t) + " != null");
             return new SavedSdaDto(t.SteamGuardAccount.MaFile.Session.SteamId, t.Credentials.Password,
-                t.Credentials.ProxyString);
+                t.Credentials.ProxyString, t.SdaSettings.AutoConfirm);
         });
 
         await File.WriteAllTextAsync(SettingsFileName, JsonConvert.SerializeObject(settings));
@@ -124,23 +162,105 @@ public class SavedSdaDto
 
     public string? ProxyString { get; set; }
 
-    public SavedSdaDto(ulong steamId, string password, string? proxyString)
+    public bool AutoConfirm { get; set; }
+
+    public SavedSdaDto(ulong steamId, string password, string? proxyString, bool autoConfirm)
     {
         SteamId = steamId;
         Password = password;
         ProxyString = proxyString;
+        AutoConfirm = autoConfirm;
+    }
+
+    [JsonConstructor]
+    public SavedSdaDto()
+    {
+        SteamId = 0;
+        Password = null!;
+        ProxyString = null;
+        AutoConfirm = false;
     }
 }
 
 public class SdaWithCredentials
 {
+    [JsonIgnore]
+    private readonly SdaManager _sdaManager;
+    
     public SteamGuardAccount SteamGuardAccount { get; set; }
 
     public MaFileCredentials Credentials { get; set; }
 
-    public SdaWithCredentials(SteamGuardAccount steamGuardAccount, MaFileCredentials credentials)
+    public SdaSettings SdaSettings { get; set; }
+
+    public SdaWithCredentials(SteamGuardAccount steamGuardAccount, MaFileCredentials credentials,
+        SdaSettings sdaSettings, SdaManager sdaManager)
     {
+        _sdaManager = sdaManager;
         SteamGuardAccount = steamGuardAccount;
         Credentials = credentials;
+        SdaSettings = sdaSettings;
+
+        Task.Run(WorkingLoop);
+    }
+
+    private async Task WorkingLoop()
+    {
+        var delay = TimeSpan.FromSeconds(60);
+
+        while (true)
+        {
+            if (SdaSettings.AutoConfirm)
+            {
+                try
+                {
+                    var confirmations = (await SteamGuardAccount.FetchConfirmationAsync())
+                        .Where(t => t.ConfirmationType is ConfirmationType.MarketSellTransaction
+                            or ConfirmationType.Trade);
+
+                    foreach (var confirmation in confirmations)
+                    {
+                        await SteamGuardAccount.AcceptConfirmationAsync(confirmation);
+                        await Task.Delay(TimeSpan.FromSeconds(5));
+                    }
+                }
+                catch (Exception)
+                {
+                    await Task.Delay(delay);
+                    
+                    var result =
+                        await SteamGuardAccount.LoginAgainAsync(SteamGuardAccount.MaFile.AccountName,
+                            Credentials.Password);
+
+                    if (result != LoginResult.LoginOkay)
+                    {
+                        await Task.Delay(60 * 3);
+                        continue;
+                    }
+
+                    await _sdaManager.SaveSettingsAsync();
+                }
+            }
+
+            await Task.Delay(delay);
+        }
+    }
+
+    [JsonConstructor]
+    public SdaWithCredentials()
+    {
+        SteamGuardAccount = null!;
+        Credentials = null!;
+        SdaSettings = new SdaSettings(false);
+    }
+}
+
+public class SdaSettings
+{
+    public bool AutoConfirm { get; set; }
+
+    public SdaSettings(bool autoConfirm)
+    {
+        AutoConfirm = autoConfirm;
     }
 }

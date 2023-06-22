@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Controls;
+using DynamicData.Binding;
 using Microsoft.Extensions.Logging.Abstractions;
 using ReactiveUI;
 using SteamAuthentication.LogicModels;
@@ -25,6 +26,7 @@ public class AccountViewModel : ViewModelBase
     private bool _rollbackIconVisibility;
     private bool _proxyIconVisibility;
     private bool _confirmationsIconVisibility;
+    private bool _autoConfirm;
 
     public SdaWithCredentials SdaWithCredentials { get; }
 
@@ -58,6 +60,14 @@ public class AccountViewModel : ViewModelBase
         set => RaiseAndSetIfPropertyChanged(ref _confirmationsIconVisibility, value);
     }
 
+    public bool AutoConfirm
+    {
+        get => _autoConfirm;
+        set => RaiseAndSetIfPropertyChanged(ref _autoConfirm, value);
+    }
+    
+    public ICommand ToggleAutoConfirmCommand { get; }
+
     // ReSharper disable once UnusedAutoPropertyAccessor.Global
     public ICommand DoubleClickCommand { get; }
 
@@ -75,6 +85,7 @@ public class AccountViewModel : ViewModelBase
         SdaManager = sdaManager;
         OwnerWindow = ownerWindow;
         IsVisible = true;
+        AutoConfirm = sdaWithCredentials.SdaSettings.AutoConfirm;
 
         DefaultAccountViewCommandStrategy = new DefaultAccountViewCommandStrategy(this);
         EditProxyAccountViewCommandStrategy = new EditProxyAccountViewCommandStrategy(this);
@@ -112,6 +123,15 @@ public class AccountViewModel : ViewModelBase
                 await NotificationsMessageWindow.ShowWindow("Cannot load confirmations", OwnerWindow);
             }
         });
+
+        ToggleAutoConfirmCommand = ReactiveCommand.CreateFromTask(async () =>
+        {
+            AutoConfirm = !AutoConfirm;
+
+            sdaWithCredentials.SdaSettings.AutoConfirm = AutoConfirm;
+            
+            await SdaManager.SaveSettingsAsync();
+        });
     }
 
     public ICommand FirstCommand { get; }
@@ -128,7 +148,8 @@ public class AccountViewModel : ViewModelBase
         FirstCommand = null!;
         SecondCommand = null!;
         DoubleClickCommand = null!;
-
+        ToggleAutoConfirmCommand = null!;
+        
         DefaultAccountViewCommandStrategy = null!;
         EditProxyAccountViewCommandStrategy = null!;
         SelectedAccountViewCommandStrategy = null!;

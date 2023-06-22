@@ -16,7 +16,7 @@
                         Background="{DynamicResource BackgroundAccent}">
                     <Grid
                         Height="50"
-                        ColumnDefinitions="*, 100">
+                        ColumnDefinitions="*, 150">
                         <Grid
                             Grid.Column="0">
                             <TextBlock Text="{Binding AccountName}"
@@ -34,15 +34,22 @@
                             </TextBox>
                         </Grid>
                         <Grid
-                            ColumnDefinitions="*, *"
+                            ColumnDefinitions="*, *, *"
                             Grid.Column="1">
+                            <Button
+                                Grid.Column="0"
+                                Background="Transparent"
+                                Classes.AutoOn="{Binding AutoConfirm}"
+                                Classes.AutoOff="{Binding !AutoConfirm}"
+                                Command="{Binding ToggleAutoConfirmCommand}">
+                            </Button>
                             <Button
                                 Background="Transparent"
                                 Classes="AccountRightButton"
                                 Classes.SaveIcon="{Binding SaveIconVisibility}"
                                 Classes.ProxyIcon="{Binding ProxyIconVisibility}"
                                 Command="{Binding FirstCommand}"
-                                Grid.Column="0">
+                                Grid.Column="1">
                             </Button>
                             <Button
                                 Background="Transparent"
@@ -50,13 +57,32 @@
                                 Classes.ConfirmationsIcon="{Binding ConfirmationsIconVisibility}"
                                 Classes.RollbackIcon="{Binding RollbackIconVisibility}"
                                 Command="{Binding SecondCommand}"
-                                Grid.Column="1">
+                                Grid.Column="2">
                             </Button>
                         </Grid>
                     </Grid>
                     <Border.ContextMenu>
                         <ContextMenu
                             Background="{DynamicResource BackgroundAccent}">
+                            <!-- <MenuItem -->
+                            <!--     Background="{DynamicResource BackgroundAccent}"> -->
+                            <!--     <MenuItem.Icon> -->
+                            <!--         <CheckBox -->
+                            <!--             Margin="0" -->
+                            <!--             IsChecked="{Binding AutoConfirm}"> -->
+                            <!--             ~1~ <CheckBox.RenderTransform> @1@ -->
+                            <!--             ~1~     <TransformGroup> @1@ -->
+                            <!--             ~1~         <ScaleTransform ScaleX="2" ScaleY="2" /> @1@ -->
+                            <!--             ~1~     </TransformGroup> @1@ -->
+                            <!--             ~1~ </CheckBox.RenderTransform> @1@ -->
+                            <!--         </CheckBox> -->
+                            <!--     </MenuItem.Icon> -->
+                            <!--     <MenuItem.HeaderTemplate> -->
+                            <!--         <DataTemplate> -->
+                            <!--             <TextBlock Text="Auto-confirm"></TextBlock> -->
+                            <!--         </DataTemplate> -->
+                            <!--     </MenuItem.HeaderTemplate> -->
+                            <!-- </MenuItem> -->
                             <MenuItem
                                 Background="{DynamicResource BackgroundAccent}"
                                 Command="{Binding RemoveCommand}">
@@ -126,7 +152,29 @@
             </Setter.Value>
         </Setter>
     </Style>
-
+    
+    <Style Selector="Button.AutoOn">
+        <Setter Property="Content">
+            <Setter.Value>
+                <Template>
+                    <Svg
+                        Path="/Assets/autoOn5.svg" />
+                </Template>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style Selector="Button.AutoOff">
+        <Setter Property="Content">
+            <Setter.Value>
+                <Template>
+                    <Svg
+                        Path="/Assets/autoOn.svg" />
+                </Template>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
     <Style Selector="Button.AccountRightButton">
         <Setter Property="Height" Value="45" />
         <Setter Property="Width" Value="45" />

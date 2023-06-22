@@ -41,6 +41,11 @@
                         Classes="Text"
                         Watermark="Proxy (ip:port:login:password, http or https) not required"
                         Text="{Binding ProxyString}" />
+                    <CheckBox
+                        Margin="10, 0, 0, 0"
+                        IsChecked="{Binding AutoConfirm}">
+                        <TextBlock Text="Auto-confirm" />
+                    </CheckBox>
                     <Button
                         FontWeight="SemiBold"
                         HorizontalContentAlignment="Center"

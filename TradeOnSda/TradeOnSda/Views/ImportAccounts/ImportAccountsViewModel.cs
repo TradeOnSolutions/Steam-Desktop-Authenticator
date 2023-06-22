@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Controls;
 using ReactiveUI;
+using TradeOnSda.Data;
 using TradeOnSda.ViewModels;
 using TradeOnSda.Windows.NotificationMessage;
 
@@ -35,6 +36,12 @@ public class ImportAccountsViewModel : ViewModelBase
         set => RaiseAndSetIfPropertyChanged(ref _proxyString, value);
     }
 
+    public bool AutoConfirm
+    {
+        get => _autoConfirm;
+        set => RaiseAndSetIfPropertyChanged(ref _autoConfirm, value);
+    }
+
     public ICommand CommitPassword
     {
         get => _commitPassword;
@@ -42,11 +49,12 @@ public class ImportAccountsViewModel : ViewModelBase
     }
 
     // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
-    private readonly Func<string, IWebProxy?, string, Task<bool>> _addAccountFunc;
+    private readonly Func<string, IWebProxy?, string, SdaSettings, Task<bool>> _addAccountFunc;
     private string _proxyString = null!;
+    private bool _autoConfirm;
 
     public ImportAccountsViewModel(ulong steamId, string login, string maFileName,
-        Func<string, IWebProxy?, string, Task<bool>> addAccountFunc,
+        Func<string, IWebProxy?, string, SdaSettings, Task<bool>> addAccountFunc, SdaManager sdaManager,
         Window ownerWindow)
     {
         Login = login;
@@ -56,6 +64,7 @@ public class ImportAccountsViewModel : ViewModelBase
         Password = string.Empty;
         _addAccountFunc = addAccountFunc;
         ProxyString = string.Empty;
+        AutoConfirm = sdaManager.GlobalSettings.DefaultEnabledAutoConfirm;
 
         CommitPassword = ReactiveCommand.CreateFromTask(async () =>
         {
@@ -66,7 +75,7 @@ public class ImportAccountsViewModel : ViewModelBase
             }
 
             IWebProxy? proxy;
-            
+
             try
             {
                 proxy = ParseWebProxy();
@@ -77,13 +86,15 @@ public class ImportAccountsViewModel : ViewModelBase
                 return;
             }
 
-            var loginResult = await _addAccountFunc(Password, proxy, ProxyString);
+            var loginResult = await _addAccountFunc(Password, proxy, ProxyString, new SdaSettings(AutoConfirm));
 
             if (!loginResult)
             {
                 await NotificationsMessageWindow.ShowWindow("Error login in steam", _ownerWindow);
                 return;
             }
+
+            sdaManager.GlobalSettings.DefaultEnabledAutoConfirm = AutoConfirm;
 
             _ownerWindow.Close();
         });
