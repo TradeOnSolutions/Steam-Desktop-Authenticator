@@ -95,6 +95,7 @@ public class ImportAccountsViewModel : ViewModelBase
             }
 
             sdaManager.GlobalSettings.DefaultEnabledAutoConfirm = AutoConfirm;
+            await sdaManager.SaveSettingsAsync();
 
             _ownerWindow.Close();
         });

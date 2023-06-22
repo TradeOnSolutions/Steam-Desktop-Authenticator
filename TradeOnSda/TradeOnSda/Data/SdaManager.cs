@@ -151,6 +151,10 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
         });
 
         await File.WriteAllTextAsync(SettingsFileName, JsonConvert.SerializeObject(settings));
+
+        var globalSettings = JsonConvert.SerializeObject(GlobalSettings);
+
+        await File.WriteAllTextAsync(GlobalSettingsFileName, globalSettings);
     }
 }
 
@@ -244,14 +248,8 @@ public class SdaWithCredentials
 
             await Task.Delay(delay);
         }
-    }
-
-    [JsonConstructor]
-    public SdaWithCredentials()
-    {
-        SteamGuardAccount = null!;
-        Credentials = null!;
-        SdaSettings = new SdaSettings(false);
+     
+        // ReSharper disable once FunctionNeverReturns
     }
 }
 
