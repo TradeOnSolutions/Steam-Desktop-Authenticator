@@ -13,25 +13,25 @@ Now works on Windows, in the future on mac and linux.
 
  1. **We recommend that you check your computer with an antivirus beforehand to make sure that you do not have malicious programs that can steal your accounts.**
  2. Check the [latest versions page](https://github.com/TradeOnSolutions/Steam-Desktop-Authenticator/releases/latest), and download the latest .zip (not the source code one).
- 3. Run `TradeOnSda.exe` and click `import account`
+ 3. Run `TradeOnSda.exe` and click `import account`<br/>
 ![enter image description here](https://img2.teletype.in/files/d3/f2/d3f2560b-9d57-4b03-a4da-6b969b2b013d.png)
  4. After that, find the miFile files on your computer that you want to add to TradeOnSda (you can select many accounts at once)
  5. After adding MaFile - you need to `enter the password` from the added steam account and click `Try login`. You will also be able to specify the HTTP Proxy, through which this account will work (this is not required, you can not specify a proxy)![enter image description here](https://img2.teletype.in/files/18/1d/181d5f24-9206-4fed-8fea-ea3645253b2c.png)
- 6. **You are great!** Your account has now been added to TradeOnSDA, and you get authentication codes and have the ability to confirm actions in steam.
+ 6. **You are great!** Your account has now been added to TradeOnSDA, and you get authentication codes and have the ability to confirm actions in steam.<br/>
 ![enter image description here](https://img2.teletype.in/files/55/bf/55bffa75-2c27-4aaa-a638-cdefdbb97119.png)
 
 
 ## Functions, features, and use of controls. 
 
-1.  TradeOnSda supports proxy integration under each account. You can add a proxy when integrating an account, or you can do it after adding an account by clicking on the "proxy" icon and entering data in the format `IP:PORT:LOG:PASS `(HTTP only) 
+1.  TradeOnSda supports proxy integration under each account. You can add a proxy when integrating an account, or you can do it after adding an account by clicking on the "proxy" icon and entering data in the format `IP:PORT:LOG:PASS `(HTTP only) <br/>
  ![enter image description here](https://img4.teletype.in/files/39/a8/39a87d80-6451-4216-9a95-3f3f22f6fefe.png)![enter image description here](https://img1.teletype.in/files/8e/ba/8eba6611-7e7a-4e3c-8bf6-76079428db1c.png)
 		
-2. You can receive authentication codes. In the background of the code you see a moving line that shows the time that the code will still be valid.
+2. You can receive authentication codes. In the background of the code you see a moving line that shows the time that the code will still be valid.<br/>
 ![enter image description here](https://img2.teletype.in/files/9d/9e/9d9e6e1d-2ad0-4b34-b59a-98bd273c47f8.png)
-3. You can confirm outgoing exchanges or put items up for sale. To do this, click on the `exchanges` icon and a new window will open with offers waiting to be confirmed. ![enter image description here](https://img2.teletype.in/files/9a/41/9a415365-79d6-4139-816f-ecae3a62f19f.png)
+3. You can confirm outgoing exchanges or put items up for sale. To do this, click on the `exchanges` icon and a new window will open with offers waiting to be confirmed.<br/> ![enter image description here](https://img2.teletype.in/files/9a/41/9a415365-79d6-4139-816f-ecae3a62f19f.png)
 >You can double-click on your account login, this will also open an exchange offer window. 
 4. TradeOnSDA automatically remembers the login:password you specified. In case you have lost your session - you can click `Re-login` and your session will be renewed automatically without any additional inputs. ![enter image description here](https://img1.teletype.in/files/03/fb/03fb4a59-2b1b-44dd-9972-372b8bf61dd2.png)
-5. By right-clicking on the account - you can remove it from TradeOnSda.![enter image description here](https://img2.teletype.in/files/1c/1e/1c1e540b-222d-46e1-97c3-38457c1c4526.png)
+5. By right-clicking on the account - you can remove it from TradeOnSda.<br/> ![enter image description here](https://img2.teletype.in/files/1c/1e/1c1e540b-222d-46e1-97c3-38457c1c4526.png)
 6. You can use TradeOnSda on different devices at the same time, using the same maFile.
 7. You can stretch the program window, adjusting the display to your own comfort.
 
