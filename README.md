@@ -35,7 +35,7 @@ Now works on Windows, in the future on mac and linux.
 2. You can enable or disable auto-confirmation of exchanges and bids on the trading floor by clicking on the "Auto" icon. If the button is green - Auto Confirmations are on. White - off.
    The program itself will check every 60 seconds for unconfirmed exchanges or expositions to the trading floor steam, and if something needs to be confirmed - will confirm it automatically.
    ![enter image description here](https://sun9-38.userapi.com/impg/dTIru05FoU36VWzHbAgCs6cPwfY-68Zozc2RXw/RxTX0q9EPX0.jpg?size=519x316&quality=96&sign=36503d299f80928840c5ed665f8f5f01&type=album)
-3.  You can receive authentication codes. In the background of the code you see a moving line that shows the time that the code will still be valid.
+3.  You can receive authentication codes. In the background of the code you see a moving line that shows the time that the code will still be valid. </br>
     ![enter image description here](https://sun9-12.userapi.com/impg/5NNRhTpk979y6AomTD-DYnlj9VhLvymCZn_AQw/jjUbdkANmas.jpg?size=549x312&quality=96&sign=b698bda314f93542b17ab03348a95858&type=album)
 4. You can confirm outgoing exchanges or put items up for sale. To do this, click on the `exchanges` icon and a new window will open with offers waiting to be confirmed.
    ![enter image description here](https://sun9-42.userapi.com/impg/tbr0fk0CbI-u4dpxv2XeDGMhkhVGVfOMDNtPKg/SPscxrzbh8U.jpg?size=807x355&quality=96&sign=5748ad71de0945f42f645b87a53519b2&type=album)
