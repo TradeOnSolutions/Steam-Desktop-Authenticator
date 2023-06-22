@@ -3,14 +3,14 @@
 Multi-platform desktop version of the authenticator, replacing the mobile app steam. Developed by the TradeOn team on a volunteer basis. You can integrate maFile from any SDA version and TradeOnSDA will work with it.
 ## Disclaimer: We are in no way affiliated with Steam and this is not an official development. We do not provide personal support for TradeOnSDA and everything you see is done on a volunteer basis. Our development is open source and you can make sure that we do not receive any data from your accounts, so we are not responsible for any problems with your accounts that were added. Our application was created for experienced users who understand exactly why they need the dextop version of the authenticator
 
-# [Click to download](http://handlebarsjs.com/)
+# [Click to download](https://github.com/TradeOnSolutions/Steam-Desktop-Authenticator/releases/tag/release_1_0)
 
 
 
 ## Detailed setup instructions
 
  1. **We recommend that you check your computer with an antivirus beforehand to make sure that you do not have malicious programs that can steal your accounts.**
- 2. Check the [latest versions page](http://handlebarsjs.com/), and download the latest .zip (not the source code one).
+ 2. Check the [latest versions page](https://github.com/TradeOnSolutions/Steam-Desktop-Authenticator/releases/latest), and download the latest .zip (not the source code one).
  3. Run `TradeOnSda.exe` and click `import account`![enter image description here](https://sun9-22.userapi.com/impg/6VWbIdwldRsxd4P5t27UJJ6Y3PYGRoV1q26O-Q/evj3fvvxLyE.jpg?size=820x435&quality=96&sign=3918345449008406db598478b605b2de&type=album)
  4. After that, find the miFile files on your computer that you want to add to TradeOnSda (you can select many accounts at once)
  5. After adding MaFile - you need to `enter the password` from the added steam account and click `Try login`. You will also be able to specify the HTTP Proxy, through which this account will work (this is not required, you can not specify a proxy)![enter image description here](https://sun9-13.userapi.com/impg/-zTZigBStqgSj3996wrvr7YSI3E1EqizWYB4ZA/hKTO8LXrotw.jpg?size=1015x676&quality=96&sign=1ade20a84b382c4feffee298111e728f&type=album)
