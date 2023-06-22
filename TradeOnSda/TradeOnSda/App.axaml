@@ -1,0 +1,38 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:TradeOnSda"
+             x:Class="TradeOnSda.App"
+             RequestedThemeVariant="Default">
+
+    <Application.DataTemplates>
+        <local:ViewLocator />
+    </Application.DataTemplates>
+
+    <Application.Styles>
+        <FluentTheme />
+
+        <!-- Controls -->
+        <StyleInclude Source="avares://TradeOnSda/Views/Main/MainView.axaml" />
+        <StyleInclude Source="avares://TradeOnSda/Views/ImportAccounts/ImportAccountsView.axaml" />
+        <StyleInclude Source="avares://TradeOnSda/Views/Account/AccountView.axaml" />
+        <StyleInclude Source="avares://TradeOnSda/Views/AccountList/AccountListView.axaml" />
+        <StyleInclude Source="avares://TradeOnSda/Views/Confirmations/ConfirmationsView.axaml" />
+        <StyleInclude Source="avares://TradeOnSda/Views/ConfirmationItem/ConfirmationsItemView.axaml" />
+        
+        <!-- Libs controls -->
+        <!-- <StyleInclude Source="avares://AsyncImageLoader.Avalonia/AdvancedImage.axaml" /> -->
+        
+        <!-- Styles -->
+        <StyleInclude Source="avares://TradeOnSda/Styles/MainStyle.axaml" />
+        <StyleInclude Source="avares://TradeOnSda/Styles/Icons.axaml" />
+        
+    </Application.Styles>
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://TradeOnSda/Styles/MainColors.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

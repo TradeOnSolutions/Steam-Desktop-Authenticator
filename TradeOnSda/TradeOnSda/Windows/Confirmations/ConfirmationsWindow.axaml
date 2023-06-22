@@ -1,0 +1,32 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:confirmations="clr-namespace:TradeOnSda.Views.Confirmations"
+        xmlns:confirmations1="clr-namespace:TradeOnSda.Windows.Confirmations"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="TradeOnSda.Windows.Confirmations.ConfirmationsWindow"
+        Title="Confirmations"
+        TransparencyLevelHint="AcrylicBlur"
+        Width="400"
+        Height="650"
+        CanResize="False"
+        Background="Transparent"
+        ExtendClientAreaToDecorationsHint="True">
+
+    <Design.DataContext>
+        <confirmations1:ConfirmationsWindowViewModel />
+    </Design.DataContext>
+    <Grid>
+        <ExperimentalAcrylicBorder IsHitTestVisible="False">
+            <ExperimentalAcrylicBorder.Material>
+                <ExperimentalAcrylicMaterial
+                    BackgroundSource="Digger"
+                    TintColor="Black"
+                    TintOpacity="1"
+                    MaterialOpacity="0.65" />
+            </ExperimentalAcrylicBorder.Material>
+        </ExperimentalAcrylicBorder>
+        <confirmations:ConfirmationsView Margin="3, 35, 3, 0" DataContext="{Binding ConfirmationsViewModel}" />
+    </Grid>
+</Window>

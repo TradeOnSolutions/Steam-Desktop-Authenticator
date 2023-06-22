@@ -1,0 +1,73 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:TradeOnSda.Views.ConfirmationItem">
+    <Design.PreviewWith>
+        <controls:ConfirmationsItemView />
+    </Design.PreviewWith>
+    <Design.DataContext>
+        <controls:ConfirmationItemViewModel />
+    </Design.DataContext>
+
+    <Style Selector="controls|ConfirmationsItemView">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border
+                    Margin="1"
+                    CornerRadius="5"
+                    Background="{DynamicResource BackgroundAccent}">
+                    <Grid>
+                        <Grid
+                            Height="50"
+                            ColumnDefinitions="60, 1, 60, *, 100">
+                            <Grid
+                                Grid.Column="0">
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding ConfirmationTypeString}" />
+                            </Grid>
+                            <Grid
+                                Background="Black"
+                                Grid.Column="1">
+                            </Grid>
+                            <Grid
+                                Grid.Column="2">
+                                <Image 
+                                    VerticalAlignment="Stretch"
+                                    HorizontalAlignment="Stretch"
+                                    Margin="2"
+                                    Source="{Binding UserImage}" />
+                            </Grid>
+                            <Grid
+                                Grid.Column="3">
+                                <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding SdaConfirmation.Headline}" />
+                                    <TextBlock Text="{Binding ConfirmationTime}" />
+                                </StackPanel>
+                            </Grid>
+                            <Grid
+                                Grid.Column="4">
+                                <Grid ColumnDefinitions="*, *">
+                                    <Button Classes="RightButton" Grid.Column="0" Command="{Binding AcceptCommand}">
+                                        <Svg
+                                            Path="/Assets/accept1.svg" />
+                                    </Button>
+                                    <Button Classes="RightButton" Grid.Column="1" Command="{Binding DeclineCommand}">
+                                        <Svg
+                                            Path="/Assets/cancel1.svg" />
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.RightButton">
+        <Setter Property="Margin" Value=" 4" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+</Styles>

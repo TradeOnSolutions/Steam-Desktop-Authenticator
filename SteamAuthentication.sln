@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamAuthentication", "SteamAuthentication\SteamAuthentication.csproj", "{59E8333E-81DD-47FB-9B7D-B2F68FDDFC4B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradeOnSda", "TradeOnSda\TradeOnSda\TradeOnSda.csproj", "{C6473C13-95E5-4F0C-B055-143A7793EB52}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradeOnSda.Desktop", "TradeOnSda\TradeOnSda.Desktop\TradeOnSda.Desktop.csproj", "{F955903E-C314-421C-A28C-A5913F960E13}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{59E8333E-81DD-47FB-9B7D-B2F68FDDFC4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59E8333E-81DD-47FB-9B7D-B2F68FDDFC4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59E8333E-81DD-47FB-9B7D-B2F68FDDFC4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59E8333E-81DD-47FB-9B7D-B2F68FDDFC4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6473C13-95E5-4F0C-B055-143A7793EB52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6473C13-95E5-4F0C-B055-143A7793EB52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6473C13-95E5-4F0C-B055-143A7793EB52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6473C13-95E5-4F0C-B055-143A7793EB52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F955903E-C314-421C-A28C-A5913F960E13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F955903E-C314-421C-A28C-A5913F960E13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F955903E-C314-421C-A28C-A5913F960E13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F955903E-C314-421C-A28C-A5913F960E13}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

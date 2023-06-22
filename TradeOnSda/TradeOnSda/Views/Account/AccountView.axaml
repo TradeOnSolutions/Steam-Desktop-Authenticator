@@ -1,0 +1,93 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:TradeOnSda.Views.Account">
+    <Design.PreviewWith>
+        <controls:AccountView />
+    </Design.PreviewWith>
+    <Design.DataContext>
+        <controls:AccountViewModel />
+    </Design.DataContext>
+
+    <Style Selector="controls|AccountView">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Margin="2"
+                        CornerRadius="5"
+                        Background="{DynamicResource BackgroundAccent}">
+                    <Grid
+                        Height="50"
+                        ColumnDefinitions="*, 100">
+                        <Grid
+                            Grid.Column="0">
+                            <TextBlock Text="{Binding AccountName}"
+                                       VerticalAlignment="Center"
+                                       FontSize="15"
+                                       IsVisible="{Binding SelectedAccountViewCommandStrategy.IsVisibleLogin}"
+                                       Margin="10, 0, 0, 0"
+                                       FontWeight="SemiBold" />
+                            <TextBox
+                                Watermark="Proxy"
+                                VerticalContentAlignment="Center"
+                                IsVisible="{Binding SelectedAccountViewCommandStrategy.IsVisibleTextBox}"
+                                Text="{Binding SelectedAccountViewCommandStrategy.TextBoxText}"
+                                Margin="2, 4, 2, 4">
+                            </TextBox>
+                        </Grid>
+                        <Grid
+                            ColumnDefinitions="*, *"
+                            Grid.Column="1">
+                            <Button
+                                Background="Transparent"
+                                Classes="AccountRightButton"
+                                Command="{Binding FirstCommand}"
+                                Grid.Column="0">
+                                <Svg
+                                    Path="/Assets/save2.svg" />
+                            </Button>
+                            <Button
+                                Background="Transparent"
+                                Classes="AccountRightButton"
+                                Command="{Binding SecondCommand}"
+                                Grid.Column="1">
+                                <Svg
+                                    Margin="3"
+                                    Path="/Assets/rollback1.svg" />
+                            </Button>
+                        </Grid>
+                    </Grid>
+                    <Border.ContextMenu>
+                        <ContextMenu
+                            Background="{DynamicResource BackgroundAccent}">
+                            <MenuItem
+                                Background="{DynamicResource BackgroundAccent}"
+                                Command="{Binding RemoveCommand}">
+                                <MenuItem.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="Remove"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalAlignment="Center" />
+                                    </DataTemplate>
+                                </MenuItem.HeaderTemplate>
+                            </MenuItem>
+                        </ContextMenu>
+                    </Border.ContextMenu>
+                    <Interaction.Behaviors>
+                        <EventTriggerBehavior EventName="DoubleTapped">
+                            <!-- ReSharper disable once Xaml.PossibleNullReferenceException -->
+                            <InvokeCommandAction
+                                Command="{Binding DataContext.DoubleClickCommand, RelativeSource={RelativeSource AncestorType={x:Type controls:AccountView}}}" />
+                        </EventTriggerBehavior>
+                    </Interaction.Behaviors>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.AccountRightButton">
+        <Setter Property="Height" Value="45" />
+        <Setter Property="Width" Value="45" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+</Styles>

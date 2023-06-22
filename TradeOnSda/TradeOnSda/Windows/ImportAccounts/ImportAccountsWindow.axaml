@@ -1,0 +1,31 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:importAccounts="clr-namespace:TradeOnSda.Views.ImportAccounts"
+        xmlns:importAccounts1="clr-namespace:TradeOnSda.Windows.ImportAccounts"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="TradeOnSda.Windows.ImportAccounts.ImportAccountsWindow"
+        Title="Enter a password"
+        Height="270"
+        Width="400"
+        CanResize="False"
+        TransparencyLevelHint="AcrylicBlur"
+        Background="Transparent"
+        ExtendClientAreaToDecorationsHint="True">
+    <Design.DataContext>
+        <importAccounts1:ImportAccountsWindowViewModel />
+    </Design.DataContext>
+    <Grid>
+        <ExperimentalAcrylicBorder IsHitTestVisible="False">
+            <ExperimentalAcrylicBorder.Material>
+                <ExperimentalAcrylicMaterial
+                    BackgroundSource="Digger"
+                    TintColor="Black"
+                    TintOpacity="1"
+                    MaterialOpacity="0.65" />
+            </ExperimentalAcrylicBorder.Material>
+        </ExperimentalAcrylicBorder>
+        <importAccounts:ImportAccountsView Margin="0, 20, 0, 0" DataContext="{Binding ImportAccountsViewModel}" />
+    </Grid>
+</Window>

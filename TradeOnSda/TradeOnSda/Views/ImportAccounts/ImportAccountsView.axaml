@@ -1,0 +1,62 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:TradeOnSda.Views.ImportAccounts">
+    <Design.PreviewWith>
+        <controls:ImportAccountsView />
+    </Design.PreviewWith>
+    <Design.DataContext>
+        <controls:ImportAccountsViewModel />
+    </Design.DataContext>
+
+    <Style Selector="controls|ImportAccountsView">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <StackPanel Orientation="Vertical"
+                            Margin="0, 20, 0, 0">
+                    <TextBlock Classes="Text" Text="Enter a password for Steam account" />
+                    <TextBlock Classes="Text">
+                        <Run Text="MaFileName: " />
+                        <Run Text="{Binding MaFileName}" />
+                    </TextBlock>
+                    <TextBlock Classes="Text">
+                        <Run Text="SteamId: " />
+                        <Run Text="{Binding SteamId}" />
+                    </TextBlock>
+                    <Grid Height="10">
+                        <Grid
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            Height="1"
+                            Background="{DynamicResource BackgroundAccent}" />
+                    </Grid>
+                    <TextBlock Classes="Text">
+                        <Run Text="Steam login: " />
+                        <Run Text="{Binding Login}" />
+                    </TextBlock>
+                    <TextBox
+                        Watermark="Password"
+                        Classes="Text"
+                        Text="{Binding Password}" />
+                    <TextBox
+                        Classes="Text"
+                        Watermark="Proxy (ip:port:login:password, http or https) not required"
+                        Text="{Binding ProxyString}" />
+                    <Button
+                        FontWeight="SemiBold"
+                        HorizontalContentAlignment="Center"
+                        HorizontalAlignment="Stretch"
+                        Margin="10, 3, 10, 0"
+                        Command="{Binding CommitPassword}" Content="Try login" />
+                </StackPanel>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="TextBlock.Text">
+        <Setter Property="Margin" Value="10, 5, 0, 5" />
+    </Style>
+    
+    <Style Selector="TextBox.Text">
+        <Setter Property="Margin" Value="10, 5, 10, 5" />
+    </Style>
+</Styles>

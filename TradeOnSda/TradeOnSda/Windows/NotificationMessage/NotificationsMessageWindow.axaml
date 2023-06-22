@@ -1,0 +1,35 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:notificationMessage="clr-namespace:TradeOnSda.Windows.NotificationMessage"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="TradeOnSda.Windows.NotificationMessage.NotificationsMessageWindow"
+        Title="Warning"
+        Height="150"
+        Width="250"
+        CanResize="False"
+        TransparencyLevelHint="AcrylicBlur"
+        Background="Transparent"
+        ExtendClientAreaToDecorationsHint="True">
+    <Design.DataContext>
+        <notificationMessage:NotificationMessageViewModel></notificationMessage:NotificationMessageViewModel>
+    </Design.DataContext>
+    <Grid>
+        <ExperimentalAcrylicBorder IsHitTestVisible="False">
+            <ExperimentalAcrylicBorder.Material>
+                <ExperimentalAcrylicMaterial
+                    BackgroundSource="Digger"
+                    TintColor="Black"
+                    TintOpacity="1"
+                    MaterialOpacity="0.65" />
+            </ExperimentalAcrylicBorder.Material>
+        </ExperimentalAcrylicBorder>
+        <TextBlock 
+            TextWrapping="Wrap"
+            FontWeight="SemiBold"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Text="{Binding Message}" />
+    </Grid>
+</Window>

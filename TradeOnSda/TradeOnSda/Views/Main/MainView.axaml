@@ -1,0 +1,93 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:TradeOnSda.Views.Main"
+        xmlns:accountList="clr-namespace:TradeOnSda.Views.AccountList">
+    <Design.PreviewWith>
+        <controls:MainView />
+    </Design.PreviewWith>
+    <Design.DataContext>
+        <controls:MainViewModel />
+    </Design.DataContext>
+
+    <Style Selector="Button.TopButton">
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="Margin" Value="5, 5, 5, 5" />
+        <Setter Property="FontSize" Value="11" />
+    </Style>
+
+    <Style Selector="controls|MainView">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid
+                    Margin="0, 20, 0, 0"
+                    RowDefinitions="40, 50, *">
+                    <Grid Grid.Row="0" ColumnDefinitions="*, *, *">
+                        <Button Grid.Column="0" Classes="TopButton" Content="Import account"
+                                Command="{Binding ImportAccountsCommand}" />
+                        <Button Grid.Column="1" Classes="TopButton" IsEnabled="False" Content="Add guard (soon)" />
+                        <Button Grid.Column="2" Classes="TopButton" Content="Re-login"
+                                Command="{Binding ReLoginCommand}"
+                                IsEnabled="{Binding IsEnabledReLoginButton}" />
+                    </Grid>
+                    <Grid Grid.Row="1">
+                        <Border
+                            Background="{DynamicResource BackgroundAccent}">
+                            <Grid
+                                ColumnDefinitions="*, 50">
+                                <ProgressBar
+                                    Grid.ColumnSpan="2"
+                                    Background="Transparent"
+                                    Foreground="Gray"
+                                    VerticalAlignment="Stretch"
+                                    IsIndeterminate="False"
+                                    Value="{Binding ProgressValue}">
+                                    <!-- <ProgressBar.Transitions> -->
+                                    <!--     <Transitions> -->
+                                    <!--         <DoubleTransition Property="Value" Duration="0:0:1" /> -->
+                                    <!--     </Transitions> -->
+                                    <!-- </ProgressBar.Transitions> -->
+                                </ProgressBar>
+                                <TextBlock
+                                    Grid.Column="0"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontSize="18"
+                                    FontWeight="SemiBold"
+                                    Text="{Binding SteamGuardToken}" />
+                                <Button
+                                    Margin="0, 0, 5, 0"
+                                    Background="Transparent"
+                                    Grid.Column="1"
+                                    Command="{Binding CopySdaCodeCommand}">
+                                    <Svg
+                                        Path="/Assets/copy7.svg" />
+                                </Button>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                    <Grid Grid.Row="2">
+                        <Grid
+                            RowDefinitions="40, *">
+                            <Grid
+                                Grid.Row="0">
+                                <TextBox
+                                    VerticalContentAlignment="Center"
+                                    Watermark="Search"
+                                    Margin="1, 2, 1, 1"
+                                    Text="{Binding SearchText}" />
+                            </Grid>
+                            <Grid
+                                Grid.Row="1">
+                                <accountList:AccountListView
+                                    DataContext="{Binding AccountListViewModel}" />
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>

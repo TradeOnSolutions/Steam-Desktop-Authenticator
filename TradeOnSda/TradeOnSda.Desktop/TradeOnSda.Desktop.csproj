@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <!--If you are willing to use Windows/MacOS native APIs you will need to create 3 projects.
+        One for Windows with net7.0-windows TFM, one for MacOS with net7.0-macos and one with net7.0 TFM for Linux.-->
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <Version>1.0.0.0</Version>
+        <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia.Desktop" Version="11.0.0-rc1.1" />
+        <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.0-rc1.1" />
+        <PackageReference Include="Dotnet.Bundle" Version="0.9.13" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\TradeOnSda\TradeOnSda.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="TradeOnLogo.icns">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+    <PropertyGroup>
+        <CFBundleName>TradeOn Steam Desktop Authentificator</CFBundleName> <!-- Also defines .app file name -->
+        <CFBundleDisplayName>TradeOn SDA</CFBundleDisplayName>
+        <CFBundleIdentifier>com.TradeOn</CFBundleIdentifier>
+        <CFBundleVersion>1.0.0</CFBundleVersion>
+        <CFBundleShortVersionString>1.0.0</CFBundleShortVersionString>
+        <CFBundlePackageType>APPL</CFBundlePackageType>
+        <CFBundleSignature>com.TradeOn.SteamDesktopAuthentificator</CFBundleSignature>
+        <CFBundleExecutable>TradeOn SDA</CFBundleExecutable>
+        <CFBundleIconFile>TradeOnLogo.icns</CFBundleIconFile> <!-- Will be copied from output directory -->
+        <NSPrincipalClass>NSApplication</NSPrincipalClass>
+        <NSHighResolutionCapable>true</NSHighResolutionCapable>
+        <NSRequiresAquaSystemAppearance>true</NSRequiresAquaSystemAppearance>
+    </PropertyGroup>
+</Project>

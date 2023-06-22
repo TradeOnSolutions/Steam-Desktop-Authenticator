@@ -1,0 +1,32 @@
+using System.IO.Compression;
+using Microsoft.Extensions.Logging;
+
+namespace SteamAuthentication.Logic;
+
+public static class GZipDecoding
+{
+    public static async Task<string> DecodeGZipAsync(byte[] bytes, ILogger logger, CancellationToken cancellationToken = default)
+    {
+        logger.LogDebug("Start decoding gzip");
+
+        var gZipStream = new GZipStream(new MemoryStream(bytes), CompressionMode.Decompress);
+        
+        var stringReader = new StreamReader(gZipStream);
+
+        try
+        {
+            var content = await stringReader.ReadToEndAsync(cancellationToken);
+
+            return content;
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception e)
+        {
+            logger.LogError("Error decode gzip format, {exception}", e.ToString());
+            throw;
+        }
+    }
+}

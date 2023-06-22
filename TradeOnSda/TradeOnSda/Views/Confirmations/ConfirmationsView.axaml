@@ -1,0 +1,44 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:TradeOnSda.Views.Confirmations"
+        xmlns:confirmationItem="clr-namespace:TradeOnSda.Views.ConfirmationItem">
+    <Design.PreviewWith>
+        <controls:ConfirmationsView />
+    </Design.PreviewWith>
+    <Design.DataContext>
+        <controls:ConfirmationsViewModel />
+    </Design.DataContext>
+
+    <Style Selector="controls|ConfirmationsView">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid>
+                    <ItemsControl
+                        HorizontalAlignment="Stretch"
+                        ItemsSource="{Binding ConfirmationsViewModels}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Vertical" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <confirmationItem:ConfirmationsItemView DataContext="{Binding}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Grid>
+                        <TextBlock
+                            IsVisible="{Binding VisibilityNoConfirmationsText}"
+                            Text="No confirmations"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            FontSize="14" FontWeight="SemiBold" />
+                    </Grid>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>

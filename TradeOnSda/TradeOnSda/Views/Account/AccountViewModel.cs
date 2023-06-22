@@ -1,0 +1,237 @@
+using System;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using Avalonia.Controls;
+using Microsoft.Extensions.Logging.Abstractions;
+using ReactiveUI;
+using SteamAuthentication.LogicModels;
+using TradeOnSda.Data;
+using TradeOnSda.ViewModels;
+using TradeOnSda.Windows.Confirmations;
+using TradeOnSda.Windows.NotificationMessage;
+using SteamTime = TradeOnSda.Data.SteamTime;
+
+namespace TradeOnSda.Views.Account;
+
+public class AccountViewModel : ViewModelBase
+{
+    private IAccountViewCommandStrategy _selectedAccountViewCommandStrategy = null!;
+    private bool _isVisible;
+
+    public SdaWithCredentials SdaWithCredentials { get; }
+
+    public bool IsVisible
+    {
+        get => _isVisible;
+        set => RaiseAndSetIfPropertyChanged(ref _isVisible, value);
+    }
+
+    public ICommand DoubleClickCommand { get; }
+    
+    public ICommand RemoveCommand { get; }
+    
+    public SdaManager SdaManager { get; }
+
+    public Window OwnerWindow { get; }
+
+    public string AccountName => SdaWithCredentials.SteamGuardAccount.MaFile.AccountName;
+
+    public AccountViewModel(SdaWithCredentials sdaWithCredentials, SdaManager sdaManager, Window ownerWindow)
+    {
+        SdaWithCredentials = sdaWithCredentials;
+        SdaManager = sdaManager;
+        OwnerWindow = ownerWindow;
+        IsVisible = true;
+
+        DefaultAccountViewCommandStrategy = new DefaultAccountViewCommandStrategy(this);
+        EditProxyAccountViewCommandStrategy = new EditProxyAccountViewCommandStrategy(this);
+
+        SelectedAccountViewCommandStrategy = DefaultAccountViewCommandStrategy;
+
+        FirstCommand = ReactiveCommand.CreateFromTask(async () =>
+        {
+            await SelectedAccountViewCommandStrategy.InvokeFirstCommandAsync();
+        });
+
+        SecondCommand = ReactiveCommand.Create(async () =>
+        {
+            await SelectedAccountViewCommandStrategy.InvokeSecondCommandAsync();
+        });
+
+        RemoveCommand = ReactiveCommand.CreateFromTask(async () =>
+        {
+            await SdaManager.RemoveAccountAsync(SdaWithCredentials);
+        });
+
+        DoubleClickCommand = ReactiveCommand.CreateFromTask(async () =>
+        {
+            try
+            {
+                var confirmations = await SdaWithCredentials.SteamGuardAccount.FetchConfirmationAsync();
+
+                var window = new ConfirmationsWindow(confirmations, SdaWithCredentials.SteamGuardAccount);
+
+                window.Show();
+            }
+            catch (Exception)
+            {
+                await NotificationsMessageWindow.ShowWindow("Cannot load confirmations", OwnerWindow);
+            }
+        });
+    }
+
+    public ICommand FirstCommand { get; }
+
+    public ICommand SecondCommand { get; }
+
+    public AccountViewModel()
+    {
+        SdaWithCredentials = null!;
+        SdaManager = null!;
+        OwnerWindow = null!;
+        IsVisible = true;
+
+        FirstCommand = null!;
+        SecondCommand = null!;
+        DoubleClickCommand = null!;
+
+        DefaultAccountViewCommandStrategy = null!;
+        EditProxyAccountViewCommandStrategy = null!;
+        SelectedAccountViewCommandStrategy = null!;
+    }
+
+    public async Task SelectStrategyAsync(IAccountViewCommandStrategy strategy)
+    {
+        SelectedAccountViewCommandStrategy = strategy;
+        await strategy.OnSelectedAsync();
+    }
+
+    public IAccountViewCommandStrategy SelectedAccountViewCommandStrategy
+    {
+        get => _selectedAccountViewCommandStrategy;
+        private set => RaiseAndSetIfPropertyChanged(ref _selectedAccountViewCommandStrategy, value);
+    }
+
+    public DefaultAccountViewCommandStrategy DefaultAccountViewCommandStrategy { get; }
+
+    public EditProxyAccountViewCommandStrategy EditProxyAccountViewCommandStrategy { get; }
+}
+
+public interface IAccountViewCommandStrategy
+{
+    public bool IsVisibleLogin { get; }
+
+    public bool IsVisibleTextBox { get; }
+
+    public string? TextBoxText { get; set; }
+
+    public Task InvokeFirstCommandAsync();
+
+    public Task InvokeSecondCommandAsync();
+
+    public Task OnSelectedAsync();
+}
+
+public class DefaultAccountViewCommandStrategy : IAccountViewCommandStrategy
+{
+    private readonly AccountViewModel _accountViewModel;
+
+    public DefaultAccountViewCommandStrategy(AccountViewModel accountViewModel)
+    {
+        _accountViewModel = accountViewModel;
+    }
+
+    public bool IsVisibleLogin => true;
+    public bool IsVisibleTextBox => false;
+    public string? TextBoxText { get; set; } = string.Empty;
+
+    public async Task InvokeFirstCommandAsync()
+    {
+        await _accountViewModel.SelectStrategyAsync(_accountViewModel.EditProxyAccountViewCommandStrategy);
+    }
+
+    public async Task InvokeSecondCommandAsync()
+    {
+        try
+        {
+            var confirmations = await _accountViewModel.SdaWithCredentials.SteamGuardAccount.FetchConfirmationAsync();
+
+            var window = new ConfirmationsWindow(confirmations, _accountViewModel.SdaWithCredentials.SteamGuardAccount);
+
+            window.Show();
+        }
+        catch (Exception)
+        {
+            await NotificationsMessageWindow.ShowWindow("Cannot load confirmations", _accountViewModel.OwnerWindow);
+        }
+    }
+
+    public Task OnSelectedAsync()
+    {
+        return Task.CompletedTask;
+    }
+}
+
+public class EditProxyAccountViewCommandStrategy : ViewModelBase, IAccountViewCommandStrategy
+{
+    private readonly AccountViewModel _accountViewModel;
+    private string? _textBoxText;
+
+    public EditProxyAccountViewCommandStrategy(AccountViewModel accountViewModel)
+    {
+        _accountViewModel = accountViewModel;
+    }
+
+    public bool IsVisibleLogin => false;
+    public bool IsVisibleTextBox => true;
+
+    public string? TextBoxText
+    {
+        get => _textBoxText;
+        set => RaiseAndSetIfPropertyChanged(ref _textBoxText, value);
+    }
+
+    public async Task InvokeFirstCommandAsync()
+    {
+        IWebProxy? proxy;
+
+        if (string.IsNullOrWhiteSpace(TextBoxText))
+            proxy = null;
+        else
+            try
+            {
+                proxy = ProxyLogic.ParseWebProxy(TextBoxText);
+            }
+            catch (Exception)
+            {
+                await NotificationsMessageWindow.ShowWindow("Proxy string is invalid", _accountViewModel.OwnerWindow);
+                return;
+            }
+
+        _accountViewModel.SdaWithCredentials.Credentials.ProxyString = null;
+
+        var oldSda = _accountViewModel.SdaWithCredentials.SteamGuardAccount;
+        var newSteamTime = new SteamTime();
+
+        _accountViewModel.SdaWithCredentials.SteamGuardAccount = new SteamGuardAccount(oldSda.MaFile,
+            new SteamRestClient(new HttpClient(), proxy), newSteamTime, NullLogger<SteamGuardAccount>.Instance);
+
+        await _accountViewModel.SdaManager.SaveSettingsAsync();
+
+        await _accountViewModel.SelectStrategyAsync(_accountViewModel.DefaultAccountViewCommandStrategy);
+    }
+
+    public async Task InvokeSecondCommandAsync()
+    {
+        await _accountViewModel.SelectStrategyAsync(_accountViewModel.DefaultAccountViewCommandStrategy);
+    }
+
+    public Task OnSelectedAsync()
+    {
+        TextBoxText = _accountViewModel.SdaWithCredentials.Credentials.ProxyString;
+
+        return Task.CompletedTask;
+    }
+}

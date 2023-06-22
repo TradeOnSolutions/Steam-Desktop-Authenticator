@@ -1,0 +1,55 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:TradeOnSda.Views.AccountList"
+        xmlns:account="clr-namespace:TradeOnSda.Views.Account">
+    <Design.PreviewWith>
+        <controls:AccountListView />
+    </Design.PreviewWith>
+    <Design.DataContext>
+        <controls:AccountListViewModel />
+    </Design.DataContext>
+
+    <Style Selector="controls|AccountListView">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid>
+                    <ListBox
+                        Background="Transparent"
+                        SelectedItem="{Binding SelectedAccountViewModel}"
+                        SelectionMode="Single"
+                        ItemsSource="{Binding VisibleAccounts}">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Vertical" />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.Styles>
+                            <Style Selector="ListBoxItem">
+                                <Setter Property="Padding" Value="2" />
+                                <Setter Property="Margin" Value="0, 0, 2, 0" />
+                            </Style>
+                            <Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+                                <Setter Property="Background" Value="{DynamicResource BackgroundDarkAccent}" />
+                            </Style>
+                            <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                                <Setter Property="Background" Value="{DynamicResource BackgroundMiddleAccent}" />
+                            </Style>
+                            <Style Selector="ListBoxItem:pressed /template/ ContentPresenter#PART_ContentPresenter">
+                                <Setter Property="Background" Value="{DynamicResource BackgroundDarkDarkAccent}" />
+                            </Style>
+                        </ListBox.Styles>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <account:AccountView
+                                    VerticalAlignment="Stretch"
+                                    Margin="0"
+                                    DataContext="{Binding}">
+                                </account:AccountView>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>
