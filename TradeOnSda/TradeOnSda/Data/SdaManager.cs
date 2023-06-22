@@ -65,7 +65,7 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
                 {
                     try
                     {
-                        var maFileName = $"{dto.SteamId}.json";
+                        var maFileName = $"{dto.SteamId}.maFile";
                         var maFilePath = Path.Combine(Directory.GetCurrentDirectory(), "MaFiles", maFileName);
 
                         if (!File.Exists(maFilePath))
