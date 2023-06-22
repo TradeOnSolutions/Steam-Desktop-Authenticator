@@ -19,6 +19,8 @@ public class AccountViewModel : ViewModelBase
 {
     private IAccountViewCommandStrategy _selectedAccountViewCommandStrategy = null!;
     private bool _isVisible;
+    private bool _saveIconVisibility;
+    private bool _rollbackIconVisibility;
 
     public SdaWithCredentials SdaWithCredentials { get; }
 
@@ -26,6 +28,18 @@ public class AccountViewModel : ViewModelBase
     {
         get => _isVisible;
         set => RaiseAndSetIfPropertyChanged(ref _isVisible, value);
+    }
+
+    public bool SaveIconVisibility
+    {
+        get => _saveIconVisibility;
+        set => RaiseAndSetIfPropertyChanged(ref _saveIconVisibility, value);
+    }
+
+    public bool RollbackIconVisibility
+    {
+        get => _rollbackIconVisibility;
+        set => RaiseAndSetIfPropertyChanged(ref _rollbackIconVisibility, value);
     }
 
     public ICommand DoubleClickCommand { get; }

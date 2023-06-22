@@ -39,6 +39,8 @@
                             <Button
                                 Background="Transparent"
                                 Classes="AccountRightButton"
+                                Classes.SaveIcon="{Binding SaveIconVisibility}"
+                                Classes.ProxyIcon="{Binding ProxyIconVisibility}"
                                 Command="{Binding FirstCommand}"
                                 Grid.Column="0">
                                 <Svg
@@ -47,6 +49,8 @@
                             <Button
                                 Background="Transparent"
                                 Classes="AccountRightButton"
+                                Classes.ConfirmationsIcon="{Binding ConfirmationsIconVisibility}"
+                                Classes.RollbackIcon="{Binding RollbackIconVisibility}"
                                 Command="{Binding SecondCommand}"
                                 Grid.Column="1">
                                 <Svg
@@ -82,7 +86,43 @@
             </ControlTemplate>
         </Setter>
     </Style>
+    
+    <Style Selector="Button.SaveIcon">
+        <Setter Property="Content">
+            <Setter.Value>
+                <Svg
+                    Path="/Assets/save2.svg" />
+            </Setter.Value>
+        </Setter>
+    </Style>
 
+    <Style Selector="Button.ProxyIcon">
+        <Setter Property="Content">
+            <Setter.Value>
+                <Svg
+                    Path="/Assets/proxy7.svg" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style Selector="Button.ConfirmationsIcon">
+        <Setter Property="Content">
+            <Setter.Value>
+                <Svg
+                    Path="/Assets/confirmations12.svg" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style Selector="Button.RollbackIcon">
+        <Setter Property="Content">
+            <Setter.Value>
+                <Svg
+                    Path="/Assets/rollback1.svg" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
     <Style Selector="Button.AccountRightButton">
         <Setter Property="Height" Value="45" />
         <Setter Property="Width" Value="45" />
