@@ -17,7 +17,7 @@ Now works on Windows, in the future on mac and linux.
 ## Detailed setup instructions
 
 1. **We recommend that you check your computer with an antivirus beforehand to make sure that you do not have malicious programs that can steal your accounts.**
-2. Check the [latest versions page](https://github.com/TradeOnSolutions/Steam-Desktop-Authenticator/releases), and download the latest .zip (not the source code one).
+2. Check the [latest versions page](https://github.com/TradeOnSolutions/Steam-Desktop-Authenticator/releases/latest), and download the latest .zip (not the source code one).
 3. Run `TradeOnSda.exe` and click `import account`
    ![enter image description here](https://sun9-79.userapi.com/impg/hLepstRd4cHKVn-IZiYlY7q9kliotiXoZITVrA/8ZbWh-8I7pg.jpg?size=510x451&quality=96&sign=5ba90dfab68cfb3bbdb0a842c516c3f8&type=album)
 4. After that, find the miFile files on your computer that you want to add to TradeOnSda (you can select many accounts at once)
