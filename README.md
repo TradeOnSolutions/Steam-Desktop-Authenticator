@@ -9,6 +9,14 @@ Now works on Windows, in the future on mac and linux.
 ![enter image description here](https://sun9-68.userapi.com/impg/LvYPbDvlNLgYQAHeBzy79WT2Ep9cEO3EZFWDPQ/lNxauA6UsgU.jpg?size=807x495&quality=96&sign=dca595a13a43240080942e3c61b5fee7&type=album)
 ##  Update list:
 23.06.2023 - TradeOnSda 1.1 - added auto-confirmations of exchanges and expositions to the trading floor.
+##
+24.06.2023 - The following features have been fixed
+- bugs for load/save maFile
+- load proxy
+- fix error login steam
+- scroll on order page
+- improving auto-confirmation
+
 ##  How to update?
 1. Download the current version at the link below.
 2. Unzip the downloaded archive.
