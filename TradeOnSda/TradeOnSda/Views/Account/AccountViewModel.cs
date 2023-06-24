@@ -277,7 +277,7 @@ public class EditProxyAccountViewCommandStrategy : ViewModelBase, IAccountViewCo
         var newSteamTime = new SteamTime();
 
         _accountViewModel.SdaWithCredentials.SteamGuardAccount = new SteamGuardAccount(oldSda.MaFile,
-            new SteamRestClient(new HttpClient(), proxy), newSteamTime, NullLogger<SteamGuardAccount>.Instance);
+            new SteamRestClient(proxy), newSteamTime, NullLogger<SteamGuardAccount>.Instance);
 
         await _accountViewModel.SdaManager.SaveSettingsAsync();
 

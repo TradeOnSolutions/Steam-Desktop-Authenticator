@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Net.Http;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -177,7 +176,7 @@ public class MainViewModel : ViewModelBase
                                         password);
 
                                 var sda = new SteamGuardAccount(steamMaFile,
-                                    new SteamRestClient(new HttpClient(), proxy),
+                                    new SteamRestClient(proxy),
                                     steamTime,
                                     NullLogger<SteamGuardAccount>.Instance);
 

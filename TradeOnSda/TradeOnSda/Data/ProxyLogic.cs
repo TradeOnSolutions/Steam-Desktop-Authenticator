@@ -17,6 +17,8 @@ public static class ProxyLogic
             2 => new WebProxy(tokens[0], int.Parse(tokens[1])),
             4 => new WebProxy(tokens[0], int.Parse(tokens[1]))
             {
+                UseDefaultCredentials = false,
+                BypassProxyOnLocal = false,
                 Credentials = new NetworkCredential(tokens[2], tokens[3]),
             },
             _ => throw new Exception("Invalid proxy format")

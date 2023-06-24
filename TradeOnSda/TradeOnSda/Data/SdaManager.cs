@@ -82,7 +82,7 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
 
                         var sda = new SteamGuardAccount(
                             maFile,
-                            new SteamRestClient(new HttpClient(), proxy),
+                            new SteamRestClient(proxy),
                             steamTime,
                             NullLogger<SteamGuardAccount>.Instance);
 

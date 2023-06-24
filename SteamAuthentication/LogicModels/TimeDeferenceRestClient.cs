@@ -8,7 +8,7 @@ namespace SteamAuthentication.LogicModels;
 
 public class TimeDeferenceRestClient : SteamRestClient
 {
-    public TimeDeferenceRestClient(HttpClient httpClient, IWebProxy? proxy) : base(httpClient, proxy)
+    public TimeDeferenceRestClient(IWebProxy? proxy) : base(proxy)
     {
     }
 

@@ -78,7 +78,7 @@ public class ImportAccountsViewModel : ViewModelBase
 
             try
             {
-                proxy = ParseWebProxy();
+                proxy = ProxyLogic.ParseWebProxy(ProxyString);
             }
             catch (Exception)
             {
@@ -101,23 +101,23 @@ public class ImportAccountsViewModel : ViewModelBase
         });
     }
 
-    private IWebProxy? ParseWebProxy()
-    {
-        if (string.IsNullOrWhiteSpace(ProxyString))
-            return null;
-
-        var tokens = ProxyString.Split(':');
-
-        return tokens.Length switch
-        {
-            2 => new WebProxy(tokens[0], int.Parse(tokens[1])),
-            4 => new WebProxy(tokens[0], int.Parse(tokens[1]))
-            {
-                Credentials = new NetworkCredential(tokens[2], tokens[3]),
-            },
-            _ => throw new Exception("Invalid proxy format")
-        };
-    }
+    // private IWebProxy? ParseWebProxy()
+    // {
+    //     if (string.IsNullOrWhiteSpace(ProxyString))
+    //         return null;
+    //
+    //     var tokens = ProxyString.Split(':');
+    //
+    //     return tokens.Length switch
+    //     {
+    //         2 => new WebProxy(tokens[0], int.Parse(tokens[1])),
+    //         4 => new WebProxy(tokens[0], int.Parse(tokens[1]))
+    //         {
+    //             Credentials = new NetworkCredential(tokens[2], tokens[3]),
+    //         },
+    //         _ => throw new Exception("Invalid proxy format")
+    //     };
+    // }
 
     public ImportAccountsViewModel()
     {

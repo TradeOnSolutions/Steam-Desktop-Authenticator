@@ -8,10 +8,9 @@ public class SteamRestClient
     private readonly RestClient _restClient;
 
     // ReSharper disable once MemberCanBeProtected.Global
-    public SteamRestClient(HttpClient httpClient, IWebProxy? proxy)
+    public SteamRestClient(IWebProxy? proxy)
     {
         _restClient = new RestClient(
-            httpClient,
             new RestClientOptions
             {
                 Proxy = proxy,
