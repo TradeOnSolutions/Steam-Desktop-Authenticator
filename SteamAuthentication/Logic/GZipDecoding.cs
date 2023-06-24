@@ -1,4 +1,5 @@
 using System.IO.Compression;
+using System.Text;
 using Microsoft.Extensions.Logging;
 
 namespace SteamAuthentication.Logic;
@@ -26,7 +27,7 @@ public static class GZipDecoding
         catch (Exception e)
         {
             logger.LogError("Error decode gzip format, {exception}", e.ToString());
-            throw;
+            return Encoding.UTF8.GetString(bytes);
         }
     }
 }
