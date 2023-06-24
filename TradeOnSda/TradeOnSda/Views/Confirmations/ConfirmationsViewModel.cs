@@ -23,7 +23,7 @@ public class ConfirmationsViewModel : ViewModelBase
 
         VisibilityNoConfirmationsText = sdaConfirmations.Length == 0;
 
-        ConfirmationsViewModels = new ObservableCollection<ConfirmationItemViewModel>(SdaConfirmations
+        ConfirmationsViewModels = new ObservableCollection<ConfirmationItemViewModel>(sdaConfirmations
             .Select(t => new ConfirmationItemViewModel(steamGuardAccount, t, ownerWindow, this)));
     }
 

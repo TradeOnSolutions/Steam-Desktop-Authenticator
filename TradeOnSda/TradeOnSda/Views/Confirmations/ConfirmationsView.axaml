@@ -13,22 +13,25 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Grid>
-                    <ItemsControl
-                        HorizontalAlignment="Stretch"
-                        ItemsSource="{Binding ConfirmationsViewModels}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Vertical" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <confirmationItem:ConfirmationsItemView DataContext="{Binding}" />
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled">
+                        <ItemsControl
+                            HorizontalAlignment="Stretch"
+                            ItemsSource="{Binding ConfirmationsViewModels}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Vertical" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <confirmationItem:ConfirmationsItemView DataContext="{Binding}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
                     <Grid>
                         <TextBlock
                             IsVisible="{Binding VisibilityNoConfirmationsText}"
