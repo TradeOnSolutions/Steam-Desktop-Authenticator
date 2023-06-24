@@ -240,17 +240,25 @@ public class SdaWithCredentials
                 {
                     await Task.Delay(delay);
                     
-                    var result =
-                        await SteamGuardAccount.LoginAgainAsync(SteamGuardAccount.MaFile.AccountName,
-                            Credentials.Password);
+                    try
+                    {
+                        var result =
+                            await SteamGuardAccount.LoginAgainAsync(SteamGuardAccount.MaFile.AccountName,
+                                Credentials.Password);
 
-                    if (result != LoginResult.LoginOkay)
+                        if (result != LoginResult.LoginOkay)
+                        {
+                            await Task.Delay(60 * 3);
+                            continue;
+                        }
+
+                        await _sdaManager.SaveSettingsAsync();
+                    }
+                    catch (Exception)
                     {
                         await Task.Delay(60 * 3);
                         continue;
                     }
-
-                    await _sdaManager.SaveSettingsAsync();
                 }
             }
 
