@@ -189,8 +189,9 @@ public class MainViewModel : ViewModelBase
 
                                 return true;
                             }
-                            catch (Exception)
+                            catch (Exception e)
                             {
+                                await NotificationsMessageWindow.ShowWindow(e.Message, _ownerWindow);
                                 return false;
                             }
                         },

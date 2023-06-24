@@ -107,19 +107,9 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
     {
         _items.Add(new SdaWithCredentials(steamGuardAccount, maFileCredentials, sdaSettings, this));
 
+        await SaveMaFile(steamGuardAccount);
+        
         await SaveSettingsAsync();
-
-        var maFileContent = steamGuardAccount.MaFile.ConvertToJson();
-
-        var directoryPath = Path.Combine(Directory.GetCurrentDirectory(),
-            "MaFiles");
-
-        Directory.CreateDirectory(directoryPath);
-
-        var maFilePath = Path.Combine(directoryPath,
-            $"{steamGuardAccount.MaFile.Session.SteamId}.maFile");
-
-        await File.WriteAllTextAsync(maFilePath, maFileContent);
     }
 
     public async Task RemoveAccountAsync(SteamGuardAccount steamGuardAccount)
@@ -154,6 +144,26 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
         var globalSettings = JsonConvert.SerializeObject(GlobalSettings);
 
         await File.WriteAllTextAsync(GlobalSettingsFileName, globalSettings);
+
+        foreach (var item in _items)
+        {
+            await SaveMaFile(item.SteamGuardAccount);
+        }
+    }
+
+    private async Task SaveMaFile(SteamGuardAccount sda)
+    {
+        var maFileContent = sda.MaFile.ConvertToJson();
+
+        var directoryPath = Path.Combine(Directory.GetCurrentDirectory(),
+            "MaFiles");
+
+        Directory.CreateDirectory(directoryPath);
+
+        var maFilePath = Path.Combine(directoryPath,
+            $"{sda.MaFile.Session.SteamId}.maFile");
+
+        await File.WriteAllTextAsync(maFilePath, maFileContent);
     }
 }
 
