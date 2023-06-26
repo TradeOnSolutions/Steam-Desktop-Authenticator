@@ -7,18 +7,14 @@ using System.Windows.Input;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using DynamicData.Binding;
-using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
 using ReactiveUI;
-using SteamAuthentication.Exceptions;
-using SteamAuthentication.LogicModels;
 using SteamAuthentication.Models;
 using TradeOnSda.Data;
 using TradeOnSda.ViewModels;
 using TradeOnSda.Views.AccountList;
 using TradeOnSda.Windows.ImportAccounts;
 using TradeOnSda.Windows.NotificationMessage;
-using SteamTime = TradeOnSda.Data.SteamTime;
 
 namespace TradeOnSda.Views.Main;
 
