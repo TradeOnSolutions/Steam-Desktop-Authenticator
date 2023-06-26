@@ -68,14 +68,13 @@ public class MainViewModel : ViewModelBase
     private double _progressValue;
     private bool _isEnabledReLoginButton;
 
-    public MainViewModel(Window ownerWindow)
+    public MainViewModel(Window ownerWindow, SdaManager sdaManager)
     {
         _ownerWindow = ownerWindow;
         SteamGuardToken = "-----";
         SearchText = string.Empty;
         ProgressValue = 0d;
-        SdaManager = new SdaManager();
-        SdaManager.LoadFromDisk();
+        SdaManager = sdaManager;
 
         AccountListViewModel = new AccountListViewModel(SdaManager, _ownerWindow);
 

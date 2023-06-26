@@ -73,7 +73,7 @@ public class AccountListViewModel : ViewModelBase
 
     public AccountListViewModel()
     {
-        SdaManager = new SdaManager();
+        SdaManager = null!;
         SearchText = "";
 
         _allAccounts = null!;

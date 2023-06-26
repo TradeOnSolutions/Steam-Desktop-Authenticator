@@ -15,25 +15,34 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
 
     public GlobalSettings GlobalSettings { get; private set; }
 
-    public SdaManager()
+    public static async Task<SdaManager> CreateSdaManagerAsync()
+    {
+        var sdaManager = new SdaManager();
+
+        await sdaManager.LoadFromDiskAsync();
+
+        return sdaManager;
+    }
+
+    private SdaManager()
     {
         GlobalSettings = new GlobalSettings();
     }
-
-    public void LoadFromDisk()
+    
+    private async Task LoadFromDiskAsync()
     {
-        LoadSettings();
+        await LoadSettingsAsync();
 
-        LoadGlobalSettings();
+        await LoadGlobalSettingsAsync();
 
-        void LoadGlobalSettings()
+        async Task LoadGlobalSettingsAsync()
         {
             try
             {
                 if (!File.Exists(GlobalSettingsFileName))
                     return;
 
-                var settingsContent = File.ReadAllText(GlobalSettingsFileName);
+                var settingsContent = await File.ReadAllTextAsync(GlobalSettingsFileName);
 
                 var globalSettings = JsonConvert.DeserializeObject<GlobalSettings>(settingsContent)
                                      ?? throw new Exception();
@@ -46,14 +55,14 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
             }
         }
 
-        void LoadSettings()
+        async Task LoadSettingsAsync()
         {
             try
             {
                 if (!File.Exists(SettingsFileName))
                     return;
 
-                var settingsContent = File.ReadAllText(SettingsFileName);
+                var settingsContent = await File.ReadAllTextAsync(SettingsFileName);
 
                 var savedSdaDtos = JsonConvert.DeserializeObject<SavedSdaDto[]>(settingsContent)
                                    ?? throw new Exception();
