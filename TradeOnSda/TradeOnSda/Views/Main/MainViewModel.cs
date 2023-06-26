@@ -51,10 +51,10 @@ public class MainViewModel : ViewModelBase
 
     public SdaManager SdaManager { get; }
 
-    public bool IsEnabledReLoginButton
+    public bool IsAccountSelected
     {
-        get => _isEnabledReLoginButton;
-        set => RaiseAndSetIfPropertyChanged(ref _isEnabledReLoginButton, value);
+        get => _isAccountSelected;
+        set => RaiseAndSetIfPropertyChanged(ref _isAccountSelected, value);
     }
 
     // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
@@ -62,7 +62,7 @@ public class MainViewModel : ViewModelBase
 
     private CancellationTokenSource? _currentSdaCodeCts;
     private double _progressValue;
-    private bool _isEnabledReLoginButton;
+    private bool _isAccountSelected;
 
     public MainViewModel(Window ownerWindow, SdaManager sdaManager)
     {
@@ -105,7 +105,7 @@ public class MainViewModel : ViewModelBase
 
                     var newValue = valueWrapper.Value;
 
-                    IsEnabledReLoginButton = newValue != null;
+                    IsAccountSelected = newValue != null;
 
                     Task.Run(async () =>
                     {

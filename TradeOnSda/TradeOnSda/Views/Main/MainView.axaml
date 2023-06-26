@@ -30,7 +30,7 @@
                         <Button Grid.Column="1" Classes="TopButton" IsEnabled="False" Content="Add guard (soon)" />
                         <Button Grid.Column="2" Classes="TopButton" Content="Re-login"
                                 Command="{Binding ReLoginCommand}"
-                                IsEnabled="{Binding IsEnabledReLoginButton}" />
+                                IsEnabled="{Binding IsAccountSelected}" />
                     </Grid>
                     <Grid Grid.Row="1">
                         <Border
@@ -43,12 +43,8 @@
                                     Foreground="Gray"
                                     VerticalAlignment="Stretch"
                                     IsIndeterminate="False"
+                                    IsVisible="{Binding IsAccountSelected}"
                                     Value="{Binding ProgressValue}">
-                                    <!-- <ProgressBar.Transitions> -->
-                                    <!--     <Transitions> -->
-                                    <!--         <DoubleTransition Property="Value" Duration="0:0:1" /> -->
-                                    <!--     </Transitions> -->
-                                    <!-- </ProgressBar.Transitions> -->
                                 </ProgressBar>
                                 <TextBlock
                                     Grid.Column="0"
