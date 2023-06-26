@@ -10,6 +10,7 @@ using DynamicData.Binding;
 using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
 using ReactiveUI;
+using SteamAuthentication.Exceptions;
 using SteamAuthentication.LogicModels;
 using SteamAuthentication.Models;
 using TradeOnSda.Data;
@@ -49,9 +50,9 @@ public class MainViewModel : ViewModelBase
     public ICommand ImportAccountsCommand { get; }
 
     public ICommand ReLoginCommand { get; }
-    
+
     public ICommand CopySdaCodeCommand { get; }
-    
+
     public SdaManager SdaManager { get; }
 
     public bool IsEnabledReLoginButton
@@ -83,7 +84,7 @@ public class MainViewModel : ViewModelBase
             {
                 var time = DateTime.UtcNow;
                 var date = time.Date;
-                
+
                 var delta = (time - date).TotalMilliseconds / 1000d % 30d;
 
                 var value = 100d - delta / 30d * 100d;
@@ -98,7 +99,7 @@ public class MainViewModel : ViewModelBase
 
                 AccountListViewModel.SearchText = newSearchText ?? "";
             });
-        
+
         AccountListViewModel
             .WhenPropertyChanged(t => t.SelectedAccountViewModel)
             .Subscribe(valueWrapper =>
@@ -106,11 +107,11 @@ public class MainViewModel : ViewModelBase
                     _currentSdaCodeCts?.Cancel();
 
                     _currentSdaCodeCts = new CancellationTokenSource();
-                    
+
                     var newValue = valueWrapper.Value;
 
                     IsEnabledReLoginButton = newValue != null;
-                    
+
                     Task.Run(async () =>
                     {
                         var token = _currentSdaCodeCts.Token;
@@ -189,9 +190,15 @@ public class MainViewModel : ViewModelBase
 
                                 return true;
                             }
-                            catch (Exception)
+                            catch (RequestException e)
                             {
-                                //await NotificationsMessageWindow.ShowWindow(e.Message, _ownerWindow);
+                                await NotificationsMessageWindow.ShowWindow(
+                                    $"{e.Message}, statusCode: {e.HttpStatusCode}, Content: {e.Content}", _ownerWindow);
+                                return false;
+                            }
+                            catch (Exception e)
+                            {
+                                await NotificationsMessageWindow.ShowWindow(e.Message, _ownerWindow);
                                 return false;
                             }
                         },
@@ -207,7 +214,7 @@ public class MainViewModel : ViewModelBase
         ReLoginCommand = ReactiveCommand.CreateFromTask(async () =>
         {
             var selectedAccountViewModel = AccountListViewModel.SelectedAccountViewModel;
-            
+
             if (selectedAccountViewModel == null)
                 return;
 
@@ -226,7 +233,7 @@ public class MainViewModel : ViewModelBase
                     return;
                 }
 
-                await SdaManager.SaveSettingsAsync();
+                await SdaManager.SaveEverythingAsync();
             }
             catch (Exception)
             {
@@ -238,7 +245,7 @@ public class MainViewModel : ViewModelBase
         {
             if (SteamGuardToken == "-----")
                 return;
-            
+
             var setTask = _ownerWindow.Clipboard?.SetTextAsync(SteamGuardToken);
 
             if (setTask != null)

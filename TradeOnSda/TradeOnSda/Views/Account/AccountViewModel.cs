@@ -84,7 +84,7 @@ public class AccountViewModel : ViewModelBase
         SdaManager = sdaManager;
         OwnerWindow = ownerWindow;
         IsVisible = true;
-        AutoConfirm = sdaWithCredentials.SdaSettings.AutoConfirm;
+        AutoConfirm = sdaWithCredentials.SdaSettings.IsEnabledAutoConfirm;
 
         DefaultAccountViewCommandStrategy = new DefaultAccountViewCommandStrategy(this);
         EditProxyAccountViewCommandStrategy = new EditProxyAccountViewCommandStrategy(this);
@@ -127,9 +127,9 @@ public class AccountViewModel : ViewModelBase
         {
             AutoConfirm = !AutoConfirm;
 
-            sdaWithCredentials.SdaSettings.AutoConfirm = AutoConfirm;
+            sdaWithCredentials.SdaSettings.IsEnabledAutoConfirm = AutoConfirm;
             
-            await SdaManager.SaveSettingsAsync();
+            await SdaManager.SaveEverythingAsync();
         });
     }
 
@@ -279,7 +279,7 @@ public class EditProxyAccountViewCommandStrategy : ViewModelBase, IAccountViewCo
         _accountViewModel.SdaWithCredentials.SteamGuardAccount = new SteamGuardAccount(oldSda.MaFile,
             new SteamRestClient(proxy), newSteamTime, NullLogger<SteamGuardAccount>.Instance);
 
-        await _accountViewModel.SdaManager.SaveSettingsAsync();
+        await _accountViewModel.SdaManager.SaveEverythingAsync();
 
         await _accountViewModel.SelectStrategyAsync(_accountViewModel.DefaultAccountViewCommandStrategy);
     }

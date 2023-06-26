@@ -86,7 +86,8 @@ public class ImportAccountsViewModel : ViewModelBase
                 return;
             }
 
-            var loginResult = await _addAccountFunc(Password, proxy, ProxyString, new SdaSettings(AutoConfirm));
+            var loginResult = await _addAccountFunc(Password, proxy, ProxyString,
+                new SdaSettings(AutoConfirm, TimeSpan.FromSeconds(60)));
 
             if (!loginResult)
             {
@@ -95,7 +96,7 @@ public class ImportAccountsViewModel : ViewModelBase
             }
 
             sdaManager.GlobalSettings.DefaultEnabledAutoConfirm = AutoConfirm;
-            await sdaManager.SaveSettingsAsync();
+            await sdaManager.SaveEverythingAsync();
 
             _ownerWindow.Close();
         });
