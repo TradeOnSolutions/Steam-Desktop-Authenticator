@@ -269,7 +269,7 @@ public class SdaWithCredentials
     }
 }
 
-public class SdaSettings
+public class SdaSettings    
 {
     public bool AutoConfirm { get; set; }
 

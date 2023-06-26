@@ -33,10 +33,10 @@ public class OfferHistory
     [JsonProperty("status", Required = Required.Always)]
     public int Status { get; set; }
 
-    [JsonProperty("assets_received", Required = Required.AllowNull)]
+    [JsonProperty("assets_received", Required = Required.Default)]
     public OfferHistoryAsset[]? AssetsReceived { get; set; }
 
-    [JsonProperty("assets_given", Required = Required.AllowNull)]
+    [JsonProperty("assets_given", Required = Required.Default)]
     public OfferHistoryAsset[]? AssetsGiven { get; set; }
 }
 
