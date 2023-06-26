@@ -129,7 +129,7 @@ public class AccountViewModel : ViewModelBase
 
             sdaWithCredentials.SdaSettings.IsEnabledAutoConfirm = AutoConfirm;
             
-            await SdaManager.SaveEverythingAsync();
+            await SdaManager.SaveSettingsAsync();
         });
     }
 
@@ -279,7 +279,7 @@ public class EditProxyAccountViewCommandStrategy : ViewModelBase, IAccountViewCo
         _accountViewModel.SdaWithCredentials.SteamGuardAccount = new SteamGuardAccount(oldSda.MaFile,
             new SteamRestClient(proxy), newSteamTime, NullLogger<SteamGuardAccount>.Instance);
 
-        await _accountViewModel.SdaManager.SaveEverythingAsync();
+        await _accountViewModel.SdaManager.SaveSettingsAsync();
 
         await _accountViewModel.SelectStrategyAsync(_accountViewModel.DefaultAccountViewCommandStrategy);
     }

@@ -232,7 +232,7 @@ public class MainViewModel : ViewModelBase
                     return;
                 }
 
-                await SdaManager.SaveEverythingAsync();
+                await SdaManager.SaveMaFile(selectedAccountViewModel.SdaWithCredentials.SteamGuardAccount);
             }
             catch (Exception)
             {

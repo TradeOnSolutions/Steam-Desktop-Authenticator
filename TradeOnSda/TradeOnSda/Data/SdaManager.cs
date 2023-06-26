@@ -95,23 +95,14 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
 
         await SaveMaFile(steamGuardAccount);
         
-        await SaveEverythingAsync();
+        await SaveSettingsAsync();
     }
 
     public async Task RemoveAccountAsync(SdaWithCredentials sdaWithCredentials)
     {
         _items.Remove(sdaWithCredentials);
         
-        await SaveEverythingAsync();
-    }
-
-    public async Task SaveEverythingAsync()
-    {
         await SaveSettingsAsync();
-        
-        await SaveGlobalSettingsAsync();
-        
-        await SaveAllMaFilesAsync();
     }
 
     public async Task SaveSettingsAsync()
@@ -132,13 +123,7 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
         await File.WriteAllTextAsync(GlobalSettingsFileName, globalSettings);
     }
 
-    public async Task SaveAllMaFilesAsync()
-    {
-        foreach (var item in _items) 
-            await SaveMaFile(item.SteamGuardAccount);
-    }
-
-    private async Task SaveMaFile(SteamGuardAccount sda)
+    public async Task SaveMaFile(SteamGuardAccount sda)
     {
         var maFileContent = sda.MaFile.ConvertToJson();
 

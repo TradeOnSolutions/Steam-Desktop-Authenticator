@@ -77,7 +77,7 @@ public class SdaWithCredentials
                     return;
                 }
 
-                await _sdaManager.SaveEverythingAsync();
+                await _sdaManager.SaveMaFile(SteamGuardAccount);
             }
             catch (Exception)
             {
