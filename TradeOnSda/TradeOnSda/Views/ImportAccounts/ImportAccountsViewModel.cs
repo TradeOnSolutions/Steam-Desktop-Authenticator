@@ -3,10 +3,15 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Controls;
+using Microsoft.Extensions.Logging.Abstractions;
 using ReactiveUI;
+using SteamAuthentication.Exceptions;
+using SteamAuthentication.LogicModels;
+using SteamAuthentication.Models;
 using TradeOnSda.Data;
 using TradeOnSda.ViewModels;
 using TradeOnSda.Windows.NotificationMessage;
+using SteamTime = TradeOnSda.Data.SteamTime;
 
 namespace TradeOnSda.Views.ImportAccounts;
 
@@ -16,6 +21,8 @@ public class ImportAccountsViewModel : ViewModelBase
     private ICommand _commitPassword = null!;
 
     // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+    private readonly SteamMaFile _maFile;
+    private readonly SdaManager _sdaManager;
     private readonly Window _ownerWindow;
 
     public string Login { get; }
@@ -48,21 +55,19 @@ public class ImportAccountsViewModel : ViewModelBase
         set => RaiseAndSetIfPropertyChanged(ref _commitPassword, value);
     }
 
-    // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
-    private readonly Func<string, IWebProxy?, string, SdaSettings, Task<bool>> _addAccountFunc;
     private string _proxyString = null!;
     private bool _autoConfirm;
 
-    public ImportAccountsViewModel(ulong steamId, string login, string maFileName,
-        Func<string, IWebProxy?, string, SdaSettings, Task<bool>> addAccountFunc, SdaManager sdaManager,
+    public ImportAccountsViewModel(SteamMaFile maFile, string maFileName, SdaManager sdaManager,
         Window ownerWindow)
     {
-        Login = login;
-        SteamId = steamId.ToString();
+        Login = maFile.AccountName;
+        SteamId = maFile.Session.SteamId.ToString();
         MaFileName = maFileName;
+        _maFile = maFile;
+        _sdaManager = sdaManager;
         _ownerWindow = ownerWindow;
         Password = string.Empty;
-        _addAccountFunc = addAccountFunc;
         ProxyString = string.Empty;
         AutoConfirm = sdaManager.GlobalSettings.DefaultEnabledAutoConfirm;
 
@@ -86,8 +91,8 @@ public class ImportAccountsViewModel : ViewModelBase
                 return;
             }
 
-            var loginResult = await _addAccountFunc(Password, proxy, ProxyString,
-                new SdaSettings(AutoConfirm, TimeSpan.FromSeconds(60)));
+
+            var loginResult = await AddAccountAsync(proxy, new SdaSettings(AutoConfirm, TimeSpan.FromSeconds(60)));
 
             if (!loginResult)
             {
@@ -102,13 +107,51 @@ public class ImportAccountsViewModel : ViewModelBase
         });
     }
 
+    private async Task<bool> AddAccountAsync(IWebProxy? proxy, SdaSettings sdaSettings)
+    {
+        try
+        {
+            var steamTime = new SteamTime();
+
+            var maFileCredentials =
+                new MaFileCredentials(proxy != null ? ProxyString : null,
+                    Password);
+
+            var sda = new SteamGuardAccount(_maFile,
+                new SteamRestClient(proxy),
+                steamTime,
+                NullLogger<SteamGuardAccount>.Instance);
+
+            var loginAgainResult = await sda.LoginAgainAsync(Login, Password);
+
+            if (loginAgainResult != LoginResult.LoginOkay)
+                return false;
+
+            await _sdaManager.AddAccountAsync(sda, maFileCredentials, sdaSettings);
+
+            return true;
+        }
+        catch (RequestException e)
+        {
+            await NotificationsMessageWindow.ShowWindow(
+                $"{e.Message}, statusCode: {e.HttpStatusCode}, Content: {e.Content}", _ownerWindow);
+            return false;
+        }
+        catch (Exception e)
+        {
+            await NotificationsMessageWindow.ShowWindow(e.Message, _ownerWindow);
+            return false;
+        }
+    }
+
     public ImportAccountsViewModel()
     {
+        _maFile = null!;
+        _sdaManager = null!;
         _ownerWindow = null!;
         Login = "TestAccountLogin";
         SteamId = 1234567890ul.ToString();
         MaFileName = "1234567890.maFile";
         Password = "";
-        _addAccountFunc = null!;
     }
 }

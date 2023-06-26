@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using SteamAuthentication.Models;
 using TradeOnSda.Data;
 using TradeOnSda.Views.ImportAccounts;
 
@@ -11,8 +12,7 @@ namespace TradeOnSda.Windows.ImportAccounts;
 
 public partial class ImportAccountsWindow : Window
 {
-    public ImportAccountsWindow(ulong steamId, string login, string maFileName,
-        Func<string, IWebProxy?, string, SdaSettings, Task<bool>> addAccountFunc, SdaManager sdaManager)
+    public ImportAccountsWindow(SteamMaFile maFile, string maFileName, SdaManager sdaManager)
     {
         InitializeComponent();
 #if DEBUG
@@ -20,7 +20,7 @@ public partial class ImportAccountsWindow : Window
 #endif
 
         DataContext =
-            new ImportAccountsWindowViewModel(new ImportAccountsViewModel(steamId, login, maFileName, addAccountFunc, sdaManager,
+            new ImportAccountsWindowViewModel(new ImportAccountsViewModel(maFile, maFileName, sdaManager,
                 this));
     }
 
@@ -29,11 +29,10 @@ public partial class ImportAccountsWindow : Window
         AvaloniaXamlLoader.Load(this);
     }
 
-    public static async Task CreateImportAccountWindowAsync(ulong steamId, string login, string maFileName,
-        Func<string, IWebProxy?, string, SdaSettings, Task<bool>> addAccountFunc, Window ownerWindow,
+    public static async Task CreateImportAccountWindowAsync(SteamMaFile maFile, string maFileName, Window ownerWindow,
         SdaManager sdaManager)
     {
-        var window = new ImportAccountsWindow(steamId, login, maFileName, addAccountFunc, sdaManager);
+        var window = new ImportAccountsWindow(maFile, maFileName, sdaManager);
 
         await window.ShowDialog(ownerWindow);
     }

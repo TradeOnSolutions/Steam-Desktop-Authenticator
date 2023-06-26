@@ -162,46 +162,10 @@ public class MainViewModel : ViewModelBase
                     var steamMaFile = JsonConvert.DeserializeObject<SteamMaFile>(await File.ReadAllTextAsync(path))!;
 
                     await ImportAccountsWindow.CreateImportAccountWindowAsync(
-                        steamMaFile.Session.SteamId,
-                        steamMaFile.AccountName,
+                        steamMaFile,
                         maFileName,
-                        async (password, proxy, proxyString, sdaSettings) =>
-                        {
-                            try
-                            {
-                                var steamTime = new SteamTime();
-
-                                var maFileCredentials =
-                                    new MaFileCredentials(proxy != null ? proxyString : null,
-                                        password);
-
-                                var sda = new SteamGuardAccount(steamMaFile,
-                                    new SteamRestClient(proxy),
-                                    steamTime,
-                                    NullLogger<SteamGuardAccount>.Instance);
-
-                                var loginAgainResult = await sda.LoginAgainAsync(steamMaFile.AccountName, password);
-
-                                if (loginAgainResult != LoginResult.LoginOkay)
-                                    return false;
-
-                                await SdaManager.AddAccountAsync(sda, maFileCredentials, sdaSettings);
-
-                                return true;
-                            }
-                            catch (RequestException e)
-                            {
-                                await NotificationsMessageWindow.ShowWindow(
-                                    $"{e.Message}, statusCode: {e.HttpStatusCode}, Content: {e.Content}", _ownerWindow);
-                                return false;
-                            }
-                            catch (Exception e)
-                            {
-                                await NotificationsMessageWindow.ShowWindow(e.Message, _ownerWindow);
-                                return false;
-                            }
-                        },
-                        _ownerWindow, SdaManager);
+                        _ownerWindow,
+                        SdaManager);
                 }
                 catch (Exception e)
                 {
