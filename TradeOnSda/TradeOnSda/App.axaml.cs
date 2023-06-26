@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
@@ -18,7 +19,7 @@ public class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            var sdaManager = SdaManager.CreateSdaManagerAsync().GetAwaiter().GetResult();
+            var sdaManager = Task.Run(async () => await SdaManager.CreateSdaManagerAsync()).GetAwaiter().GetResult();
             
             desktop.MainWindow = new MainWindow();
 
