@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Controls;
-using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using DynamicData.Binding;
 using Newtonsoft.Json;

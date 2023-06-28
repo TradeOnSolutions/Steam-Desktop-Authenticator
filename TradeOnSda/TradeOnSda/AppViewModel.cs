@@ -1,4 +1,3 @@
-using System;
 using System.Windows.Input;
 using Avalonia.Controls;
 using ReactiveUI;

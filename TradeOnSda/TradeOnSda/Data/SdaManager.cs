@@ -37,17 +37,17 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
         {
             try
             {
-                var items = Items
+                var sdas = Items
                     .Where(t => t.Credentials.Proxy != null)
                     .ToArray();
 
-                var withoutProxyItems = Items
+                var withoutProxySdas = Items
                     .Where(t => t.Credentials.Proxy == null);
                 
-                foreach (var item in withoutProxyItems) 
+                foreach (var item in withoutProxySdas) 
                     item.SdaState.ProxyState = ProxyState.Unknown;
 
-                foreach (var sda in items)
+                foreach (var sda in sdas)
                 {
                     try
                     {
@@ -61,7 +61,7 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
                     {
                         sda.SdaState.ProxyState = ProxyState.Error;
                     }
-                };
+                }
 
                 await Task.Delay(TimeSpan.FromSeconds(10));
             }
@@ -70,6 +70,8 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
                 // ignored
             }
         }
+    
+        // ReSharper disable once FunctionNeverReturns
     }
 
     private async Task LoadFromDiskAsync()
