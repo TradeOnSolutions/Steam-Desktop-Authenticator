@@ -3,7 +3,7 @@
 Multi-platform desktop version of the authenticator, replacing the mobile app steam. Developed by the TradeOn team on a volunteer basis. You can integrate maFile from any SDA version and TradeOnSDA will work with it.
 ## Disclaimer: We are in no way affiliated with Steam and this is not an official development. We do not provide personal support for TradeOnSDA and everything you see is done on a volunteer basis. Our development is open source and you can make sure that we do not receive any data from your accounts, so we are not responsible for any problems with your accounts that were added. Our application was created for experienced users who understand exactly why they need the desktop version of the authenticator
 
-# [Click to download](https://github.com/TradeOnSolutions/Steam-Desktop-Authenticator/releases/download/release_1_2/TradeOn.SDA.v_1_2.zip)
+# [Click to download](https://github.com/TradeOnSolutions/Steam-Desktop-Authenticator/releases/download/release_1_3/TradeOn.SDA.v_1_3.zip)
 Now works on Windows, in the future on mac and linux.
 
 ![enter image description here](https://sun9-68.userapi.com/impg/LvYPbDvlNLgYQAHeBzy79WT2Ep9cEO3EZFWDPQ/lNxauA6UsgU.jpg?size=807x495&quality=96&sign=dca595a13a43240080942e3c61b5fee7&type=album)
@@ -16,6 +16,17 @@ Now works on Windows, in the future on mac and linux.
 - fix error login steam
 - scroll on order page
 - improving auto-confirmation
+##
+28.06.2023 - The following features we added
+- Added proxy check. Proxy status is displayed by coloring the icon.
+- Added password change confirmation in steam
+- Added detailed response to steem requests on re-login
+- Added refresh button on confirmation page 
+- Added ability to accept/reject all trades
+- Added ability to set value in (sec) of manual timing in autocofim for each acct (when pre-boosting and when right-clicking)
+- Now always shown Guard-Code , when you open the application, automatically selected the first account.
+- Added highlighting of the account with which you work (exchanges open or selected to show the codes)
+- Added work in tray
 
 ##  How to update?
 1. Download the current version at the link below.
