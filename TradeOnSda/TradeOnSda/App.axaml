@@ -7,7 +7,7 @@
     <Application.DataTemplates>
         <local:ViewLocator />
     </Application.DataTemplates>
-    
+
     <Design.DataContext>
         <local:AppViewModel />
     </Design.DataContext>
@@ -30,15 +30,11 @@
 
     <TrayIcon.Icons>
         <TrayIcons>
-            <TrayIcon Icon="/Assets/logo.ico" ToolTipText="TradeOnSda">
+            <TrayIcon Icon="/Assets/trayIcon.ico" ToolTipText="TradeOnSDA">
                 <TrayIcon.Menu>
                     <NativeMenu>
-                        <NativeMenuItem Header="Settings">
-                            <NativeMenu>
-                                <NativeMenuItem Header="Open" ToggleType="None" Command="{Binding OpenCommand}" />
-                                <NativeMenuItem Header="Exit app" ToggleType="None" Command="{Binding ExitCommand}" />
-                            </NativeMenu>
-                        </NativeMenuItem>
+                        <NativeMenuItem Header="Open" ToggleType="None" Command="{Binding OpenCommand}" />
+                        <NativeMenuItem Header="Exit app" ToggleType="None" Command="{Binding ExitCommand}" />
                     </NativeMenu>
                 </TrayIcon.Menu>
             </TrayIcon>
