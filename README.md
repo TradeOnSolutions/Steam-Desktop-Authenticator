@@ -23,10 +23,11 @@ Now works on Windows, in the future on mac and linux.
 - Added detailed response to steem requests on re-login
 - Added refresh button on confirmation page 
 - Added ability to accept/reject all trades
-- Added ability to set value in (sec) of manual timing in autocofim for each acct (when pre-boosting and when right-clicking)
+- Added ability to set value in (sec) of manual timing in auto-confirm for each acct (when import account and when right-clicking)
 - Now always shown Guard-Code , when you open the application, automatically selected the first account.
 - Added highlighting of the account with which you work (exchanges open or selected to show the codes)
 - Added work in tray
+
 
 ##  How to update?
 1. Download the current version at the link below.
