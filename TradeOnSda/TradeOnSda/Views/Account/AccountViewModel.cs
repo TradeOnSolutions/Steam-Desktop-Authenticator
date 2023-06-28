@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Controls;
+using DynamicData.Binding;
 using Microsoft.Extensions.Logging.Abstractions;
 using ReactiveUI;
 using SteamAuthentication.LogicModels;
@@ -25,6 +26,9 @@ public class AccountViewModel : ViewModelBase
     private bool _proxyIconVisibility;
     private bool _confirmationsIconVisibility;
     private bool _autoConfirm;
+    private bool _isUnknownProxyState;
+    private bool _isOkProxyState;
+    private bool _isErrorProxyState;
 
     public SdaWithCredentials SdaWithCredentials { get; }
 
@@ -64,6 +68,24 @@ public class AccountViewModel : ViewModelBase
         set => RaiseAndSetIfPropertyChanged(ref _autoConfirm, value);
     }
 
+    public bool IsUnknownProxyState
+    {
+        get => _isUnknownProxyState;
+        set => RaiseAndSetIfPropertyChanged(ref _isUnknownProxyState, value);
+    }
+
+    public bool IsOkProxyState
+    {
+        get => _isOkProxyState;
+        set => RaiseAndSetIfPropertyChanged(ref _isOkProxyState, value);
+    }
+
+    public bool IsErrorProxyState
+    {
+        get => _isErrorProxyState;
+        set => RaiseAndSetIfPropertyChanged(ref _isErrorProxyState, value);
+    }
+
     public ICommand ToggleAutoConfirmCommand { get; }
 
     // ReSharper disable once UnusedAutoPropertyAccessor.Global
@@ -90,6 +112,33 @@ public class AccountViewModel : ViewModelBase
 
         SelectStrategyAsync(DefaultAccountViewCommandStrategy).GetAwaiter().GetResult();
 
+        IsUnknownProxyState = true;
+        
+        SdaWithCredentials.SdaState.WhenPropertyChanged(t => t.ProxyState)
+            .Subscribe(valueWrapper =>
+            {
+                var newProxyState = valueWrapper.Value;
+
+                switch (newProxyState)
+                {
+                    case ProxyState.Unknown:
+                        IsUnknownProxyState = true;
+                        IsOkProxyState = false;
+                        IsErrorProxyState = false;
+                        break;
+                    case ProxyState.Ok:
+                        IsUnknownProxyState = false;
+                        IsOkProxyState = true;
+                        IsErrorProxyState = false;
+                        break;
+                    case ProxyState.Error:
+                        IsUnknownProxyState = false;
+                        IsOkProxyState = false;
+                        IsErrorProxyState = true;
+                        break;
+                }
+            });
+        
         FirstCommand = ReactiveCommand.CreateFromTask(async () =>
         {
             await SelectedAccountViewCommandStrategy.InvokeFirstCommandAsync();

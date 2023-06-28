@@ -95,10 +95,7 @@ public class ImportAccountsViewModel : ViewModelBase
             var loginResult = await AddAccountAsync(proxy, new SdaSettings(AutoConfirm, TimeSpan.FromSeconds(60)));
 
             if (!loginResult)
-            {
-                await NotificationsMessageWindow.ShowWindow("Error login in steam", _ownerWindow);
                 return;
-            }
 
             sdaManager.GlobalSettings.DefaultEnabledAutoConfirm = AutoConfirm;
             await sdaManager.SaveGlobalSettingsAsync();
@@ -123,8 +120,12 @@ public class ImportAccountsViewModel : ViewModelBase
 
             var loginAgainResult = await sda.LoginAgainAsync(Login, Password);
 
-            if (loginAgainResult != LoginResult.LoginOkay)
+            if (loginAgainResult != null)
+            {
+                await NotificationsMessageWindow.ShowWindow($"Error login in steam. Message: {loginAgainResult}",
+                    _ownerWindow);
                 return false;
+            }
 
             await _sdaManager.AddAccountAsync(sda, maFileCredentials, sdaSettings);
 

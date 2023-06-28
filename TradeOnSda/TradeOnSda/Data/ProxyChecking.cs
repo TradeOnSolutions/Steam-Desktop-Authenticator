@@ -9,12 +9,16 @@ public static class ProxyChecking
 {
     public static async Task<bool> CheckProxyAsync(IWebProxy proxy)
     {
-        using var client = new RestClient(options => options.Proxy = proxy);
+        var client = new RestClient(options =>
+        {
+            options.Proxy = proxy;
+            options.MaxTimeout = (int)TimeSpan.FromSeconds(10).TotalMilliseconds;
+        });
 
         return await CheckProxyAsync(client);
     }
 
-    private static async Task<bool> CheckProxyAsync(RestClient client)
+    private static async Task<bool> CheckProxyAsync(IRestClient client)
     {
         try
         {

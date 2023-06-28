@@ -75,7 +75,7 @@ public class SdaWithCredentials
                     await SteamGuardAccount.LoginAgainAsync(SteamGuardAccount.MaFile.AccountName,
                         Credentials.Password);
 
-                if (result != LoginResult.LoginOkay)
+                if (result != null)
                 {
                     await Task.Delay(SdaSettings.AutoConfirmDelay * 5);
                     return;

@@ -340,7 +340,7 @@ public class SteamGuardAccount
 
     #endregion
 
-    public async Task<LoginResult> TryLoginAgainAsync(string username, string password,
+    public async Task<string?> TryLoginAgainAsync(string username, string password,
         CancellationToken cancellationToken = default)
     {
         try
@@ -353,11 +353,11 @@ public class SteamGuardAccount
         }
         catch (Exception)
         {
-            return LoginResult.UnknownError;
+            return "unknown";
         }
     }
 
-    public async Task<LoginResult> LoginAgainAsync(string username, string password,
+    public async Task<string?> LoginAgainAsync(string username, string password,
         CancellationToken cancellationToken = default)
     {
         using var _ = _logger.CreateScopeForMethod(this);
@@ -552,15 +552,7 @@ public class SteamGuardAccount
         _logger.LogDebug("Login message: {message}", login.Message);
 
         if (!login.Success)
-        {
-            if (login.Message.Contains("There have been too many login failures"))
-                return LoginResult.TooManyFailedLogins;
-
-            if (login.Message.Contains("Incorrect login"))
-                return LoginResult.BadCredentials;
-
-            return LoginResult.UnknownError;
-        }
+            return login.Message;
 
         _logger.LogDebug("Successful login request, rewrite maFile data");
 
@@ -603,7 +595,7 @@ public class SteamGuardAccount
 
         _logger.LogDebug("MaFile data rewrited");
 
-        return LoginResult.LoginOkay;
+        return null;
     }
 
     public override string ToString() => $"SteamGuardAccount, steamId: {MaFile.Session.SteamId}";

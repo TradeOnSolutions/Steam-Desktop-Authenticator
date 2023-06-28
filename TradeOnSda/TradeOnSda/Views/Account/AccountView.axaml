@@ -48,11 +48,19 @@
                             <Button
                                 Background="Transparent"
                                 Classes="AccountRightButton"
-                                Classes.SaveIcon="{Binding SaveIconVisibility}"
-                                Classes.ProxyIcon="{Binding ProxyIconVisibility}"
+                                IsVisible="{Binding ProxyIconVisibility}"
+                                Classes.OkProxy="{Binding IsOkProxyState}"
+                                Classes.ErrorProxy="{Binding IsErrorProxyState}"
+                                Classes.UnknownProxy="{Binding IsUnknownProxyState}"
                                 Command="{Binding FirstCommand}"
                                 Grid.Column="1">
                             </Button>
+                            <Button
+                                Grid.Column="1"
+                                Classes="SaveIcon AccountRightButton"
+                                Background="Transparent"
+                                IsVisible="{Binding SaveIconVisibility}"
+                                Command="{Binding FirstCommand}" />
                             <Button
                                 Background="Transparent"
                                 Classes="AccountRightButton"
@@ -119,8 +127,30 @@
             </Setter.Value>
         </Setter>
     </Style>
-
-    <Style Selector="Button.ProxyIcon">
+    
+    <Style Selector="Button.OkProxy">
+        <Setter Property="Content">
+            <Setter.Value>
+                <Template>
+                    <Svg
+                        Path="/Assets/proxyGreen1.svg" />
+                </Template>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style Selector="Button.ErrorProxy">
+        <Setter Property="Content">
+            <Setter.Value>
+                <Template>
+                    <Svg
+                        Path="/Assets/proxyRed3.svg" />
+                </Template>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style Selector="Button.UnknownProxy">
         <Setter Property="Content">
             <Setter.Value>
                 <Template>

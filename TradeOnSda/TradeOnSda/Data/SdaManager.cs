@@ -27,6 +27,8 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
     private SdaManager()
     {
         GlobalSettings = new GlobalSettings();
+
+        Task.Run(CheckProxiesWorkingLoop);
     }
 
     private async Task CheckProxiesWorkingLoop()
@@ -39,7 +41,7 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
                     .Where(t => t.Credentials.Proxy != null)
                     .ToArray();
 
-                await Parallel.ForEachAsync(items, async (sda, ct) =>
+                foreach (var sda in items)
                 {
                     try
                     {
@@ -53,7 +55,9 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
                     {
                         sda.SdaState.ProxyState = ProxyState.Error;
                     }
-                });
+                };
+
+                await Task.Delay(TimeSpan.FromSeconds(5));
             }
             catch (Exception)
             {

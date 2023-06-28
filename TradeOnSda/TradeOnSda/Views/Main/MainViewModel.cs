@@ -187,9 +187,9 @@ public class MainViewModel : ViewModelBase
                     await selectedAccountViewModel.SdaWithCredentials.SteamGuardAccount.LoginAgainAsync(username,
                         credentials.Password);
 
-                if (result != LoginResult.LoginOkay)
+                if (result != null)
                 {
-                    await NotificationsMessageWindow.ShowWindow("Error login in steam", _ownerWindow);
+                    await NotificationsMessageWindow.ShowWindow($"Error login in steam, message: {result}", _ownerWindow);
                     return;
                 }
 
@@ -202,7 +202,7 @@ public class MainViewModel : ViewModelBase
             }
             catch (Exception e)
             {
-                await NotificationsMessageWindow.ShowWindow("Error login in steam", _ownerWindow);
+                await NotificationsMessageWindow.ShowWindow($"Error login in steam, message: {e.Message}", _ownerWindow);
             }
         });
 
