@@ -153,7 +153,20 @@ public class SteamGuardAccount
         await ProcessConfirmationAsync(confirmation, "allow",
             await SteamTime.GetCurrentSteamTimeAsync(cancellationToken), cancellationToken);
     }
-    
+
+    public async Task<bool> TryAcceptConfirmationsAsync(SdaConfirmation[] confirmations,
+        CancellationToken cancellationToken = default) =>
+        await TryHelpers.TryAsync(AcceptConfirmationsAsync(confirmations, cancellationToken));
+
+    public async Task AcceptConfirmationsAsync(SdaConfirmation[] confirmations,
+        CancellationToken cancellationToken = default)
+    {
+        using var _ = _logger.CreateScopeForMethod(this);
+
+        await ProcessConfirmationsAsync(confirmations, "allow",
+            await SteamTime.GetCurrentSteamTimeAsync(cancellationToken), cancellationToken);
+    }
+
     public async Task<bool> TryDenyConfirmationAsync(SdaConfirmation confirmation,
         CancellationToken cancellationToken = default) =>
         await TryHelpers.TryAsync(DenyConfirmationAsync(confirmation, cancellationToken));
@@ -166,15 +179,100 @@ public class SteamGuardAccount
             await SteamTime.GetCurrentSteamTimeAsync(cancellationToken),
             cancellationToken);
     }
+    
+    public async Task<bool> TryDenyConfirmationsAsync(SdaConfirmation[] confirmations,
+        CancellationToken cancellationToken = default) =>
+        await TryHelpers.TryAsync(DenyConfirmationsAsync(confirmations, cancellationToken));
+
+    public async Task DenyConfirmationsAsync(SdaConfirmation[] confirmations,
+        CancellationToken cancellationToken = default)
+    {
+        using var _ = _logger.CreateScopeForMethod(this);
+
+        await ProcessConfirmationsAsync(confirmations, "cancel",
+            await SteamTime.GetCurrentSteamTimeAsync(cancellationToken), cancellationToken);
+    }
+
+    private async Task ProcessConfirmationsAsync(SdaConfirmation[] confirmations, string tag, long timestamp,
+        CancellationToken cancellationToken)
+    {
+        _logger.LogDebug(
+            "Start processing confirmations, count: {confirmationsCount}, tag: {tag}, timestamp: {timeStamp}",
+            confirmations.Length, tag, timestamp);
+
+        var url = Endpoints.SteamCommunityUrl + "/mobileconf/multiajaxop";
+        
+        var queryString = new StringBuilder();
+
+        queryString.Append("op=" + tag + "&");
+
+        queryString.Append(SdaConfirmationsLogic.GenerateConfirmationQueryParams(tag, MaFile.DeviceId,
+            MaFile.IdentitySecret,
+            MaFile.Session.SteamId,
+            timestamp,
+            _logger));
+
+        foreach (var confirmation in confirmations)
+            queryString.Append("&cid[]=" + confirmation.Id + "&ck[]=" + confirmation.Key);
+
+        _logger.LogDebug("Result url: {url}", url);
+
+        var cookies = MaFile.Session.CreateCookies();
+
+        _logger.LogDebug("Cookies: {cookies}", cookies.ToJson());
+
+        RestResponse response;
+
+        try
+        {
+            response = await RestClient.ExecutePostRequestAsync(url, cookies, null, queryString.ToString(), cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Error while executing request, exception: {exception}", e.ToJson());
+            throw new RequestException("Exception while executing request", null, null, e);
+        }
+
+        _logger.LogRestResponse(response);
+
+        if (!response.IsSuccessful)
+            throw new RequestException("Response is not successful", response.StatusCode, response.Content, null);
+
+        if (response.RawBytes == null)
+            throw new RequestException("RawBytes is null", response.StatusCode, null, null);
+
+        var content = await GZipDecoding.DecodeGZipAsync(response.RawBytes, _logger, cancellationToken);
+
+        try
+        {
+            var processConfirmationResponse = JsonConvert.DeserializeObject<ProcessConfirmationResponse>(content);
+
+            if (processConfirmationResponse == null)
+                throw new RequestException("Response parse result is null", response.StatusCode, content, null);
+
+            if (!processConfirmationResponse.Success)
+                throw new Exception("ConfirmationResponse is false");
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Error while deserializing content, content: {content}, exception: {exception}", content,
+                e.ToJson());
+            throw;
+        }
+    }
 
     private async Task ProcessConfirmationAsync(
         SdaConfirmation confirmation,
         string tag,
-        long timeStamp,
+        long timestamp,
         CancellationToken cancellationToken)
     {
         _logger.LogDebug("Start processing confirmation, id: {confirmationId}, tag: {tag}, timestamp: {timeStamp}",
-            confirmation.Id, tag, timeStamp);
+            confirmation.Id, tag, timestamp);
 
         var url = Endpoints.SteamCommunityUrl + "/mobileconf/ajaxop";
 
@@ -183,7 +281,7 @@ public class SteamGuardAccount
         queryString += SdaConfirmationsLogic.GenerateConfirmationQueryParams(tag, MaFile.DeviceId,
             MaFile.IdentitySecret,
             MaFile.Session.SteamId,
-            timeStamp,
+            timestamp,
             _logger);
 
         queryString += "&cid=" + confirmation.Id + "&ck=" + confirmation.Key;
@@ -241,90 +339,6 @@ public class SteamGuardAccount
     }
 
     #endregion
-
-    // public async Task<bool> TryRefreshSessionAsync(CancellationToken cancellationToken = default) => 
-    //     await TryHelpers.TryAsync(RefreshSessionAsync(cancellationToken));
-    //
-    // public async Task RefreshSessionAsync(CancellationToken cancellationToken = default)
-    // {
-    //     using var _ = _logger.CreateScopeForMethod(this);
-    //
-    //     var url = Endpoints.MobileAuthGetWgTokenUrl;
-    //
-    //     var postData = $"{WebUtility.UrlEncode("access_token")}={WebUtility.UrlEncode(MaFile.Session.OAuthToken)}";
-    //
-    //     _logger.LogDebug("PostData: {postData}", postData);
-    //
-    //     RestResponse response;
-    //
-    //     try
-    //     {
-    //         response = await RestClient.ExecutePostRequestAsync(url, postData, null,
-    //             cancellationToken);
-    //     }
-    //     catch (OperationCanceledException)
-    //     {
-    //         throw;
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         _logger.LogError("Exception while executing request, exception: {exception}", e.ToJson());
-    //         throw new RequestException("Exception while executing request", null, null, e);
-    //     }
-    //
-    //     _logger.LogRestResponse(response);
-    //
-    //     if (!response.IsSuccessful)
-    //         throw new RequestException("Response is not successful", response.StatusCode, response.Content, null);
-    //
-    //     var content = response.Content;
-    //
-    //     if (content == null)
-    //         throw new RequestException("Content is null", response.StatusCode, response.Content, null);
-    //
-    //     try
-    //     {
-    //         var refreshResponse = JsonConvert.DeserializeObject<RefreshSessionDataResponse>(content);
-    //
-    //         if (refreshResponse == null)
-    //             throw new RequestException("Response parse result is null", response.StatusCode, content, null);
-    //
-    //         var token = MaFile.Session.SteamId + "%7C%7C" + refreshResponse.Response.Token;
-    //         var tokenSecure = MaFile.Session.SteamId + "%7C%7C" + refreshResponse.Response.TokenSecure;
-    //
-    //         var newSession = new SteamSessionData(
-    //             MaFile.Session.SessionId,
-    //             token,
-    //             tokenSecure,
-    //             MaFile.Session.OAuthToken,
-    //             MaFile.Session.SteamId);
-    //
-    //         var newMaFile = new SteamMaFile(
-    //             MaFile.SharedSecret,
-    //             MaFile.SerialNumber,
-    //             MaFile.RevocationCode,
-    //             MaFile.Uri,
-    //             MaFile.ServerTime,
-    //             MaFile.AccountName,
-    //             MaFile.TokenGuid,
-    //             MaFile.IdentitySecret,
-    //             MaFile.Secret1,
-    //             MaFile.Status,
-    //             MaFile.DeviceId,
-    //             MaFile.FullyEnrolled,
-    //             newSession);
-    //
-    //         MaFile = newMaFile;
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         _logger.LogError(
-    //             "Exception while deserialize RefreshSessionDataResponse, content: {content}, exception: {exception}",
-    //             content, e.ToJson());
-    //         throw new RequestException("Exception while deserialize RefreshSessionDataResponse", response.StatusCode,
-    //             content, e);
-    //     }
-    // }
 
     public async Task<LoginResult> TryLoginAgainAsync(string username, string password,
         CancellationToken cancellationToken = default)

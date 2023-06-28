@@ -61,6 +61,29 @@ public class SteamRestClient
 
         return response;
     }
+    
+    public async Task<RestResponse> ExecutePostRequestAsync(string url, CookieContainer cookies,
+        IEnumerable<(string name, string value)>? headers,
+        string body,
+        CancellationToken cancellationToken = default)
+    {
+        var request = new RestRequest(url, Method.Post)
+        {
+            CookieContainer = cookies,
+        };
+
+        AddHeadersToRequest(request);
+
+        if (headers != null)
+            foreach (var (name, value) in headers)
+                request.AddHeader(name, value);
+
+        request.AddBody(body, ContentType.FormUrlEncoded);
+
+        var response = await _restClient.ExecuteAsync(request, cancellationToken);
+
+        return response;
+    }
 
     public async Task<RestResponse> ExecuteGetRequestAsync(string url, CookieContainer? cookies,
         CancellationToken cancellationToken = default)

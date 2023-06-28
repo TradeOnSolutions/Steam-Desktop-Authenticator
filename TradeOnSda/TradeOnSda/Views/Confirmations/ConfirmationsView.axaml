@@ -13,7 +13,7 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Grid
-                    RowDefinitions="40, *">
+                    RowDefinitions="40, *, 40">
                     <Grid
                         Grid.Row="0">
                         <Button
@@ -28,7 +28,7 @@
                     <ScrollViewer
                         Grid.Row="1"
                         VerticalScrollBarVisibility="Auto"
-                                  HorizontalScrollBarVisibility="Disabled">
+                        HorizontalScrollBarVisibility="Disabled">
                         <ItemsControl
                             HorizontalAlignment="Stretch"
                             ItemsSource="{Binding ConfirmationsViewModels}">
@@ -49,14 +49,35 @@
                     <Grid
                         Grid.Row="1">
                         <TextBlock
-                            IsVisible="{Binding VisibilityNoConfirmationsText}"
+                            IsVisible="{Binding IsNoConfirmations}"
                             Text="No confirmations"
                             VerticalAlignment="Center"
                             HorizontalAlignment="Center"
                             FontSize="14" FontWeight="SemiBold" />
                     </Grid>
+                    <Grid
+                        IsVisible="{Binding !IsNoConfirmations}"
+                        ColumnDefinitions="*, *"
+                        Grid.Row="2">
+                        <Button
+                            Grid.Column="0"
+                            Classes="Bottom"
+                            Content="Accept all"
+                            Command="{Binding AcceptAllCommand}" />
+                        <Button
+                            Grid.Column="1"
+                            Classes="Bottom"
+                            Content="Deny all"
+                            Command="{Binding DenyAllCommand}" />
+                    </Grid>
                 </Grid>
             </ControlTemplate>
         </Setter>
+    </Style>
+    <Style Selector="Button.Bottom">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
 </Styles>

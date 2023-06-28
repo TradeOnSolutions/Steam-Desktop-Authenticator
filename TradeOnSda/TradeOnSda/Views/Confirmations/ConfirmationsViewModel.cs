@@ -15,11 +15,20 @@ namespace TradeOnSda.Views.Confirmations;
 
 public class ConfirmationsViewModel : ViewModelBase
 {
+    private bool _isNoConfirmations;
     public SdaConfirmation[] SdaConfirmations { get; private set; }
 
     public ObservableCollection<ConfirmationItemViewModel> ConfirmationsViewModels { get; }
+    
+    public ICommand AcceptAllCommand { get; }
+    
+    public ICommand DenyAllCommand { get; }
 
-    public bool VisibilityNoConfirmationsText { get; }
+    public bool IsNoConfirmations
+    {
+        get => _isNoConfirmations;
+        set => RaiseAndSetIfPropertyChanged(ref _isNoConfirmations, value);
+    }
 
     public ICommand RefreshConfirmationsCommand { get; }
 
@@ -28,7 +37,7 @@ public class ConfirmationsViewModel : ViewModelBase
     {
         SdaConfirmations = sdaConfirmations;
 
-        VisibilityNoConfirmationsText = sdaConfirmations.Length == 0;
+        IsNoConfirmations = sdaConfirmations.Length == 0;
 
         ConfirmationsViewModels = new ObservableCollection<ConfirmationItemViewModel>(sdaConfirmations
             .Select(t => new ConfirmationItemViewModel(steamGuardAccount, t, ownerWindow, this)));
@@ -48,6 +57,8 @@ public class ConfirmationsViewModel : ViewModelBase
                 foreach (var confirmation in newConfirmations)
                     ConfirmationsViewModels.Add(new ConfirmationItemViewModel(steamGuardAccount, confirmation,
                         ownerWindow, this));
+
+                IsNoConfirmations = newConfirmations.Length == 0;
             }
             catch (RequestException e)
             {
@@ -58,6 +69,52 @@ public class ConfirmationsViewModel : ViewModelBase
             catch (Exception e)
             {
                 await NotificationsMessageWindow.ShowWindow($"Error load confirmations, message: {e.Message}",
+                    ownerWindow);
+            }
+        });
+
+        AcceptAllCommand = ReactiveCommand.CreateFromTask(async () =>
+        {
+            try
+            {
+                await steamGuardAccount.AcceptConfirmationsAsync(SdaConfirmations);
+
+                SdaConfirmations = Array.Empty<SdaConfirmation>();
+                
+                ConfirmationsViewModels.Clear();
+            }
+            catch (RequestException e)
+            {
+                await NotificationsMessageWindow.ShowWindow(
+                    $"Error accept confirmations, message: {e.Message}, httpStatusCode: {e.HttpStatusCode.ToString()}",
+                    ownerWindow);
+            }
+            catch (Exception e)
+            {
+                await NotificationsMessageWindow.ShowWindow($"Error accept confirmations, message: {e.Message}",
+                    ownerWindow);
+            }
+        });
+
+        DenyAllCommand = ReactiveCommand.CreateFromTask(async () =>
+        {
+            try
+            {
+                await steamGuardAccount.DenyConfirmationsAsync(SdaConfirmations);
+
+                SdaConfirmations = Array.Empty<SdaConfirmation>();
+                
+                ConfirmationsViewModels.Clear();
+            }
+            catch (RequestException e)
+            {
+                await NotificationsMessageWindow.ShowWindow(
+                    $"Error deny confirmations, message: {e.Message}, httpStatusCode: {e.HttpStatusCode.ToString()}",
+                    ownerWindow);
+            }
+            catch (Exception e)
+            {
+                await NotificationsMessageWindow.ShowWindow($"Error deny confirmations, message: {e.Message}",
                     ownerWindow);
             }
         });
@@ -73,5 +130,7 @@ public class ConfirmationsViewModel : ViewModelBase
         SdaConfirmations = null!;
         ConfirmationsViewModels = null!;
         RefreshConfirmationsCommand = null!;
+        AcceptAllCommand = null!;
+        DenyAllCommand = null!;
     }
 }
