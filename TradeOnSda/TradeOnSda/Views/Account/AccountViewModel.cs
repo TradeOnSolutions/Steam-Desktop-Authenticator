@@ -29,6 +29,9 @@ public class AccountViewModel : ViewModelBase
     private bool _isUnknownProxyState;
     private bool _isOkProxyState;
     private bool _isErrorProxyState;
+    private bool _isContextMenuOpen;
+    private string _autoConfirmDelayText = null!;
+    private bool _isSuccessCommitAutoConfirmDelay;
 
     public SdaWithCredentials SdaWithCredentials { get; }
 
@@ -85,6 +88,26 @@ public class AccountViewModel : ViewModelBase
         get => _isErrorProxyState;
         set => RaiseAndSetIfPropertyChanged(ref _isErrorProxyState, value);
     }
+
+    public bool IsContextMenuOpen
+    {
+        get => _isContextMenuOpen;
+        set => RaiseAndSetIfPropertyChanged(ref _isContextMenuOpen, value);
+    }
+
+    public string AutoConfirmDelayText
+    {
+        get => _autoConfirmDelayText;
+        set => RaiseAndSetIfPropertyChanged(ref _autoConfirmDelayText, value);
+    }
+
+    public bool IsSuccessCommitAutoConfirmDelay
+    {
+        get => _isSuccessCommitAutoConfirmDelay;
+        set => RaiseAndSetIfPropertyChanged(ref _isSuccessCommitAutoConfirmDelay, value);
+    }
+
+    public ICommand CommitAutoConfirmDelayCommand { get; }
 
     public ICommand ToggleAutoConfirmCommand { get; }
 
@@ -180,6 +203,42 @@ public class AccountViewModel : ViewModelBase
 
             await SdaManager.SaveSettingsAsync();
         });
+
+        this.WhenPropertyChanged(t => t.IsContextMenuOpen)
+            .Subscribe(valueWrapper =>
+            {
+                var newValue = valueWrapper.Value;
+
+                if (newValue)
+                    AutoConfirmDelayText =
+                        ((int)sdaWithCredentials.SdaSettings.AutoConfirmDelay.TotalSeconds).ToString();
+            });
+
+        CommitAutoConfirmDelayCommand = ReactiveCommand.CreateFromTask(async () =>
+        {
+            if (!int.TryParse(AutoConfirmDelayText, out var delay))
+            {
+                await NotificationsMessageWindow.ShowWindow("Error parse value", OwnerWindow);
+                return;
+            }
+
+            if (delay < 1)
+            {
+                await NotificationsMessageWindow.ShowWindow("Delay must be positive", OwnerWindow);
+                return;
+            }
+
+            sdaWithCredentials.SdaSettings.AutoConfirmDelay = TimeSpan.FromSeconds(delay);
+            
+            await SdaManager.SaveSettingsAsync();
+
+            var _ = Task.Run(async () =>
+            {
+                IsSuccessCommitAutoConfirmDelay = true;
+                await Task.Delay(TimeSpan.FromSeconds(1));
+                IsSuccessCommitAutoConfirmDelay = false;
+            });
+        });
     }
 
     public ICommand FirstCommand { get; }
@@ -203,6 +262,8 @@ public class AccountViewModel : ViewModelBase
         SelectedAccountViewCommandStrategy = null!;
 
         RemoveCommand = null!;
+
+        CommitAutoConfirmDelayCommand = null!;
     }
 
     public async Task SelectStrategyAsync(IAccountViewCommandStrategy strategy)

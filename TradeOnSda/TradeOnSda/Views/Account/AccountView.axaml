@@ -73,12 +73,13 @@
                     </Grid>
                     <Border.ContextMenu>
                         <ContextMenu
+                            IsOpen="{Binding IsContextMenuOpen, Mode=OneWayToSource}"
                             Background="{DynamicResource BackgroundAccent}">
                             <MenuItem
                                 StaysOpenOnClick="True"
                                 Background="{DynamicResource BackgroundAccent}">
                                 <MenuItem.Header>
-                                    <Grid ColumnDefinitions="150, *">
+                                    <Grid ColumnDefinitions="150, *, 30">
                                         <Grid Grid.Column="0">
                                             <TextBlock
                                                 Margin="5, 0, 0, 0"
@@ -87,7 +88,22 @@
                                                 Text="Auto-confirm (sec): " />
                                         </Grid>
                                         <TextBox
+                                            VerticalContentAlignment="Center"
+                                            Margin="0, 0, 5, 0"
+                                            Text="{Binding AutoConfirmDelayText}"
                                             Grid.Column="1" />
+                                        <Button
+                                            Grid.Column="2"
+                                            Padding="4"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Stretch"
+                                            HorizontalContentAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            Height="30"
+                                            Classes.DefaultSaveProxy="{Binding !IsSuccessCommitAutoConfirmDelay}"
+                                            Classes.SuccessSaveProxy="{Binding IsSuccessCommitAutoConfirmDelay}"
+                                            Command="{Binding CommitAutoConfirmDelayCommand}">
+                                        </Button>
                                     </Grid>
                                 </MenuItem.Header>
                             </MenuItem>
@@ -211,5 +227,25 @@
         <Setter Property="Margin" Value="0" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+    
+    <Style Selector="Button.DefaultSaveProxy">
+        <Setter Property="Content">
+            <Setter.Value>
+                <Template>
+                    <Svg Path="/Assets/save2.svg"></Svg>
+                </Template>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style Selector="Button.SuccessSaveProxy">
+        <Setter Property="Content">
+            <Setter.Value>
+                <Template>
+                    <Svg Path="/Assets/saveGreen1.svg"></Svg>
+                </Template>
+            </Setter.Value>
+        </Setter>
     </Style>
 </Styles>
