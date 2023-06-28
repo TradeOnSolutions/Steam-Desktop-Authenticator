@@ -28,7 +28,40 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
     {
         GlobalSettings = new GlobalSettings();
     }
-    
+
+    private async Task CheckProxiesWorkingLoop()
+    {
+        while (true)
+        {
+            try
+            {
+                var items = Items
+                    .Where(t => t.Credentials.Proxy != null)
+                    .ToArray();
+
+                await Parallel.ForEachAsync(items, async (sda, ct) =>
+                {
+                    try
+                    {
+                        Debug.Assert(sda.Credentials.Proxy != null, "sda.Credentials.Proxy != null");
+
+                        var result = await ProxyChecking.CheckProxyAsync(sda.Credentials.Proxy);
+                        
+                        sda.SdaState.ProxyState = result ? ProxyState.Ok : ProxyState.Error;
+                    }
+                    catch (Exception)
+                    {
+                        sda.SdaState.ProxyState = ProxyState.Error;
+                    }
+                });
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+        }
+    }
+
     private async Task LoadFromDiskAsync()
     {
         await LoadSettingsAsync();
@@ -72,7 +105,7 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
                     try
                     {
                         var sdaWithCredentials = SdaWithCredentials.FromDto(dto, this);
-                        
+
                         _items.Add(sdaWithCredentials);
                     }
                     catch (Exception)
@@ -94,14 +127,14 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
         _items.Add(new SdaWithCredentials(steamGuardAccount, maFileCredentials, sdaSettings, this));
 
         await SaveMaFile(steamGuardAccount);
-        
+
         await SaveSettingsAsync();
     }
 
     public async Task RemoveAccountAsync(SdaWithCredentials sdaWithCredentials)
     {
         _items.Remove(sdaWithCredentials);
-        
+
         await SaveSettingsAsync();
     }
 

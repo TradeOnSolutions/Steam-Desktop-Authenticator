@@ -9,6 +9,7 @@ using Avalonia.Platform.Storage;
 using DynamicData.Binding;
 using Newtonsoft.Json;
 using ReactiveUI;
+using SteamAuthentication.Exceptions;
 using SteamAuthentication.Models;
 using TradeOnSda.Data;
 using TradeOnSda.ViewModels;
@@ -194,7 +195,12 @@ public class MainViewModel : ViewModelBase
 
                 await SdaManager.SaveMaFile(selectedAccountViewModel.SdaWithCredentials.SteamGuardAccount);
             }
-            catch (Exception)
+            catch (RequestException e)
+            {
+                await NotificationsMessageWindow.ShowWindow(
+                    $"Error login in steam, message: {e.Message}, statusCode: {e.HttpStatusCode.ToString()}", _ownerWindow);
+            }
+            catch (Exception e)
             {
                 await NotificationsMessageWindow.ShowWindow("Error login in steam", _ownerWindow);
             }

@@ -12,13 +12,15 @@ namespace TradeOnSda.Data;
 
 public class SdaWithCredentials
 {
-    [JsonIgnore] private readonly SdaManager _sdaManager;
+    private readonly SdaManager _sdaManager;
 
     public SteamGuardAccount SteamGuardAccount { get; set; }
 
     public MaFileCredentials Credentials { get; set; }
 
     public SdaSettings SdaSettings { get; set; }
+    
+    public SdaState SdaState { get; }
 
     public SdaWithCredentials(SteamGuardAccount steamGuardAccount, MaFileCredentials credentials,
         SdaSettings sdaSettings, SdaManager sdaManager)
@@ -27,6 +29,8 @@ public class SdaWithCredentials
         SteamGuardAccount = steamGuardAccount;
         Credentials = credentials;
         SdaSettings = sdaSettings;
+
+        SdaState = new SdaState();
 
         Task.Run(AutoConfirmWorkingLoop);
     }
@@ -109,7 +113,10 @@ public class SdaWithCredentials
             steamTime,
             NullLogger<SteamGuardAccount>.Instance);
 
-        return new SdaWithCredentials(sda, new MaFileCredentials(dto.ProxyString, dto.Password),
+        return new SdaWithCredentials(sda, new MaFileCredentials(
+                proxy,
+                dto.ProxyString,
+                dto.Password),
             new SdaSettings(dto.AutoConfirm, dto.AutoConfirmDelay), sdaManager);
     }
 

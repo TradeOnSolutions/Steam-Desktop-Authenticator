@@ -12,8 +12,22 @@
     <Style Selector="controls|ConfirmationsView">
         <Setter Property="Template">
             <ControlTemplate>
-                <Grid>
-                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                <Grid
+                    RowDefinitions="40, *">
+                    <Grid
+                        Grid.Row="0">
+                        <Button
+                            Margin="1"
+                            Content="Refresh"
+                            VerticalAlignment="Stretch"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Command="{Binding RefreshConfirmationsCommand}" />
+                    </Grid>
+                    <ScrollViewer
+                        Grid.Row="1"
+                        VerticalScrollBarVisibility="Auto"
                                   HorizontalScrollBarVisibility="Disabled">
                         <ItemsControl
                             HorizontalAlignment="Stretch"
@@ -32,7 +46,8 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                     </ScrollViewer>
-                    <Grid>
+                    <Grid
+                        Grid.Row="1">
                         <TextBlock
                             IsVisible="{Binding VisibilityNoConfirmationsText}"
                             Text="No confirmations"

@@ -114,8 +114,7 @@ public class ImportAccountsViewModel : ViewModelBase
             var steamTime = new SteamTime();
 
             var maFileCredentials =
-                new MaFileCredentials(proxy != null ? ProxyString : null,
-                    Password);
+                new MaFileCredentials(proxy, ProxyString, Password);
 
             var sda = new SteamGuardAccount(_maFile,
                 new SteamRestClient(proxy),

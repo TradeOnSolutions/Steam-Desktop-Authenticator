@@ -51,5 +51,7 @@ public enum ConfirmationType
     UnknownConfirmation2,
     Trade,
     MarketSellTransaction,
-    Unknown
+    UnknownConfirmation3,
+    UnknownConfirmation4,
+    Recovery,
 }

@@ -1,17 +1,19 @@
+using System.Net;
 using Newtonsoft.Json;
 
 namespace TradeOnSda.Data;
 
 public class MaFileCredentials
 {
-    [JsonProperty("ProxyString", Required = Required.Always)]
+    public IWebProxy? Proxy { get; }
+    
     public string? ProxyString { get; set; }
-
-    [JsonProperty("SteamPassword", Required = Required.Always)]
+    
     public string Password { get; set; }
 
-    public MaFileCredentials(string? proxyString, string password)
+    public MaFileCredentials(IWebProxy? proxy, string? proxyString, string password)
     {
+        Proxy = proxy;
         ProxyString = proxyString;
         Password = password;
     }

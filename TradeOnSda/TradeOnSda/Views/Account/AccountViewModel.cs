@@ -63,7 +63,7 @@ public class AccountViewModel : ViewModelBase
         get => _autoConfirm;
         set => RaiseAndSetIfPropertyChanged(ref _autoConfirm, value);
     }
-    
+
     public ICommand ToggleAutoConfirmCommand { get; }
 
     // ReSharper disable once UnusedAutoPropertyAccessor.Global
@@ -110,7 +110,8 @@ public class AccountViewModel : ViewModelBase
             try
             {
                 var confirmations = (await SdaWithCredentials.SteamGuardAccount.FetchConfirmationAsync()).Where(t =>
-                    t.ConfirmationType is ConfirmationType.Trade or ConfirmationType.MarketSellTransaction).ToArray();
+                    t.ConfirmationType is ConfirmationType.Trade or ConfirmationType.MarketSellTransaction
+                        or ConfirmationType.Recovery).ToArray();
 
                 var window = new ConfirmationsWindow(confirmations, SdaWithCredentials.SteamGuardAccount);
 
@@ -127,7 +128,7 @@ public class AccountViewModel : ViewModelBase
             AutoConfirm = !AutoConfirm;
 
             sdaWithCredentials.SdaSettings.IsEnabledAutoConfirm = AutoConfirm;
-            
+
             await SdaManager.SaveSettingsAsync();
         });
     }
@@ -147,7 +148,7 @@ public class AccountViewModel : ViewModelBase
         SecondCommand = null!;
         DoubleClickCommand = null!;
         ToggleAutoConfirmCommand = null!;
-        
+
         DefaultAccountViewCommandStrategy = null!;
         EditProxyAccountViewCommandStrategy = null!;
         SelectedAccountViewCommandStrategy = null!;
@@ -209,9 +210,11 @@ public class DefaultAccountViewCommandStrategy : IAccountViewCommandStrategy
     {
         try
         {
-            var confirmations = (await _accountViewModel.SdaWithCredentials.SteamGuardAccount.FetchConfirmationAsync())
-                .Where(t =>
-                    t.ConfirmationType is ConfirmationType.Trade or ConfirmationType.MarketSellTransaction).ToArray();
+            var confirmations = await _accountViewModel.SdaWithCredentials.SteamGuardAccount.FetchConfirmationAsync();
+
+            confirmations = confirmations.Where(t =>
+                t.ConfirmationType is ConfirmationType.Trade or ConfirmationType.MarketSellTransaction
+                    or ConfirmationType.Recovery).ToArray();
 
             var window = new ConfirmationsWindow(confirmations, _accountViewModel.SdaWithCredentials.SteamGuardAccount);
 

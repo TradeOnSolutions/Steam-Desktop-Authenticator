@@ -44,6 +44,7 @@ public class ConfirmationItemViewModel : ViewModelBase
         {
             ConfirmationType.Trade => "Trade",
             ConfirmationType.MarketSellTransaction => "Market",
+            ConfirmationType.Recovery => "Account",
             _ => "",
         };
 
