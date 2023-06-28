@@ -16,7 +16,7 @@
                     <ListBox
                         Background="Transparent"
                         SelectedItem="{Binding SelectedAccountViewModel}"
-                        SelectionMode="Single"
+                        SelectionMode="AlwaysSelected"
                         ItemsSource="{Binding VisibleAccounts}">
                         <ListBox.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -30,6 +30,10 @@
                             </Style>
                             <Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
                                 <Setter Property="Background" Value="{DynamicResource BackgroundDarkAccent}" />
+                            </Style>
+                            <Style Selector="ListBoxItem:selected account|AccountView">
+                                <Setter Property="BorderThickness" Value="1" />
+                                <Setter Property="BorderBrush" Value="#40ee99" />
                             </Style>
                             <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
                                 <Setter Property="Background" Value="{DynamicResource BackgroundMiddleAccent}" />
