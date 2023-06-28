@@ -7,6 +7,10 @@
     <Application.DataTemplates>
         <local:ViewLocator />
     </Application.DataTemplates>
+    
+    <Design.DataContext>
+        <local:AppViewModel />
+    </Design.DataContext>
 
     <Application.Styles>
         <FluentTheme />
@@ -18,15 +22,28 @@
         <StyleInclude Source="avares://TradeOnSda/Views/AccountList/AccountListView.axaml" />
         <StyleInclude Source="avares://TradeOnSda/Views/Confirmations/ConfirmationsView.axaml" />
         <StyleInclude Source="avares://TradeOnSda/Views/ConfirmationItem/ConfirmationsItemView.axaml" />
-        
-        <!-- Libs controls -->
-        <!-- <StyleInclude Source="avares://AsyncImageLoader.Avalonia/AdvancedImage.axaml" /> -->
-        
+
         <!-- Styles -->
         <StyleInclude Source="avares://TradeOnSda/Styles/MainStyle.axaml" />
         <StyleInclude Source="avares://TradeOnSda/Styles/Icons.axaml" />
-        
     </Application.Styles>
+
+    <TrayIcon.Icons>
+        <TrayIcons>
+            <TrayIcon Icon="/Assets/logo.ico" ToolTipText="TradeOnSda">
+                <TrayIcon.Menu>
+                    <NativeMenu>
+                        <NativeMenuItem Header="Settings">
+                            <NativeMenu>
+                                <NativeMenuItem Header="Open" ToggleType="None" Command="{Binding OpenCommand}" />
+                                <NativeMenuItem Header="Exit app" ToggleType="None" Command="{Binding ExitCommand}" />
+                            </NativeMenu>
+                        </NativeMenuItem>
+                    </NativeMenu>
+                </TrayIcon.Menu>
+            </TrayIcon>
+        </TrayIcons>
+    </TrayIcon.Icons>
 
     <Application.Resources>
         <ResourceDictionary>

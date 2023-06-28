@@ -8,11 +8,21 @@ using TradeOnSda.Windows.Main;
 
 namespace TradeOnSda;
 
+// ReSharper disable once ClassNeverInstantiated.Global
 public class App : Application
 {
+    public AppViewModel AppViewModel { get; }
+    
+    public App()
+    {
+        AppViewModel = new AppViewModel();
+    }
+    
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
+
+        DataContext = AppViewModel;
     }
 
     public override void OnFrameworkInitializationCompleted()
@@ -20,8 +30,10 @@ public class App : Application
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             var sdaManager = Task.Run(async () => await SdaManager.CreateSdaManagerAsync()).GetAwaiter().GetResult();
-            
-            desktop.MainWindow = new MainWindow();
+
+            var window = desktop.MainWindow = new MainWindow();
+
+            AppViewModel.MainWindow = window;
 
             desktop.MainWindow.DataContext = new MainWindowViewModel(desktop.MainWindow, sdaManager);
         }

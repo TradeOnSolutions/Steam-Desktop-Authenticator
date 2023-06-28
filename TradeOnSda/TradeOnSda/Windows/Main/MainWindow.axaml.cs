@@ -12,6 +12,15 @@ public partial class MainWindow : Window
 #if DEBUG
         this.AttachDevTools();
 #endif
+
+        Closing += (_, args) =>
+        {
+            if (args.IsProgrammatic)
+                return;
+            
+            args.Cancel = true;
+            Hide();
+        };
     }
 
     private void InitializeComponent()
