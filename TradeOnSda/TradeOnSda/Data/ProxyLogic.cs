@@ -14,7 +14,11 @@ public static class ProxyLogic
 
         return tokens.Length switch
         {
-            2 => new WebProxy(tokens[0], int.Parse(tokens[1])),
+            2 => new WebProxy(tokens[0], int.Parse(tokens[1]))
+            {
+                UseDefaultCredentials = false,
+                BypassProxyOnLocal = false,
+            },
             4 => new WebProxy(tokens[0], int.Parse(tokens[1]))
             {
                 UseDefaultCredentials = false,

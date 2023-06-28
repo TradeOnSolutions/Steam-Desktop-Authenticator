@@ -41,6 +41,12 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
                     .Where(t => t.Credentials.Proxy != null)
                     .ToArray();
 
+                var withoutProxyItems = Items
+                    .Where(t => t.Credentials.Proxy == null);
+                
+                foreach (var item in withoutProxyItems) 
+                    item.SdaState.ProxyState = ProxyState.Unknown;
+
                 foreach (var sda in items)
                 {
                     try
@@ -57,7 +63,7 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
                     }
                 };
 
-                await Task.Delay(TimeSpan.FromSeconds(5));
+                await Task.Delay(TimeSpan.FromSeconds(10));
             }
             catch (Exception)
             {

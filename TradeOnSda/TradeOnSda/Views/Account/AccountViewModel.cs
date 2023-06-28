@@ -323,6 +323,7 @@ public class EditProxyAccountViewCommandStrategy : ViewModelBase, IAccountViewCo
             }
 
         _accountViewModel.SdaWithCredentials.Credentials.ProxyString = TextBoxText;
+        _accountViewModel.SdaWithCredentials.Credentials.Proxy = proxy;
 
         var oldSda = _accountViewModel.SdaWithCredentials.SteamGuardAccount;
         var newSteamTime = new SteamTime();

@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Controls;
+using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using DynamicData.Binding;
 using Newtonsoft.Json;
@@ -64,6 +65,13 @@ public class MainViewModel : ViewModelBase
     private CancellationTokenSource? _currentSdaCodeCts;
     private double _progressValue;
     private bool _isAccountSelected;
+    private bool _isReLoginSuccess;
+
+    public bool IsReLoginSuccess
+    {
+        get => _isReLoginSuccess;
+        set => RaiseAndSetIfPropertyChanged(ref _isReLoginSuccess, value);
+    }
 
     public MainViewModel(Window ownerWindow, SdaManager sdaManager)
     {
@@ -72,7 +80,7 @@ public class MainViewModel : ViewModelBase
         SearchText = string.Empty;
         ProgressValue = 0d;
         SdaManager = sdaManager;
-
+        
         AccountListViewModel = new AccountListViewModel(SdaManager, _ownerWindow);
 
         Observable.Interval(TimeSpan.FromSeconds(0.03))
@@ -194,6 +202,13 @@ public class MainViewModel : ViewModelBase
                 }
 
                 await SdaManager.SaveMaFile(selectedAccountViewModel.SdaWithCredentials.SteamGuardAccount);
+
+                var _ =Task.Run(async () =>
+                {
+                    IsReLoginSuccess = true;
+                    await Task.Delay(TimeSpan.FromSeconds(1));
+                    IsReLoginSuccess = false;
+                });
             }
             catch (RequestException e)
             {
