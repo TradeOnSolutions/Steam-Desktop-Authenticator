@@ -123,9 +123,18 @@ public class SteamGuardAccount
         {
             var confirmationsResponse = JsonConvert.DeserializeObject<SdaConfirmationsResponse>(content);
 
-            if (confirmationsResponse == null || !confirmationsResponse.Success)
+            if (confirmationsResponse == null)
                 throw new RequestException("Response parse result is null or not success", response.StatusCode, content,
                     null);
+
+            if (!confirmationsResponse.Success)
+            {
+                if (confirmationsResponse.IsNeedAuth)
+                    throw new RequestException("Response result is unauthorized", HttpStatusCode.Unauthorized, content, null);
+
+                throw new RequestException("Response parse result is not success", response.StatusCode, content,
+                    null);
+            }
 
             if (confirmationsResponse.Confirmations == null)
                 throw new RequestException("Confirmations not found", response.StatusCode, content, null);

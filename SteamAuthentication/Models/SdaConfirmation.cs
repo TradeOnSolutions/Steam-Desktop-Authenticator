@@ -8,6 +8,9 @@ internal class SdaConfirmationsResponse
     [JsonProperty("success")]
     public bool Success { get; set; }
     
+    [JsonProperty("needauth")]
+    public bool IsNeedAuth { get; set; }
+    
     [JsonProperty("conf")]
     public SdaConfirmation[]? Confirmations { get; set; }
 }

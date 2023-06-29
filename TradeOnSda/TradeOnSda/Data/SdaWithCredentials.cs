@@ -61,39 +61,53 @@ public class SdaWithCredentials
                 .Where(t => t.ConfirmationType is ConfirmationType.MarketSellTransaction
                     or ConfirmationType.Trade);
 
-            await Task.Delay(TimeSpan.FromSeconds(10));
-
-            await SteamGuardAccount.AcceptConfirmationsAsync(confirmations.ToArray());
+            foreach (var confirmation in confirmations)
+            {
+                await SteamGuardAccount.AcceptConfirmationAsync(confirmation);
+                await Task.Delay(TimeSpan.FromSeconds(5));
+            }
 
             await Task.Delay(SdaSettings.AutoConfirmDelay);
         }
         catch (RequestException e)
         {
-            if (e.HttpStatusCode == HttpStatusCode.TooManyRequests) 
-                await Task.Delay(SdaSettings.AutoConfirmDelay * 10);
-        }
-        catch (Exception)
-        {
-            await Task.Delay(SdaSettings.AutoConfirmDelay);
-
-            try
+            if (e.HttpStatusCode == HttpStatusCode.Unauthorized)
             {
-                var result =
-                    await SteamGuardAccount.LoginAgainAsync(SteamGuardAccount.MaFile.AccountName,
-                        Credentials.Password);
+                await Task.Delay(SdaSettings.AutoConfirmDelay);
+                
+                try
+                {
+                    var result =
+                        await SteamGuardAccount.LoginAgainAsync(SteamGuardAccount.MaFile.AccountName,
+                            Credentials.Password);
 
-                if (result != null)
+                    if (result != null)
+                    {
+                        await Task.Delay(SdaSettings.AutoConfirmDelay * 5);
+                        return;
+                    }
+
+                    await _sdaManager.SaveMaFile(SteamGuardAccount);
+                    return;
+                }
+                catch (Exception)
                 {
                     await Task.Delay(SdaSettings.AutoConfirmDelay * 5);
                     return;
                 }
+            }
 
-                await _sdaManager.SaveMaFile(SteamGuardAccount);
-            }
-            catch (Exception)
+            if (e.HttpStatusCode == HttpStatusCode.TooManyRequests)
             {
-                await Task.Delay(SdaSettings.AutoConfirmDelay * 5);
+                await Task.Delay(3 * SdaSettings.AutoConfirmDelay);
+                return;
             }
+
+            await Task.Delay(SdaSettings.AutoConfirmDelay);
+        }
+        catch (Exception)
+        {
+            await Task.Delay(SdaSettings.AutoConfirmDelay);
         }
     }
 
