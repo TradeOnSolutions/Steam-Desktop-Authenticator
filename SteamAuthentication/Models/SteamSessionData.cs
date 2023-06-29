@@ -5,14 +5,14 @@ namespace SteamAuthentication.Models;
 
 public class SteamSessionData
 {
-    [JsonProperty("SessionID", Required = Required.Always)]
-    public string SessionId { get; private set; } = null!;
+    [JsonProperty("SessionID")]
+    public string? SessionId { get; private set; }
 
     // [JsonProperty("SteamLogin", Required = Required.Always)]
     // public string SteamLogin { get; private set; } = null!;
 
-    [JsonProperty("SteamLoginSecure", Required = Required.Always)]
-    public string SteamLoginSecure { get; private set; } = null!;
+    [JsonProperty("SteamLoginSecure")]
+    public string? SteamLoginSecure { get; private set; }
 
     // [JsonProperty("OAuthToken", Required = Required.Always)]
     // public string OAuthToken { get; private set; } = null!;
