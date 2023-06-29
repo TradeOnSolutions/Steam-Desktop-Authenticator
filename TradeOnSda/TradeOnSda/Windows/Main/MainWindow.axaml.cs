@@ -15,8 +15,8 @@ public partial class MainWindow : Window
 
         Closing += (_, args) =>
         {
-            if (args.IsProgrammatic)
-                return;
+            // if (args.IsProgrammatic)
+            //     return;
             
             args.Cancel = true;
             Hide();

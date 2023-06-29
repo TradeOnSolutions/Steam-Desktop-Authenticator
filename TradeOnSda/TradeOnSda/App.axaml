@@ -30,7 +30,8 @@
 
     <TrayIcon.Icons>
         <TrayIcons>
-            <TrayIcon Icon="/Assets/trayIcon.ico" ToolTipText="TradeOnSDA">
+            <TrayIcon
+                Icon="/Assets/trayIcon.ico" ToolTipText="TradeOnSDA">
                 <TrayIcon.Menu>
                     <NativeMenu>
                         <NativeMenuItem Header="Open" ToggleType="None" Command="{Binding OpenCommand}" />

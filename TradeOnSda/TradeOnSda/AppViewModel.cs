@@ -1,3 +1,4 @@
+using System;
 using System.Windows.Input;
 using Avalonia.Controls;
 using ReactiveUI;
@@ -18,11 +19,14 @@ public class AppViewModel : ViewModelBase
         OpenCommand = ReactiveCommand.Create(() =>
         {
             MainWindow?.Show();
+            
+            if (MainWindow != null) 
+                MainWindow.WindowState = WindowState.Normal;
         });
 
         ExitCommand = ReactiveCommand.Create(() =>
         {
-            MainWindow?.Close();
+            Environment.Exit(0);
         });
     }
 }
