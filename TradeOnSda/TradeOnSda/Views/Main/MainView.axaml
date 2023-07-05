@@ -27,8 +27,9 @@
                     <Grid Grid.Row="0" ColumnDefinitions="*, *, *">
                         <Button Grid.Column="0" Classes="TopButton" Content="Import account"
                                 Command="{Binding ImportAccountsCommand}" />
-                        <Button Grid.Column="1" Classes="TopButton" IsEnabled="False" Content="Add guard (soon)" />
-                        <Button Grid.Column="2" Classes="TopButton" 
+                        <Button Grid.Column="1" Classes="TopButton" Content="Add guard"
+                                Command="{Binding AddGuardCommand}" />
+                        <Button Grid.Column="2" Classes="TopButton"
                                 Classes.Default="{Binding !IsReLoginSuccess}"
                                 Classes.Success="{Binding IsReLoginSuccess}"
                                 Command="{Binding ReLoginCommand}"
@@ -88,11 +89,11 @@
             </ControlTemplate>
         </Setter>
     </Style>
-    
+
     <Style Selector="Button.Default">
         <Setter Property="Content" Value="Re-login" />
     </Style>
-    
+
     <Style Selector="Button.Success">
         <Setter Property="Foreground" Value="#40ee99" />
         <Setter Property="Content" Value="Success" />

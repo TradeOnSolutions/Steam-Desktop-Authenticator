@@ -14,6 +14,7 @@ using SteamAuthentication.Models;
 using TradeOnSda.Data;
 using TradeOnSda.ViewModels;
 using TradeOnSda.Views.AccountList;
+using TradeOnSda.Windows.AddGuard;
 using TradeOnSda.Windows.ImportAccounts;
 using TradeOnSda.Windows.NotificationMessage;
 
@@ -49,6 +50,8 @@ public class MainViewModel : ViewModelBase
     public ICommand ReLoginCommand { get; }
 
     public ICommand CopySdaCodeCommand { get; }
+    
+    public ICommand AddGuardCommand { get; }
 
     public SdaManager SdaManager { get; }
 
@@ -230,6 +233,11 @@ public class MainViewModel : ViewModelBase
             if (setTask != null)
                 await setTask;
         });
+
+        AddGuardCommand = ReactiveCommand.CreateFromTask(async () =>
+        {
+            await AddGuardWindow.ShowWindow(sdaManager, ownerWindow);
+        });
     }
 
     public MainViewModel()
@@ -243,5 +251,6 @@ public class MainViewModel : ViewModelBase
         ProgressValue = 0d;
         ReLoginCommand = null!;
         CopySdaCodeCommand = null!;
+        AddGuardCommand = null!;
     }
 }

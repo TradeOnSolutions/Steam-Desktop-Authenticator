@@ -5,50 +5,6 @@ namespace SteamAuthentication.Logic;
 
 internal static class SdaConfirmationsLogic
 {
-    // public static SdaConfirmation[] ParseConfirmations(string content, ILogger<SteamGuardAccount> logger)
-    // {
-    //     logger.LogDebug("start parsing confirmations");
-    //
-    //     var confRegex = ConfirmationsRegex();
-    //
-    //     if (!confRegex.IsMatch(content))
-    //     {
-    //         if (!content.Contains("<div>Nothing to confirm</div>"))
-    //         {
-    //             logger.LogError("Error. Unknown format of confirmations html");
-    //             throw new ParseConfirmationException(content);
-    //         }
-    //
-    //         logger.LogDebug("Parse result: nothing to confirm");
-    //         return Array.Empty<SdaConfirmation>();
-    //     }
-    //
-    //     var matches = confRegex.Matches(content);
-    //
-    //     var confirmations = new List<SdaConfirmation>();
-    //
-    //     foreach (Match confirmation in matches)
-    //     {
-    //         if (confirmation.Groups.Count != 5) continue;
-    //
-    //         if (!ulong.TryParse(confirmation.Groups[1].Value, out var confirmationId) ||
-    //             !ulong.TryParse(confirmation.Groups[2].Value, out var confirmationKey) ||
-    //             !int.TryParse(confirmation.Groups[3].Value, out var confirmationType) ||
-    //             !ulong.TryParse(confirmation.Groups[4].Value, out var confirmationCreator))
-    //             continue;
-    //
-    //         logger.LogDebug("Added confirmation, confirmationId: {confirmationId}", confirmationId);
-    //         confirmations.Add(new SdaConfirmation(confirmationId, confirmationKey, confirmationCreator,
-    //             confirmationType));
-    //     }
-    //
-    //     return confirmations.ToArray();
-    // }
-    //
-    // [GeneratedRegex(
-    //     "<div class=\"mobileconf_list_entry\" id=\"conf[0-9]+\" data-confid=\"(\\d+)\" data-key=\"(\\d+)\" data-type=\"(\\d+)\" data-creator=\"(\\d+)\"")]
-    // private static partial Regex ConfirmationsRegex();
-
     public static string GenerateConfirmationUrl(long timeStamp, string deviceId, string identitySecret,
         ulong steamId, string tag, ILogger logger)
     {

@@ -10,7 +10,7 @@ internal static class SteamGuardCodeGenerating
 {
     private static readonly byte[] SteamGuardCodeTranslations = "23456789BCDFGHJKMNPQRTVWXY"u8.ToArray();
 
-    internal static string? GenerateSteamGuardCode(string sharedSecret, long timestamp, ILogger logger)
+    internal static string GenerateSteamGuardCode(string sharedSecret, long timestamp, ILogger logger)
     {
         if (string.IsNullOrEmpty(sharedSecret))
             return "";
@@ -53,7 +53,6 @@ internal static class SteamGuardCodeGenerating
         catch (Exception e)
         {
             logger.LogError("Error compute sda code, exception: {exception}", e.ToJson());
-            return null;
         }
 
         return Encoding.UTF8.GetString(codeArray);

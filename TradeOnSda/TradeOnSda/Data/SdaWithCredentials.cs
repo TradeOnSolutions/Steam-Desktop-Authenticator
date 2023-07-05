@@ -126,7 +126,7 @@ public class SdaWithCredentials
         var maFile = JsonConvert.DeserializeObject<SteamMaFile>(maFileContent) ??
                      throw new Exception("SteamMaFile is null");
 
-        var steamTime = new SteamTime();
+        var steamTime = new SimpleSteamTime();
 
         var sda = new SteamGuardAccount(
             maFile,

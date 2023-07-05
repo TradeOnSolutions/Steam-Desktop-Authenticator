@@ -6,7 +6,7 @@ using SteamAuthentication.LogicModels;
 
 namespace TradeOnSda.Data;
 
-public class SteamTime : ISteamTime
+public class SimpleSteamTime : ISteamTime
 {
     public long GetCurrentSteamTime()
     {

@@ -1,0 +1,144 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:TradeOnSda.Views.AddGuardFirstStep">
+    <Design.PreviewWith>
+        <controls:AddGuardView />
+    </Design.PreviewWith>
+    <Design.DataContext>
+        <controls:AddGuardViewModel />
+    </Design.DataContext>
+
+    <Style Selector="controls|AddGuardView">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid>
+                    <Grid
+                        IsVisible="{Binding !IsAskStep}">
+                        <Grid
+                            IsVisible="{Binding IsFirstStep}"
+                            RowDefinitions="*, 30, 50">
+                            <StackPanel
+                                Grid.Row="0"
+                                Orientation="Vertical">
+                                <TextBox
+                                    Watermark="Login"
+                                    Text="{Binding Login}" />
+                                <TextBox
+                                    Watermark="Password"
+                                    Text="{Binding Password}" />
+                                <TextBox
+                                    Watermark="Proxy"
+                                    Text="{Binding ProxyString}" />
+                            </StackPanel>
+                            <Grid
+                                Grid.Row="1">
+
+                            </Grid>
+                            <Button
+                                Grid.Row="2"
+                                Classes="Footer"
+                                IsEnabled="{Binding IsEnabledLoginButton}"
+                                Command="{Binding TryLoginCommand}"
+                                Content="Try login" />
+                        </Grid>
+
+                        <Grid
+                            IsVisible="{Binding IsAddGuardStep}"
+                            RowDefinitions="*, 30, 50">
+                            <StackPanel
+                                Grid.Row="0"
+                                Orientation="Vertical">
+                                <TextBlock
+                                    Classes="Text">
+                                    <Run Text="Account name: " />
+                                    <Run Text="{Binding AccountName}" />
+                                </TextBlock>
+                                <TextBlock
+                                    Classes="Text">
+                                    <Run Text="Steam ID: " />
+                                    <Run Text="{Binding SteamIdString}" />
+                                </TextBlock>
+                            </StackPanel>
+                            <Grid
+                                Grid.Row="1">
+
+                            </Grid>
+                            <Button
+                                Grid.Row="2"
+                                Classes="Footer"
+                                Command="{Binding AddGuardCommand}"
+                                Content="Add guard" />
+                        </Grid>
+                        
+                        <Grid
+                            IsVisible="{Binding IsFinalizeStep}"
+                            RowDefinitions="*, 30, 50">
+                            <StackPanel
+                                Grid.Row="0"
+                                Orientation="Vertical">
+                                <TextBlock
+                                    Classes="Text"
+                                    Text="Guard added successfully" />
+                                <TextBox 
+                                    Watermark="SMS code"
+                                    Text="{Binding SmsCode}"></TextBox>
+                            </StackPanel>
+                            <Grid
+                                Grid.Row="1">
+
+                            </Grid>
+                            <Button
+                                Grid.Row="2"
+                                Classes="Footer"
+                                Command="{Binding FinalizeCommand}"
+                                Content="Finalize" />
+                        </Grid>
+                    </Grid>
+
+                    <Grid
+                        IsVisible="{Binding IsAskStep}"
+                        RowDefinitions="*, 30, 50">
+                        <StackPanel
+                            Grid.Row="0"
+                            Orientation="Vertical">
+                            <TextBlock
+                                Classes="Text"
+                                VerticalAlignment="Center"
+                                TextWrapping="Wrap"
+                                Text="{Binding AskStepTitle}" />
+                            <TextBox
+                                Text="{Binding AskStepAnswer}"
+                                Margin="1" />
+                        </StackPanel>
+                        <Grid
+                            Grid.Row="1">
+
+                        </Grid>
+                        <Button
+                            Grid.Row="2"
+                            Classes="Footer"
+                            Command="{Binding AskStepCommand}"
+                            Content="Confirm" />
+                    </Grid>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="TextBox">
+        <Setter Property="Margin" Value="1, 2, 1, 2" />
+    </Style>
+
+    <Style Selector="Button.Footer">
+        <Setter Property="Margin" Value="1" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    
+    <Style Selector="TextBlock.Text">
+        <Setter Property="Margin" Value="10, 5, 0, 5" />
+        <Setter Property="FontSize" Value="14" />
+    </Style>
+</Styles>

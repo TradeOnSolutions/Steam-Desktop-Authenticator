@@ -1,0 +1,34 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:addGuard="clr-namespace:TradeOnSda.Windows.AddGuard"
+        xmlns:addGuardFirstStep="clr-namespace:TradeOnSda.Views.AddGuardFirstStep"
+        mc:Ignorable="d" 
+        Width="400"
+        Height="650"
+        CanResize="False"
+        TransparencyLevelHint="AcrylicBlur"
+        Background="Transparent"
+        ExtendClientAreaToDecorationsHint="True"
+        d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="TradeOnSda.Windows.AddGuard.AddGuardWindow"
+        Title="AddGuardWindow">
+    <Design.DataContext>
+        <addGuard:AddGuardWindowViewModel />
+    </Design.DataContext>
+    <Grid>
+        <ExperimentalAcrylicBorder IsHitTestVisible="False">
+            <ExperimentalAcrylicBorder.Material>
+                <ExperimentalAcrylicMaterial
+                    BackgroundSource="Digger"
+                    TintColor="Black"
+                    TintOpacity="1"
+                    MaterialOpacity="0.65" />
+            </ExperimentalAcrylicBorder.Material>
+        </ExperimentalAcrylicBorder>
+        <addGuardFirstStep:AddGuardView
+            Margin="0, 20, 0, 0"
+            DataContext="{Binding AddGuardViewModel}" />
+    </Grid>
+</Window>

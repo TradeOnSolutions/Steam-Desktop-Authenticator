@@ -15,4 +15,7 @@ public static class ExtensionUtilities
 
         return json;
     }
+
+    public static string ToQuery(this Dictionary<string, string> queryParameters) =>
+        string.Join("&", queryParameters.Select(t => $"{WebUtility.UrlEncode(t.Key)}={WebUtility.UrlEncode(t.Value)}"));
 }

@@ -11,7 +11,6 @@ using SteamAuthentication.Models;
 using TradeOnSda.Data;
 using TradeOnSda.ViewModels;
 using TradeOnSda.Windows.NotificationMessage;
-using SteamTime = TradeOnSda.Data.SteamTime;
 
 namespace TradeOnSda.Views.ImportAccounts;
 
@@ -108,7 +107,7 @@ public class ImportAccountsViewModel : ViewModelBase
     {
         try
         {
-            var steamTime = new SteamTime();
+            var steamTime = new SimpleSteamTime();
 
             var maFileCredentials =
                 new MaFileCredentials(proxy, ProxyString, Password);

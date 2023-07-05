@@ -7,13 +7,13 @@ using Avalonia.Controls;
 using DynamicData.Binding;
 using Microsoft.Extensions.Logging.Abstractions;
 using ReactiveUI;
+using SteamAuthentication.Exceptions;
 using SteamAuthentication.LogicModels;
 using SteamAuthentication.Models;
 using TradeOnSda.Data;
 using TradeOnSda.ViewModels;
 using TradeOnSda.Windows.Confirmations;
 using TradeOnSda.Windows.NotificationMessage;
-using SteamTime = TradeOnSda.Data.SteamTime;
 
 namespace TradeOnSda.Views.Account;
 
@@ -189,9 +189,13 @@ public class AccountViewModel : ViewModelBase
 
                 window.Show();
             }
-            catch (Exception)
+            catch (RequestException e)
             {
-                await NotificationsMessageWindow.ShowWindow("Cannot load confirmations", OwnerWindow);
+                await NotificationsMessageWindow.ShowWindow($"Cannot load confirmations. {e}", OwnerWindow);
+            }
+            catch (Exception e)
+            {
+                await NotificationsMessageWindow.ShowWindow($"Cannot load confirmations, message: {e.Message}", OwnerWindow);
             }
         });
 
@@ -330,6 +334,10 @@ public class DefaultAccountViewCommandStrategy : IAccountViewCommandStrategy
 
             window.Show();
         }
+        catch (RequestException e)
+        {
+            await NotificationsMessageWindow.ShowWindow($"Cannot load confirmations. {e}", _accountViewModel.OwnerWindow);
+        }
         catch (Exception)
         {
             await NotificationsMessageWindow.ShowWindow("Cannot load confirmations", _accountViewModel.OwnerWindow);
@@ -387,7 +395,7 @@ public class EditProxyAccountViewCommandStrategy : ViewModelBase, IAccountViewCo
         _accountViewModel.SdaWithCredentials.Credentials.Proxy = proxy;
 
         var oldSda = _accountViewModel.SdaWithCredentials.SteamGuardAccount;
-        var newSteamTime = new SteamTime();
+        var newSteamTime = new SimpleSteamTime();
 
         _accountViewModel.SdaWithCredentials.SteamGuardAccount = new SteamGuardAccount(oldSda.MaFile,
             new SteamRestClient(proxy), newSteamTime, NullLogger<SteamGuardAccount>.Instance);

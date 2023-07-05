@@ -14,4 +14,14 @@ public class RequestException : Exception
         HttpStatusCode = httpStatusCode;
         Content = content;
     }
+
+    public override string ToString()
+    {
+        var httpStatusCode = "unknown";
+
+        if (HttpStatusCode != null)
+            httpStatusCode = HttpStatusCode.ToString();
+
+        return $"Message: {Message}, HttpStatusCode: {httpStatusCode}";
+    }
 }
