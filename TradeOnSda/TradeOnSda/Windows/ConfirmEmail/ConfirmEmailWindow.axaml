@@ -31,7 +31,7 @@
             </ExperimentalAcrylicBorder.Material>
         </ExperimentalAcrylicBorder>
         <Grid
-            Margin="0, 20, 0, 0"
+            Margin="0, 30, 0, 0"
             RowDefinitions="*, 50">
             <StackPanel
                 Grid.Row="0"

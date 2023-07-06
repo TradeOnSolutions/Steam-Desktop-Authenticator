@@ -28,7 +28,7 @@
             </ExperimentalAcrylicBorder.Material>
         </ExperimentalAcrylicBorder>
         <addGuardFirstStep:AddGuardView
-            Margin="0, 20, 0, 0"
+            Margin="0, 30, 0, 0"
             DataContext="{Binding AddGuardViewModel}" />
     </Grid>
 </Window>
