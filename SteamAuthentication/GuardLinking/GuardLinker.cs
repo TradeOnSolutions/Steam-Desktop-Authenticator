@@ -1,7 +1,6 @@
 using System.Net;
 using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
-using RestSharp;
 using SteamAuthentication.Exceptions;
 using SteamAuthentication.Logic;
 using SteamAuthentication.LogicModels;
@@ -154,9 +153,7 @@ public class GuardLinker
         var url =
             $"https://api.steampowered.com/ITwoFactorService/AddAuthenticator/v1/?access_token={pollResult.AccessToken}";
 
-        RestResponse response;
-
-        response = await _noMaFileRestClient.SendPostAsync(url, query.ToQuery(), cancellationToken);
+        var response = await _noMaFileRestClient.SendPostAsync(url, query.ToQuery(), cancellationToken);
 
         if (!response.IsSuccessful)
             throw new RequestException("Error while executing AddAuthenticator request", response.StatusCode, null,

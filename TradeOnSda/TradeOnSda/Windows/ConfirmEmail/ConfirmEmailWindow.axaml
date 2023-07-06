@@ -1,0 +1,56 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:confirmEmail="clr-namespace:TradeOnSda.Windows.ConfirmEmail"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="TradeOnSda.Windows.ConfirmEmail.ConfirmEmailWindow"
+        Title="ConfirmEmailWindow"
+        Width="400"
+        Height="300"
+        CanResize="False"
+        TransparencyLevelHint="AcrylicBlur"
+        Background="Transparent"
+        ExtendClientAreaToDecorationsHint="True">
+    <Design.DataContext>
+        <confirmEmail:ConfirmEmailWindowViewModel />
+    </Design.DataContext>
+    <Window.Styles>
+        <Style Selector="TextBlock">
+            <Setter Property="Margin" Value="10, 5, 0, 5" />
+        </Style>
+    </Window.Styles>
+    <Grid>
+        <ExperimentalAcrylicBorder IsHitTestVisible="False">
+            <ExperimentalAcrylicBorder.Material>
+                <ExperimentalAcrylicMaterial
+                    BackgroundSource="Digger"
+                    TintColor="Black"
+                    TintOpacity="1"
+                    MaterialOpacity="0.65" />
+            </ExperimentalAcrylicBorder.Material>
+        </ExperimentalAcrylicBorder>
+        <Grid
+            Margin="0, 20, 0, 0"
+            RowDefinitions="*, 50">
+            <StackPanel
+                Grid.Row="0"
+                Orientation="Vertical">
+                <TextBlock Text="Confirm the phone number linking in the email" />
+                <TextBlock>
+                    <Run Text="Email: " />
+                    <Run Text="{Binding Email}" />
+                </TextBlock>
+            </StackPanel>
+            <Button
+                Grid.Row="1"
+                Margin="2"
+                Content="Done"
+                VerticalAlignment="Stretch"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Command="{Binding DoneCommand}" />
+        </Grid>
+    </Grid>
+</Window>

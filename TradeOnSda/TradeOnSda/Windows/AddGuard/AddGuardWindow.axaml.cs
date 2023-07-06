@@ -18,7 +18,7 @@ public partial class AddGuardWindow : Window
         var dataContext = new AddGuardWindowViewModel(this, sdaManager);
         DataContext = dataContext;
 
-        Closing += (sender, args) =>
+        Closing += (_, _) =>
         {
             dataContext.AddGuardViewModel.WindowClose();
         };

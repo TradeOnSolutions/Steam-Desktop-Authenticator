@@ -6,4 +6,5 @@
     <SolidColorBrush x:Key="BackgroundDarkAccent" Color="#505050" />
     <SolidColorBrush x:Key="BackgroundDarkDarkAccent" Color="#404040" />
     <SolidColorBrush x:Key="BackgroundMiddleAccent" Color="#606060" />
+    <SolidColorBrush x:Key="TradeOnColor" Color="#40ee99" />
 </ResourceDictionary>

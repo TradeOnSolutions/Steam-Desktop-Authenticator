@@ -33,7 +33,7 @@
                             </Style>
                             <Style Selector="ListBoxItem:selected account|AccountView">
                                 <Setter Property="BorderThickness" Value="1" />
-                                <Setter Property="BorderBrush" Value="#40ee99" />
+                                <Setter Property="BorderBrush" Value="{DynamicResource TradeOnColor}" />
                             </Style>
                             <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
                                 <Setter Property="Background" Value="{DynamicResource BackgroundMiddleAccent}" />

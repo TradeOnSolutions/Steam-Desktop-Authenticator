@@ -14,6 +14,12 @@ public class UIPhoneProvider : IPhoneNumberProvider
         _viewModel = viewModel;
     }
     
-    public async Task<string> GetPhoneNumberAsync(CancellationToken cancellationToken) => 
-        await _viewModel.AskUserAsync("Enter a new phone number for steam account");
+    public async Task<string> GetPhoneNumberAsync(CancellationToken cancellationToken)
+    {
+        var phoneNumber = await _viewModel.AskUserAsync("Enter a new phone number for steam account", "+XXXXXXXXXXX");
+        
+        _viewModel.LastPhoneNumber = phoneNumber;
+
+        return phoneNumber;
+    }
 }

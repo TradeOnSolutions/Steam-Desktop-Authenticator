@@ -13,6 +13,8 @@ using SteamAuthentication.Models;
 using SteamKit2.Authentication;
 using TradeOnSda.Data;
 using TradeOnSda.ViewModels;
+using TradeOnSda.Windows.ConfirmEmail;
+using TradeOnSda.Windows.GuardAdded;
 using TradeOnSda.Windows.NotificationMessage;
 
 namespace TradeOnSda.Views.AddGuardFirstStep;
@@ -66,6 +68,12 @@ public class AddGuardViewModel : ViewModelBase
 
     #region AskStep
 
+    public string? TextBoxWatermark
+    {
+        get => _textBoxWatermark;
+        set => RaiseAndSetIfPropertyChanged(ref _textBoxWatermark, value);
+    }
+
     public bool IsAskStep
     {
         get => _isAskStep;
@@ -113,6 +121,18 @@ public class AddGuardViewModel : ViewModelBase
         set => RaiseAndSetIfPropertyChanged(ref _isAddGuardStep, value);
     }
 
+    public bool IsSecondTry
+    {
+        get => _isSecondTry;
+        set => RaiseAndSetIfPropertyChanged(ref _isSecondTry, value);
+    }
+
+    public string LastPhoneNumber
+    {
+        get => _lastPhoneNumber;
+        set => RaiseAndSetIfPropertyChanged(ref _lastPhoneNumber, value);
+    }
+
     public ICommand AddGuardCommand { get; }
 
     private AuthPollResult? _pollResult;
@@ -142,6 +162,9 @@ public class AddGuardViewModel : ViewModelBase
 
     private SteamMaFile? _maFile;
     private bool _isFinalizeStep;
+    private string? _textBoxWatermark;
+    private bool _isSecondTry;
+    private string _lastPhoneNumber;
 
     #endregion
 
@@ -157,6 +180,7 @@ public class AddGuardViewModel : ViewModelBase
         _isEnabledLoginButton = true;
         _isFirstStep = true;
         _smsCode = "";
+        _lastPhoneNumber = "";
 
         TryLoginCommand = ReactiveCommand.CreateFromTask(async () =>
         {
@@ -268,37 +292,32 @@ public class AddGuardViewModel : ViewModelBase
             {
                 if (ex.Email != null)
                 {
-                    var title = $"Please, confirm action on email ({ex.Email}) and then close window";
-
-                    await NotificationsMessageWindow.ShowWindow(
-                        title,
-                        ownerWindow);
+                    await ConfirmEmailWindow.ShowWindow(ex.Email, ownerWindow);
 
                     try
                     {
                         await _guardLinker!.ConfirmPhoneNumberAsync(_pollResult!.AccessToken);
+                        
+                        IsSecondTry = true;
                     }
                     catch (RequestException e)
                     {
                         await NotificationsMessageWindow.ShowWindow(
-                            $"Error while adding guard, code: {e.HttpStatusCode}, message: {e.Content}",
+                            $"Error while confirm phone number, code: {e.HttpStatusCode}, message: {e.Content}",
                             ownerWindow);
                         return;
                     }
                     catch (Exception e)
                     {
                         await NotificationsMessageWindow.ShowWindow(
-                            $"Error while adding guard, message: {e.Message}", ownerWindow);
+                            $"Error while confirm phone number, message: {e.Message}", ownerWindow);
                         return;
                     }
-
-                    await NotificationsMessageWindow.ShowWindow("Now you can add guard", ownerWindow);
+                    
                     return;
                 }
 
-                await NotificationsMessageWindow.ShowWindow(
-                    "Phone number added, now you can add guard",
-                    ownerWindow);
+                IsSecondTry = true;
             }
             catch (RequestException e)
             {
@@ -323,14 +342,32 @@ public class AddGuardViewModel : ViewModelBase
                 return;
             }
 
-            await _guardLinker!.FinalizeAddGuardAsync(SmsCode, _maFile!, _pollResult!);
+            try
+            {
+                await _guardLinker!.FinalizeAddGuardAsync(SmsCode, _maFile!, _pollResult!);
+            }
+            catch (RequestException e)
+            {
+                await NotificationsMessageWindow.ShowWindow(
+                    $"Error while finializing guard, message: {e.Content}",
+                    ownerWindow);
+            }
+            catch (Exception e)
+            {
+                await NotificationsMessageWindow.ShowWindow(
+                    $"Error while finializing guard, message: {e.Message}", ownerWindow);
+            }
 
             var steamGuardAccount = new SteamGuardAccount(_maFile!, new SteamRestClient(_proxy), new SimpleSteamTime(),
                 NullLogger<SteamGuardAccount>.Instance);
 
             await steamGuardAccount.TryLoginAgainAsync(_login, _password);
 
-            await sdaManager.AddAccountAsync(steamGuardAccount, new MaFileCredentials(_proxy, _proxyString, _password),
+            var credentials = new MaFileCredentials(_proxy, _proxyString, _password);
+
+            await GuardAddedWindow.ShowWindow(steamGuardAccount, credentials, ownerWindow);
+            
+            await sdaManager.AddAccountAsync(steamGuardAccount, credentials,
                 new SdaSettings(sdaManager.GlobalSettings.DefaultEnabledAutoConfirm, TimeSpan.FromMinutes(60)));
             
             ownerWindow.Close();
@@ -351,14 +388,16 @@ public class AddGuardViewModel : ViewModelBase
         _steamIdString = null!;
         _accountName = null!;
         _smsCode = null!;
+        _lastPhoneNumber = null!;
         FinalizeCommand = null!;
     }
 
     public void WindowClose() => _askStepTaskCompletionSource?.TrySetException(new UserCancelException());
 
-    public Task<string> AskUserAsync(string title)
+    public Task<string> AskUserAsync(string title, string? watermark = null)
     {
         AskStepTitle = title;
+        TextBoxWatermark = watermark;
         AskStepAnswer = "";
         IsAskStep = true;
 

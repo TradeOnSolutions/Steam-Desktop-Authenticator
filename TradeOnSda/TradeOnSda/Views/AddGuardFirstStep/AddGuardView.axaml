@@ -27,7 +27,7 @@
                                     Watermark="Password"
                                     Text="{Binding Password}" />
                                 <TextBox
-                                    Watermark="Proxy"
+                                    Watermark="Proxy (ip:port:login:password, http or https) not required"
                                     Text="{Binding ProxyString}" />
                             </StackPanel>
                             <Grid
@@ -58,6 +58,12 @@
                                     <Run Text="Steam ID: " />
                                     <Run Text="{Binding SteamIdString}" />
                                 </TextBlock>
+                                <TextBlock
+                                    Classes="Text"
+                                    IsVisible="{Binding IsSecondTry}">
+                                    <Run Text="Phone number: " />
+                                    <Run Text="{Binding LastPhoneNumber}" />
+                                </TextBlock>
                             </StackPanel>
                             <Grid
                                 Grid.Row="1">
@@ -66,10 +72,11 @@
                             <Button
                                 Grid.Row="2"
                                 Classes="Footer"
+                                Classes.Accent="{Binding IsSecondTry}"
                                 Command="{Binding AddGuardCommand}"
                                 Content="Add guard" />
                         </Grid>
-                        
+
                         <Grid
                             IsVisible="{Binding IsFinalizeStep}"
                             RowDefinitions="*, 30, 50">
@@ -78,10 +85,11 @@
                                 Orientation="Vertical">
                                 <TextBlock
                                     Classes="Text"
-                                    Text="Guard added successfully" />
-                                <TextBox 
+                                    Text="Enter SMS code" />
+                                <TextBox
                                     Watermark="SMS code"
-                                    Text="{Binding SmsCode}"></TextBox>
+                                    Text="{Binding SmsCode}">
+                                </TextBox>
                             </StackPanel>
                             <Grid
                                 Grid.Row="1">
@@ -91,7 +99,7 @@
                                 Grid.Row="2"
                                 Classes="Footer"
                                 Command="{Binding FinalizeCommand}"
-                                Content="Finalize" />
+                                Content="Check code" />
                         </Grid>
                     </Grid>
 
@@ -107,6 +115,7 @@
                                 TextWrapping="Wrap"
                                 Text="{Binding AskStepTitle}" />
                             <TextBox
+                                Watermark="{Binding TextBoxWatermark}"
                                 Text="{Binding AskStepAnswer}"
                                 Margin="1" />
                         </StackPanel>
@@ -130,15 +139,19 @@
     </Style>
 
     <Style Selector="Button.Footer">
-        <Setter Property="Margin" Value="1" />
+        <Setter Property="Margin" Value="2, 0, 2, 2" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
-    
+
     <Style Selector="TextBlock.Text">
         <Setter Property="Margin" Value="10, 5, 0, 5" />
         <Setter Property="FontSize" Value="14" />
+    </Style>
+    
+    <Style Selector="Button.Accent">
+        <Setter Property="BorderBrush" Value="{DynamicResource TradeOnColor}" />
     </Style>
 </Styles>
