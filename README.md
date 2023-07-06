@@ -30,10 +30,10 @@ Now works on Windows, in the future on mac and linux.
 ##
 06.07.2023 - The following features we added
 - Added ability to bind Guard account
--Fixed Auto-Confirm, more checks, more reliability.
--Added more error messages on all program actions
--Updated bottom bar, added program version and "About Us" button
--Added support for maFiles from SDA
+- Fixed Auto-Confirm, more checks, more reliability.
+- Added more error messages on all program actions
+- Updated bottom bar, added program version and "About Us" button
+- Added support for maFiles from SDA
 
 
 ##  How to update?
