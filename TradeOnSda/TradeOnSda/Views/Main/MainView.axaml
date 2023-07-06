@@ -23,7 +23,7 @@
             <ControlTemplate>
                 <Grid
                     Margin="0, 20, 0, 0"
-                    RowDefinitions="40, 50, *">
+                    RowDefinitions="40, 50, *, 30">
                     <Grid Grid.Row="0" ColumnDefinitions="*, *, *">
                         <Button Grid.Column="0" Classes="TopButton" Content="Import account"
                                 Command="{Binding ImportAccountsCommand}" />
@@ -85,9 +85,36 @@
                             </Grid>
                         </Grid>
                     </Grid>
+                    <Grid
+                        Grid.Row="3"
+                        Background="{DynamicResource BackgroundAccent}">
+                        <Button
+                            Classes="Url"
+                            HorizontalAlignment="Left"
+                            Margin="10, 2, 0, 2"
+                            Content="About TradeOn"
+                            Command="{Binding AboutUsCommand}" />
+                        <Button
+                            Classes="Url"
+                            HorizontalAlignment="Right"
+                            Margin="0, 2, 10, 2"
+                            Content="{Binding VersionString}"
+                            Command="{Binding VersionCommand}" />
+                    </Grid>
                 </Grid>
             </ControlTemplate>
         </Setter>
+    </Style>
+
+    <Style Selector="Button.Url">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="CornerRadius" Value="5" />
+        <Setter Property="Foreground" Value="{DynamicResource TradeOnColor}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="5, 0, 5, 0" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
     </Style>
 
     <Style Selector="Button.Default">

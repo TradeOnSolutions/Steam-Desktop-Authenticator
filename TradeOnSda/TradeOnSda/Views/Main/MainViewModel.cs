@@ -1,6 +1,8 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reactive.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -54,6 +56,12 @@ public class MainViewModel : ViewModelBase
     public ICommand AddGuardCommand { get; }
 
     public SdaManager SdaManager { get; }
+    
+    public string VersionString { get; }
+    
+    public ICommand AboutUsCommand { get; }
+    
+    public ICommand VersionCommand { get; }
 
     public bool IsAccountSelected
     {
@@ -82,6 +90,7 @@ public class MainViewModel : ViewModelBase
         SearchText = string.Empty;
         ProgressValue = 0d;
         SdaManager = sdaManager;
+        VersionString = GetUserFriendlyApplicationVersion();
         
         AccountListViewModel = new AccountListViewModel(SdaManager, _ownerWindow);
 
@@ -238,6 +247,16 @@ public class MainViewModel : ViewModelBase
         {
             await AddGuardWindow.ShowWindow(sdaManager, ownerWindow);
         });
+
+        AboutUsCommand = ReactiveCommand.Create(() =>
+        {
+            Process.Start(new ProcessStartInfo() { FileName = "https://linktr.ee/tradeon", UseShellExecute = true });
+        });
+
+        VersionCommand = ReactiveCommand.Create(() =>
+        {
+            Process.Start(new ProcessStartInfo() { FileName = "https://github.com/TradeOnSolutions/Steam-Desktop-Authenticator/releases", UseShellExecute = true });
+        });
     }
 
     public MainViewModel()
@@ -252,5 +271,18 @@ public class MainViewModel : ViewModelBase
         ReLoginCommand = null!;
         CopySdaCodeCommand = null!;
         AddGuardCommand = null!;
+        VersionString = null!;
+        AboutUsCommand = null!;
+        VersionCommand = null!;
+    }
+
+    public static string GetUserFriendlyApplicationVersion()
+    {
+        var version = Assembly.GetEntryAssembly()!.GetName().Version!;
+
+        var major = version.Major;
+        var minor = version.Minor;
+
+        return $"v. {major}.{minor}";
     }
 }
