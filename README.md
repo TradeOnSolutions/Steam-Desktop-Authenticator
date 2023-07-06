@@ -3,7 +3,7 @@
 Multi-platform desktop version of the authenticator, replacing the mobile app steam. Developed by the TradeOn team on a volunteer basis. You can integrate maFile from any SDA version and TradeOnSDA will work with it.
 ## Disclaimer: We are in no way affiliated with Steam and this is not an official development. We do not provide personal support for TradeOnSDA and everything you see is done on a volunteer basis. Our development is open source and you can make sure that we do not receive any data from your accounts, so we are not responsible for any problems with your accounts that were added. Our application was created for experienced users who understand exactly why they need the desktop version of the authenticator
 
-# [Click to download](https://github.com/TradeOnSolutions/Steam-Desktop-Authenticator/releases/download/release_1_3/TradeOn.SDA.v_1_3.zip)
+# [Click to download](https://github.com/TradeOnSolutions/Steam-Desktop-Authenticator/releases/download/release_1_4/TradeOn.SDA.v_1_4.zip)
 Now works on Windows, in the future on mac and linux.
 
 ![enter image description here](https://sun9-68.userapi.com/impg/LvYPbDvlNLgYQAHeBzy79WT2Ep9cEO3EZFWDPQ/lNxauA6UsgU.jpg?size=807x495&quality=96&sign=dca595a13a43240080942e3c61b5fee7&type=album)
