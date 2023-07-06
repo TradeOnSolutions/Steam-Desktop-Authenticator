@@ -7,6 +7,7 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Humanizer;
 using ReactiveUI;
+using SteamAuthentication.Exceptions;
 using SteamAuthentication.Logic;
 using SteamAuthentication.LogicModels;
 using SteamAuthentication.Models;
@@ -71,9 +72,14 @@ public class ConfirmationItemViewModel : ViewModelBase
                 
                 confirmationsViewModel.RemoveViewModel(this);
             }
-            catch (Exception)
+            catch (RequestException e)
             {
-                await NotificationsMessageWindow.ShowWindow("Error while accepting confirmation", ownerWindow);
+                await NotificationsMessageWindow.ShowWindow(
+                    $"{e.Message}, statusCode: {e.HttpStatusCode}, Content: {e.Content}", ownerWindow);
+            }
+            catch (Exception e)
+            {
+                await NotificationsMessageWindow.ShowWindow(e.Message, ownerWindow);
             }
         });
 
@@ -85,9 +91,14 @@ public class ConfirmationItemViewModel : ViewModelBase
                 
                 confirmationsViewModel.RemoveViewModel(this);
             }
-            catch (Exception)
+            catch (RequestException e)
             {
-                await NotificationsMessageWindow.ShowWindow("Error while denying confirmation", ownerWindow);
+                await NotificationsMessageWindow.ShowWindow(
+                    $"{e.Message}, statusCode: {e.HttpStatusCode}, Content: {e.Content}", ownerWindow);
+            }
+            catch (Exception e)
+            {
+                await NotificationsMessageWindow.ShowWindow(e.Message, ownerWindow);
             }
         });
     }
