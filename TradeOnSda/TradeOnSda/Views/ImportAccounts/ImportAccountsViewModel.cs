@@ -61,7 +61,7 @@ public class ImportAccountsViewModel : ViewModelBase
         Window ownerWindow)
     {
         Login = maFile.AccountName;
-        SteamId = maFile.Session.SteamId.ToString();
+        SteamId = maFile.Session?.SteamId.ToString() ?? "unknown";
         MaFileName = maFileName;
         _maFile = maFile;
         _sdaManager = sdaManager;

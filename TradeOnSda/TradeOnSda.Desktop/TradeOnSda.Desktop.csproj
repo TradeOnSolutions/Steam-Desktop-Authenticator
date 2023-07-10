@@ -6,15 +6,15 @@
         <TargetFramework>net7.0</TargetFramework>
         <RuntimeIdentifiers>osx-x64</RuntimeIdentifiers>
         <Nullable>enable</Nullable>
-        <Version>1.4.0.0</Version>
+        <Version>1.5.0.0</Version>
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <ApplicationIcon>logo.ico</ApplicationIcon>
         <IsPackable>false</IsPackable>
         <Authors />
         <Company>TradeOn</Company>
         <Product>TradeOnSda</Product>
-        <AssemblyVersion>1.4.0.0</AssemblyVersion>
-        <FileVersion>1.4.0.0</FileVersion>
+        <AssemblyVersion>1.5.0.0</AssemblyVersion>
+        <FileVersion>1.5.0.0</FileVersion>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -40,8 +40,8 @@
         <CFBundleName>TradeOn SDA</CFBundleName> <!-- Also defines .app file name -->
         <CFBundleDisplayName>TradeOn SDA</CFBundleDisplayName>
         <CFBundleIdentifier>com.TradeOn</CFBundleIdentifier>
-        <CFBundleVersion>1.4.0</CFBundleVersion>
-        <CFBundleShortVersionString>1.4.0</CFBundleShortVersionString>
+        <CFBundleVersion>1.5.0</CFBundleVersion>
+        <CFBundleShortVersionString>1.5.0</CFBundleShortVersionString>
         <CFBundlePackageType>APPL</CFBundlePackageType>
         <CFBundleSignature>com.TradeOn.TradeOnSda</CFBundleSignature>
         <CFBundleExecutable>TradeOnSda.Desktop</CFBundleExecutable>

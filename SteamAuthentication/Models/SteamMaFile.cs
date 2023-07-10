@@ -40,8 +40,8 @@ public class SteamMaFile
     [JsonProperty("fully_enrolled")]
     public bool FullyEnrolled { get; private set; }
 
-    [JsonProperty("Session", Required = Required.Always)]
-    public SteamSessionData Session { get; private set; } = null!;
+    [JsonProperty("Session")]
+    public SteamSessionData? Session { get; private set; } = null!;
 
     [JsonConstructor]
     private SteamMaFile()

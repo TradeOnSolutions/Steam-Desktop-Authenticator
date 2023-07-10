@@ -561,7 +561,8 @@ public class SteamGuardAccount
         _logger.LogDebug("Login message: {message}", login.Message);
 
         if (!login.Success)
-            return login.Message;
+            throw new RequestException("Error while executing login request, response is not success.",
+                loginResponse.StatusCode, loginContent, null);
 
         _logger.LogDebug("Successful login request, rewrite maFile data");
 
