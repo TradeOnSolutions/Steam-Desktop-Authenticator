@@ -38,15 +38,14 @@
     </ItemGroup>
 
     <PropertyGroup>
-        <CFBundleName>TradeOn SDA</CFBundleName> <!-- Also defines .app file name -->
+        <CFBundleName>TradeOn SDA</CFBundleName>
         <CFBundleDisplayName>TradeOn SDA</CFBundleDisplayName>
-        <CFBundleIdentifier>com.TradeOn</CFBundleIdentifier>
+        <CFBundleIdentifier>com.TradeOn.Sda</CFBundleIdentifier>
         <CFBundleVersion>1.6.0</CFBundleVersion>
         <CFBundleShortVersionString>1.6.0</CFBundleShortVersionString>
         <CFBundlePackageType>APPL</CFBundlePackageType>
-        <CFBundleSignature>com.TradeOn.TradeOnSda</CFBundleSignature>
+        <CFBundleSignature>tsda</CFBundleSignature>
         <CFBundleExecutable>TradeOnSda.Desktop</CFBundleExecutable>
-        <CFBundleIconFile>TradeOnLogo.icns</CFBundleIconFile> <!-- Will be copied from output directory -->
         <NSPrincipalClass>NSApplication</NSPrincipalClass>
         <NSHighResolutionCapable>true</NSHighResolutionCapable>
         <NSRequiresAquaSystemAppearance>true</NSRequiresAquaSystemAppearance>
