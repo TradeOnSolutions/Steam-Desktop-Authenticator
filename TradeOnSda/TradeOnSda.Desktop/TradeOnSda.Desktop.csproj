@@ -33,6 +33,7 @@
 
     <ItemGroup>
       <None Update="TradeOnLogo.icns">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
     </ItemGroup>
 
