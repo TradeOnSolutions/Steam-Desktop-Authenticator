@@ -45,6 +45,7 @@
         <CFBundleShortVersionString>1.6.0</CFBundleShortVersionString>
         <CFBundlePackageType>APPL</CFBundlePackageType>
         <CFBundleSignature>tsda</CFBundleSignature>
+        <CFBundleIconFile>TradeOnLogo.icns</CFBundleIconFile>
         <CFBundleExecutable>TradeOnSda.Desktop</CFBundleExecutable>
         <NSPrincipalClass>NSApplication</NSPrincipalClass>
         <NSHighResolutionCapable>true</NSHighResolutionCapable>
