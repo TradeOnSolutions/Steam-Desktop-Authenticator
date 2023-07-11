@@ -18,6 +18,15 @@
     <controls:Design.DataContext>
         <main1:MainWindowViewModel />
     </controls:Design.DataContext>
+    
+    <Window.Styles>
+        <Style Selector="Grid.MacHeader">
+            <Setter Property="HorizontalAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Grid.WindowsHeader">
+            <Setter Property="HorizontalAlignment" Value="Left" />
+        </Style>
+    </Window.Styles>
 
     <Grid>
         <controls:ExperimentalAcrylicBorder IsHitTestVisible="False">
@@ -30,15 +39,17 @@
             </controls:ExperimentalAcrylicBorder.Material>
         </controls:ExperimentalAcrylicBorder>
         <Grid
+            Classes.MacHeader="{Binding IsMac}"
+            Classes.WindowsHeader="{Binding !IsMac}"
             Height="30"
-            VerticalAlignment="Top"
-            HorizontalAlignment="Left">
+            VerticalAlignment="Top">
             <StackPanel Orientation="Horizontal">
-                <Image 
-                    Margin="5, 5, 0, 0"
+                <Image
+                    IsVisible="{Binding !IsMac}"
+                    Margin="5, 5, 5, 0"
                     Source="{Binding Logo}" />
                 <TextBlock Text="TradeOn SDA"
-                           Margin="10, 0, 0, 0"
+                           Margin="10, 0, 10, 0"
                            VerticalAlignment="Center" />
             </StackPanel>
         </Grid>

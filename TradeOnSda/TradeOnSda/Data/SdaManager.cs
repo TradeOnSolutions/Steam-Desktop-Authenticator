@@ -2,9 +2,11 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SteamAuthentication.LogicModels;
+using TradeOnSda.Data.FileSystemAdapters;
 
 namespace TradeOnSda.Data;
 
@@ -14,6 +16,8 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
     private const string GlobalSettingsFileName = "globalSettings.json";
 
     public GlobalSettings GlobalSettings { get; private set; }
+
+    private readonly FileSystemAdapterProvider _fileSystemAdapterProvider;
 
     public static async Task<SdaManager> CreateSdaManagerAsync()
     {
@@ -27,6 +31,8 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
     private SdaManager()
     {
         GlobalSettings = new GlobalSettings();
+
+        _fileSystemAdapterProvider = new FileSystemAdapterProvider();
 
         Task.Run(CheckProxiesWorkingLoop);
     }
@@ -43,8 +49,8 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
 
                 var withoutProxySdas = Items
                     .Where(t => t.Credentials.Proxy == null);
-                
-                foreach (var item in withoutProxySdas) 
+
+                foreach (var item in withoutProxySdas)
                     item.SdaState.ProxyState = ProxyState.Unknown;
 
                 foreach (var sda in sdas)
@@ -54,7 +60,7 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
                         Debug.Assert(sda.Credentials.Proxy != null, "sda.Credentials.Proxy != null");
 
                         var result = await ProxyChecking.CheckProxyAsync(sda.Credentials.Proxy);
-                        
+
                         sda.SdaState.ProxyState = result ? ProxyState.Ok : ProxyState.Error;
                     }
                     catch (Exception)
@@ -70,7 +76,7 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
                 // ignored
             }
         }
-    
+
         // ReSharper disable once FunctionNeverReturns
     }
 
@@ -84,10 +90,11 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
         {
             try
             {
-                if (!File.Exists(GlobalSettingsFileName))
+                if (!_fileSystemAdapterProvider.GetAdapter().ExistsFile(GlobalSettingsFileName))
                     return;
 
-                var settingsContent = await File.ReadAllTextAsync(GlobalSettingsFileName);
+                var settingsContent = await _fileSystemAdapterProvider.GetAdapter()
+                    .ReadFileAsync(GlobalSettingsFileName, CancellationToken.None);
 
                 var globalSettings = JsonConvert.DeserializeObject<GlobalSettings>(settingsContent)
                                      ?? throw new Exception();
@@ -104,10 +111,11 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
         {
             try
             {
-                if (!File.Exists(SettingsFileName))
+                if (!_fileSystemAdapterProvider.GetAdapter().ExistsFile(SettingsFileName))
                     return;
 
-                var settingsContent = await File.ReadAllTextAsync(SettingsFileName);
+                var settingsContent = await _fileSystemAdapterProvider.GetAdapter()
+                    .ReadFileAsync(SettingsFileName, CancellationToken.None);
 
                 var savedSdaDtos = JsonConvert.DeserializeObject<SavedSdaDto[]>(settingsContent)
                                    ?? throw new Exception();
@@ -158,28 +166,25 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
             return t.ToDto();
         });
 
-        await File.WriteAllTextAsync(SettingsFileName, JsonConvert.SerializeObject(settings));
+        await _fileSystemAdapterProvider.GetAdapter().WriteFileAsync(SettingsFileName,
+            JsonConvert.SerializeObject(settings), CancellationToken.None);
     }
 
     public async Task SaveGlobalSettingsAsync()
     {
         var globalSettings = JsonConvert.SerializeObject(GlobalSettings);
 
-        await File.WriteAllTextAsync(GlobalSettingsFileName, globalSettings);
+        await _fileSystemAdapterProvider.GetAdapter()
+            .WriteFileAsync(GlobalSettingsFileName, globalSettings, CancellationToken.None);
     }
 
     public async Task SaveMaFile(SteamGuardAccount sda)
     {
         var maFileContent = sda.MaFile.ConvertToJson();
 
-        var directoryPath = Path.Combine(Directory.GetCurrentDirectory(),
-            "MaFiles");
+        var maFilePath = Path.Combine("MaFiles",
+            $"{sda.MaFile.Session?.SteamId}.maFile");
 
-        Directory.CreateDirectory(directoryPath);
-
-        var maFilePath = Path.Combine(directoryPath,
-            $"{sda.MaFile.Session.SteamId}.maFile");
-
-        await File.WriteAllTextAsync(maFilePath, maFileContent);
+        await _fileSystemAdapterProvider.GetAdapter().WriteFileAsync(maFilePath, maFileContent, CancellationToken.None);
     }
 }

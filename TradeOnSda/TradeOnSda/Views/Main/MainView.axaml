@@ -111,6 +111,7 @@
         <Setter Property="CornerRadius" Value="5" />
         <Setter Property="Foreground" Value="{DynamicResource TradeOnColor}" />
         <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="FontWeight" Value="Thin" />
         <Setter Property="Padding" Value="5, 0, 5, 0" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />

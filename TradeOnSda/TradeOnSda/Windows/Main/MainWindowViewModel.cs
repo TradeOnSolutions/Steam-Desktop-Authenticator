@@ -15,12 +15,16 @@ public class MainWindowViewModel : ViewModelBase
 
     public IImage Logo { get; }
     
+    public bool IsMac { get; }
+    
     public MainWindowViewModel(Window ownerWindow, SdaManager sdaManager)
     {
         MainViewModel = new MainViewModel(ownerWindow, sdaManager);
 
         var logoSteam = AssetLoader.Open(new Uri("avares://TradeOnSda/Assets/logo.png"));
         Logo = new Bitmap(logoSteam);
+
+        IsMac = OperatingSystem.IsMacOS();
     }
 
     public MainWindowViewModel()
