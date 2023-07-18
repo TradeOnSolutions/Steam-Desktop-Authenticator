@@ -13,8 +13,8 @@ public class OffersHistoryResponse
 {
     [JsonProperty("more")] public bool More { get; set; }
 
-    [JsonProperty("trades", Required = Required.Always)]
-    public OfferHistory[] Trades { get; set; } = null!;
+    [JsonProperty("trades")]
+    public OfferHistory[]? Trades { get; set; } = null!;
 }
 
 public class OfferHistory
