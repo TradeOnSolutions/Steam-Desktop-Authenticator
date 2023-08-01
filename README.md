@@ -1,5 +1,6 @@
 # TradeOnSDA
 
+
 Multi-platform desktop version of the authenticator, replacing the mobile app steam. Developed by the TradeOn team on a volunteer basis. You can integrate maFile from any SDA version and TradeOnSDA will work with it.
 ## Disclaimer: We are in no way affiliated with Steam and this is not an official development. We do not provide personal support for TradeOnSDA and everything you see is done on a volunteer basis. Our development is open source and you can make sure that we do not receive any data from your accounts, so we are not responsible for any problems with your accounts that were added. Our application was created for experienced users who understand exactly why they need the desktop version of the authenticator
 
@@ -7,6 +8,7 @@ Multi-platform desktop version of the authenticator, replacing the mobile app st
 Now works on Windows, in the future on mac and linux.
 
 ![enter image description here](https://sun9-68.userapi.com/impg/LvYPbDvlNLgYQAHeBzy79WT2Ep9cEO3EZFWDPQ/lNxauA6UsgU.jpg?size=807x495&quality=96&sign=dca595a13a43240080942e3c61b5fee7&type=album)
+
 ##  Update list:
 23.06.2023 - TradeOnSda 1.1 - added auto-confirmations of exchanges and expositions to the trading floor.
 ##
@@ -101,3 +103,16 @@ Here you will see our upcoming upgrade plans.
 ## Possible problems and solutions
 
 This branch will continue to grow, depending on users' questions.
+
+## Donation
+####
+![crypto](https://github.com/Ximi1970/Donate/blob/master/paypal_btn_donateCC_LG_1.gif)
+
+[yoomoney](https://yoomoney.ru/to/410017355954352)
+
+If you would like to support our project, we have attached a crypto wallet
+
+```sh
+0x5333544a76a1Eb9b11Dcf7aB138d4AF11C1A954F
+```
+##
