@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -22,6 +23,15 @@ public partial class NotificationsMessageWindow : Window
         AvaloniaXamlLoader.Load(this);
     }
 
-    public static async Task ShowWindow(string message, Window owner) => 
-        await new NotificationsMessageWindow(message).ShowDialog(owner);
+    public static async Task ShowWindow(string message, Window owner)
+    {
+        try
+        {
+            await new NotificationsMessageWindow(message).ShowDialog(owner);
+        }
+        catch (Exception)
+        {
+            // ignored
+        }
+    }
 }

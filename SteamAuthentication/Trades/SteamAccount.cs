@@ -361,7 +361,7 @@ public class SteamAccount
         using var _ = _logger.CreateScopeForMethod(this);
 
         const string method = "accept";
-
+        
         await ProcessTradeOfferAsync(tradeOfferId, method, cancellationToken);
     }
 
