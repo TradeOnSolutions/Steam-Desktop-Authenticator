@@ -26,7 +26,6 @@ public static class GZipDecoding
         }
         catch (Exception e)
         {
-            logger.LogError("Error decode gzip format, {exception}", e.ToString());
             return Encoding.UTF8.GetString(bytes);
         }
     }

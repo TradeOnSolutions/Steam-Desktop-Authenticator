@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
         <Title>SteamAuthentication</Title>
         <Description>TradeOn private SDA</Description>
-        <Version>1.0.9</Version>
+        <Version>1.0.10</Version>
     </PropertyGroup>
 
     <ItemGroup>

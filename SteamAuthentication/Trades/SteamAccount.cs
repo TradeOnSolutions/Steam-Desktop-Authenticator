@@ -45,7 +45,7 @@ public class SteamAccount
         var inventory = await GetInventoryInternalAsync(
             appId,
             contextId,
-            SteamGuardAccount.MaFile.Session.SteamId,
+            SteamGuardAccount.MaFile.Session!.SteamId,
             cancellationToken);
 
         return inventory;
@@ -111,7 +111,7 @@ public class SteamAccount
             ("X-Requested-With", "XMLHttpRequest")
         };
 
-        var cookies = SteamGuardAccount.MaFile.Session.CreateCookies();
+        var cookies = SteamGuardAccount.MaFile.Session!.CreateCookies();
         cookies.Add(new Cookie("webTradeEligibility",
                 $"%7B%22allowed%22%3A1%2C%22allowed_at_time%22%3A0%2C%22steamguard_required_days%22%3A15%2C%22new_device_cooldown_days%22%3A0%2C%22time_checked%22%3A{GetTimeStampForInventoryRequest()}%7D")
             { Domain = "steamcommunity.com" });
@@ -297,7 +297,7 @@ public class SteamAccount
         try
         {
             response = await SteamGuardAccount.RestClient.ExecuteGetRequestAsync(url,
-                SteamGuardAccount.MaFile.Session.CreateCookies(),
+                SteamGuardAccount.MaFile.Session!.CreateCookies(),
                 cancellationToken);
         }
         catch (OperationCanceledException)
@@ -400,7 +400,7 @@ public class SteamAccount
 
         var data = new List<(string key, string value)>
         {
-            ("sessionid", SteamGuardAccount.MaFile.Session.SessionId),
+            ("sessionid", SteamGuardAccount.MaFile.Session!.SessionId!),
             ("tradeofferid", tradeOfferId.ToString()),
             ("serverid", "1")
         };
@@ -483,7 +483,7 @@ public class SteamAccount
 
         var data = new List<(string key, string value)>
         {
-            ("sessionid", SteamGuardAccount.MaFile.Session.SessionId),
+            ("sessionid", SteamGuardAccount.MaFile.Session!.SessionId!),
             ("serverid", "1"),
             ("partner", partnerId.ToString()),
             ("tradeoffermessage", message),
@@ -575,7 +575,7 @@ public class SteamAccount
 
         var data = new Dictionary<string, string>
         {
-            { "sessionid", SteamGuardAccount.MaFile.Session.SessionId },
+            { "sessionid", SteamGuardAccount.MaFile.Session!.SessionId! },
             { "appid", appId.ToString() },
             { "currency", currency.ToString() },
             { "market_hash_name", marketHashName },
@@ -646,7 +646,7 @@ public class SteamAccount
     {
         var data = new Dictionary<string, string>
         {
-            { "sessionid", SteamGuardAccount.MaFile.Session.SessionId },
+            { "sessionid", SteamGuardAccount.MaFile.Session!.SessionId! },
             { "buy_orderid", buyOrderId.ToString() }
         };
 
@@ -719,7 +719,7 @@ public class SteamAccount
 
         var referer = "https://steamcommunity.com/market/";
 
-        var cookies = SteamGuardAccount.MaFile.Session.CreateCookies();
+        var cookies = SteamGuardAccount.MaFile.Session!.CreateCookies();
 
         cookies.Add(new Cookie("webTradeEligibility",
                 $"%7B%22allowed%22%3A1%2C%22allowed_at_time%22%3A0%2C%22steamguard_required_days%22%3A15%2C%22new_device_cooldown_days%22%3A0%2C%22time_checked%22%3A{GetTimeStampForInventoryRequest()}%7D")
@@ -784,7 +784,7 @@ public class SteamAccount
 
         var url = string.Format(Endpoints.SteamIEconServiceBaseUrl, "GetTradeHistory", "v1", options);
 
-        var cookies = SteamGuardAccount.MaFile.Session.CreateCookies();
+        var cookies = SteamGuardAccount.MaFile.Session!.CreateCookies();
 
         RestResponse response;
 
@@ -849,6 +849,7 @@ public class SteamAccount
 
     #endregion
 
+
     public override string ToString() =>
-        $"TradeAccount, steamId: {SteamGuardAccount.MaFile.Session.SteamId}, steamApiKey: {SteamApiKey}";
+        $"TradeAccount, steamId: {SteamGuardAccount.MaFile.Session?.SteamId}, steamApiKey: {SteamApiKey}";
 }
