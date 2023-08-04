@@ -19,6 +19,11 @@ public class SteamRestClient
             });
     }
 
+    public SteamRestClient(HttpClient httpClient)
+    {
+        _restClient = new RestClient(httpClient);
+    }
+
     public async Task<RestResponse> ExecuteGetRequestAsync(string url, CookieContainer cookies,
         IEnumerable<(string name, string value)>? headers, string referer,
         CancellationToken cancellationToken = default)

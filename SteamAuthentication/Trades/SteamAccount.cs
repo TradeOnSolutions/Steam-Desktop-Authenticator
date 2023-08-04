@@ -767,7 +767,7 @@ public class SteamAccount
 
     #endregion
 
-    #region History
+    #region TradeHistory
 
     public async Task<OffersHistoryResponse?> TryGetOffersHistoryAsync(int maxCount,
         CancellationToken cancellationToken = default) =>
@@ -848,7 +848,6 @@ public class SteamAccount
     }
 
     #endregion
-
 
     public override string ToString() =>
         $"TradeAccount, steamId: {SteamGuardAccount.MaFile.Session?.SteamId}, steamApiKey: {SteamApiKey}";
