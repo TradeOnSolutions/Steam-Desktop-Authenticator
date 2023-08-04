@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace SteamAuthentication.Trades.Responses.Converters;
 
-internal class ParseStringToLongConverter : JsonConverter
+public class ParseStringToLongConverter : JsonConverter
 {
     public override bool CanConvert(Type t) => t == typeof(long) || t == typeof(long?);
 
