@@ -17,7 +17,7 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
 
     public GlobalSettings GlobalSettings { get; private set; }
 
-    private readonly FileSystemAdapterProvider _fileSystemAdapterProvider;
+    public FileSystemAdapterProvider FileSystemAdapterProvider { get; }
 
     public static async Task<SdaManager> CreateSdaManagerAsync()
     {
@@ -32,7 +32,7 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
     {
         GlobalSettings = new GlobalSettings();
 
-        _fileSystemAdapterProvider = new FileSystemAdapterProvider();
+        FileSystemAdapterProvider = new FileSystemAdapterProvider();
 
         Task.Run(CheckProxiesWorkingLoop);
     }
@@ -90,10 +90,10 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
         {
             try
             {
-                if (!_fileSystemAdapterProvider.GetAdapter().ExistsFile(GlobalSettingsFileName))
+                if (!FileSystemAdapterProvider.GetAdapter().ExistsFile(GlobalSettingsFileName))
                     return;
 
-                var settingsContent = await _fileSystemAdapterProvider.GetAdapter()
+                var settingsContent = await FileSystemAdapterProvider.GetAdapter()
                     .ReadFileAsync(GlobalSettingsFileName, CancellationToken.None);
 
                 var globalSettings = JsonConvert.DeserializeObject<GlobalSettings>(settingsContent)
@@ -111,10 +111,10 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
         {
             try
             {
-                if (!_fileSystemAdapterProvider.GetAdapter().ExistsFile(SettingsFileName))
+                if (!FileSystemAdapterProvider.GetAdapter().ExistsFile(SettingsFileName))
                     return;
 
-                var settingsContent = await _fileSystemAdapterProvider.GetAdapter()
+                var settingsContent = await FileSystemAdapterProvider.GetAdapter()
                     .ReadFileAsync(SettingsFileName, CancellationToken.None);
 
                 var savedSdaDtos = JsonConvert.DeserializeObject<SavedSdaDto[]>(settingsContent)
@@ -124,7 +124,7 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
                 {
                     try
                     {
-                        var sdaWithCredentials = SdaWithCredentials.FromDto(dto, this);
+                        var sdaWithCredentials = await SdaWithCredentials.FromDto(dto, this);
 
                         _items.Add(sdaWithCredentials);
                     }
@@ -166,7 +166,7 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
             return t.ToDto();
         });
 
-        await _fileSystemAdapterProvider.GetAdapter().WriteFileAsync(SettingsFileName,
+        await FileSystemAdapterProvider.GetAdapter().WriteFileAsync(SettingsFileName,
             JsonConvert.SerializeObject(settings), CancellationToken.None);
     }
 
@@ -174,7 +174,7 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
     {
         var globalSettings = JsonConvert.SerializeObject(GlobalSettings);
 
-        await _fileSystemAdapterProvider.GetAdapter()
+        await FileSystemAdapterProvider.GetAdapter()
             .WriteFileAsync(GlobalSettingsFileName, globalSettings, CancellationToken.None);
     }
 
@@ -185,6 +185,6 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
         var maFilePath = Path.Combine("MaFiles",
             $"{sda.MaFile.Session?.SteamId}.maFile");
 
-        await _fileSystemAdapterProvider.GetAdapter().WriteFileAsync(maFilePath, maFileContent, CancellationToken.None);
+        await FileSystemAdapterProvider.GetAdapter().WriteFileAsync(maFilePath, maFileContent, CancellationToken.None);
     }
 }

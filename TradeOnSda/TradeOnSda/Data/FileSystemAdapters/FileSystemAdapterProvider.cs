@@ -4,7 +4,7 @@ namespace TradeOnSda.Data.FileSystemAdapters;
 
 public class FileSystemAdapterProvider
 {
-    private IFileSystemAdapter _fileSystemAdapter;
+    private readonly IFileSystemAdapter _fileSystemAdapter;
 
     public FileSystemAdapterProvider()
     {

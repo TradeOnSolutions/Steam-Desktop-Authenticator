@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
@@ -111,20 +112,20 @@ public class SdaWithCredentials
         }
     }
 
-    public static SdaWithCredentials FromDto(SavedSdaDto dto, SdaManager sdaManager)
+    public static async Task<SdaWithCredentials> FromDto(SavedSdaDto dto, SdaManager sdaManager)
     {
-        var maFileName = $"{dto.SteamId}.maFile";
-        var maFilePath = Path.Combine(Directory.GetCurrentDirectory(), "MaFiles", maFileName);
+        var maFileName = $"MaFiles/{dto.SteamId}.maFile";
+        
+        if (!sdaManager.FileSystemAdapterProvider.GetAdapter().ExistsFile(maFileName))
+            throw new Exception("MaFile not found");
 
-        if (!File.Exists(maFilePath))
-            throw new LoadMaFileException("MaFile not found");
-
-        var proxy = ProxyLogic.ParseWebProxy(dto.ProxyString);
-
-        var maFileContent = File.ReadAllText(maFilePath);
+        var maFileContent = await sdaManager.FileSystemAdapterProvider.GetAdapter()
+            .ReadFileAsync(maFileName, CancellationToken.None);
 
         var maFile = JsonConvert.DeserializeObject<SteamMaFile>(maFileContent) ??
                      throw new Exception("SteamMaFile is null");
+        
+        var proxy = ProxyLogic.ParseWebProxy(dto.ProxyString);
 
         var steamTime = new SimpleSteamTime();
 

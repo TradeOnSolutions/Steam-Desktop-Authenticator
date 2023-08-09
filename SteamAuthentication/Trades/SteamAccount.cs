@@ -84,7 +84,7 @@ public class SteamAccount
         return _inventoryTime.Value.ToTimeStamp();
     }
 
-    private async Task<SteamInventory> GetInventoryInternalAsync(int appId, int contextId, ulong steamId,
+    public async Task<SteamInventory> GetInventoryInternalAsync(int appId, int contextId, ulong steamId,
         CancellationToken cancellationToken = default)
     {
         var url = $"https://steamcommunity.com/inventory/{steamId}/{appId}/{contextId}?l=english&count=5000";
