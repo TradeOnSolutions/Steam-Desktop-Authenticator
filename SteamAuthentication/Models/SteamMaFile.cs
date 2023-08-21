@@ -10,8 +10,8 @@ public class SteamMaFile
     [JsonProperty("serial_number")]
     public string? SerialNumber { get; private set; }
 
-    [JsonProperty("revocation_code", Required = Required.Always)]
-    public string RevocationCode { get; private set; } = null!;
+    [JsonProperty("revocation_code")]
+    public string? RevocationCode { get; private set; }
 
     [JsonProperty("uri")]
     public string? Uri { get; private set; }
@@ -19,8 +19,8 @@ public class SteamMaFile
     [JsonProperty("server_time")]
     public long ServerTime { get; private set; }
 
-    [JsonProperty("account_name", Required = Required.Always)]
-    public string AccountName { get; private set; } = null!;
+    [JsonProperty("account_name")]
+    public string? AccountName { get; private set; }
 
     [JsonProperty("token_gid")]
     public string? TokenGuid { get; private set; }

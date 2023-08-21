@@ -30,8 +30,8 @@ public class GuardAddedWindowViewModel : ViewModelBase
         AccountName = SteamGuardAccount.MaFile.AccountName;
         ProxyString = credentials.ProxyString;
         IsVisibleProxy = credentials.ProxyString != null;
-        RevocationCode = steamGuardAccount.MaFile.RevocationCode;
-        SteamId = steamGuardAccount.MaFile.Session.SteamId.ToString();
+        RevocationCode = steamGuardAccount.MaFile.RevocationCode!;
+        SteamId = steamGuardAccount.MaFile.Session!.SteamId.ToString();
 
         OkCommand = ReactiveCommand.Create(ownerWindow.Close);
     }
