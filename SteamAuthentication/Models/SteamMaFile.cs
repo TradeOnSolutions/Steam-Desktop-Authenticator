@@ -50,9 +50,9 @@ public class SteamMaFile
 
     public string ConvertToJson() => JsonConvert.SerializeObject(this);
 
-    public SteamMaFile(string sharedSecret, string? serialNumber, string revocationCode, string? uri, long serverTime,
-        string accountName, string? tokenGuid, string identitySecret, string? secret1, int status, string deviceId,
-        bool fullyEnrolled, SteamSessionData session)
+    public SteamMaFile(string sharedSecret, string? serialNumber, string? revocationCode, string? uri, long serverTime,
+        string? accountName, string? tokenGuid, string identitySecret, string? secret1, int status, string deviceId,
+        bool fullyEnrolled, SteamSessionData? session)
     {
         SharedSecret = sharedSecret;
         SerialNumber = serialNumber;

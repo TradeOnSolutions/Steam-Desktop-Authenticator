@@ -107,7 +107,7 @@ public class ImportAccountsViewModel : ViewModelBase
     {
         try
         {
-            var steamTime = new SimpleSteamTime();
+            var steamTime = _sdaManager.GlobalSteamTime;
 
             var maFileCredentials =
                 new MaFileCredentials(proxy, ProxyString, Password);

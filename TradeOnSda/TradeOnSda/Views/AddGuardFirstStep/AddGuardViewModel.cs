@@ -358,7 +358,7 @@ public class AddGuardViewModel : ViewModelBase
                     $"Error while finializing guard, message: {e.Message}", ownerWindow);
             }
 
-            var steamGuardAccount = new SteamGuardAccount(_maFile!, new SteamRestClient(_proxy), new SimpleSteamTime(),
+            var steamGuardAccount = new SteamGuardAccount(_maFile!, new SteamRestClient(_proxy), sdaManager.GlobalSteamTime,
                 NullLogger<SteamGuardAccount>.Instance);
 
             await steamGuardAccount.TryLoginAgainAsync(_login, _password);

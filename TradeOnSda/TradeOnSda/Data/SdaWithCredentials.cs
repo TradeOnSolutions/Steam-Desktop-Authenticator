@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -9,7 +8,6 @@ using Newtonsoft.Json;
 using SteamAuthentication.Exceptions;
 using SteamAuthentication.LogicModels;
 using SteamAuthentication.Models;
-using TradeOnSda.Exceptions;
 
 namespace TradeOnSda.Data;
 
@@ -127,7 +125,7 @@ public class SdaWithCredentials
         
         var proxy = ProxyLogic.ParseWebProxy(dto.ProxyString);
 
-        var steamTime = new SimpleSteamTime();
+        var steamTime = sdaManager.GlobalSteamTime;
 
         var sda = new SteamGuardAccount(
             maFile,

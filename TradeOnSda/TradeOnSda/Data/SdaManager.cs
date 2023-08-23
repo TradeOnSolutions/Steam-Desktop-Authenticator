@@ -18,6 +18,8 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
     public GlobalSettings GlobalSettings { get; private set; }
 
     public FileSystemAdapterProvider FileSystemAdapterProvider { get; }
+    
+    public GlobalSteamTime GlobalSteamTime { get; }
 
     public static async Task<SdaManager> CreateSdaManagerAsync()
     {
@@ -30,6 +32,8 @@ public class SdaManager : ReactiveObservableCollection<SdaWithCredentials>
 
     private SdaManager()
     {
+        GlobalSteamTime = new GlobalSteamTime(new TimeDeferenceRestClient(null));
+        
         GlobalSettings = new GlobalSettings();
 
         FileSystemAdapterProvider = new FileSystemAdapterProvider();
