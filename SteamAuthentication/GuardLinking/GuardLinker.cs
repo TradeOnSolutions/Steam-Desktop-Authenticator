@@ -58,7 +58,7 @@ public class GuardLinker
         while (!steamClient.IsConnected)
             await Task.Delay(500, cancellationToken);
 
-        var authSession = await steamClient.Authentication.BeginAuthSessionViaCredentialsAsync(new AuthSessionDetails()
+        var authSession = await steamClient.Authentication.BeginAuthSessionViaCredentialsAsync(new AuthSessionDetails
         {
             Username = _username,
             Password = _password,
@@ -138,8 +138,7 @@ public class GuardLinker
     }
 
     public async Task<SteamMaFile> SendAddGuardRequestAsync(ulong steamId,
-        AuthPollResult pollResult,
-        CancellationToken cancellationToken = default)
+        AuthPollResult pollResult, CancellationToken cancellationToken = default)
     {
         var query = new Dictionary<string, string>
         {

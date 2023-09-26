@@ -215,7 +215,7 @@ public class AddGuardViewModel : ViewModelBase
 
             IsEnabledLoginButton = false;
 
-            var _ = Task.Run(async () =>
+            _ = Task.Run(async () =>
             {
                 try
                 {
