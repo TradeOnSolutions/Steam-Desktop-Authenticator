@@ -13,7 +13,7 @@ public class SteamInventory : IEnumerable<ItemProxy>
 
     public IReadOnlyDictionary<long, InventoryItem> InventoryItems => _items.AsReadOnly();
 
-    internal SteamInventory(Dictionary<long, InventoryItem> items,
+    public SteamInventory(Dictionary<long, InventoryItem> items,
         Dictionary<ItemId, ItemDescription> itemDescriptions)
     {
         _itemDescriptions = itemDescriptions;
