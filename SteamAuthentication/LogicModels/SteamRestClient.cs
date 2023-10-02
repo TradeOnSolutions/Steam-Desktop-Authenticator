@@ -1,16 +1,20 @@
 using System.Net;
+using System.Threading.RateLimiting;
 using RestSharp;
+using SteamAuthentication.Exceptions;
 
 namespace SteamAuthentication.LogicModels;
 
 public class SteamRestClient
 {
-    public RestClient RestClient { get; }
+    private readonly RestClient _restClient;
 
+    private RateLimiter? _rateLimiter; 
+    
     // ReSharper disable once MemberCanBeProtected.Global
     public SteamRestClient(IWebProxy? proxy)
     {
-        RestClient = new RestClient(
+        _restClient = new RestClient(
             new RestClientOptions
             {
                 Proxy = proxy,
@@ -21,7 +25,30 @@ public class SteamRestClient
 
     public SteamRestClient(HttpClient httpClient)
     {
-        RestClient = new RestClient(httpClient);
+        _restClient = new RestClient(httpClient);
+    }
+
+    public void SetRateLimiter(RateLimiter? rateLimiter) => _rateLimiter = rateLimiter;
+
+    public async Task<RestResponse> ExecuteAsync(RestRequest request, CancellationToken ct)
+    {
+        if (_rateLimiter == null)
+        {
+            var response = await _restClient.ExecuteAsync(request,ct);
+
+            return response;
+        }
+
+        using var lease = await _rateLimiter.AcquireAsync(1, ct);
+        
+        if (lease.IsAcquired)
+        {
+            var response = await _restClient.ExecuteAsync(request, ct);
+
+            return response;
+        }
+
+        throw new RateLimiterException();
     }
 
     public async Task<RestResponse> ExecuteGetRequestAsync(string url, CookieContainer cookies,
@@ -39,7 +66,7 @@ public class SteamRestClient
             foreach (var (name, value) in headers)
                 request.AddHeader(name, value);
 
-        var response = await RestClient.ExecuteAsync(request, cancellationToken);
+        var response = await ExecuteAsync(request, cancellationToken);
 
         return response;
     }
@@ -62,7 +89,7 @@ public class SteamRestClient
 
         request.AddBody(body, ContentType.FormUrlEncoded);
 
-        var response = await RestClient.ExecuteAsync(request, cancellationToken);
+        var response = await ExecuteAsync(request, cancellationToken);
 
         return response;
     }
@@ -85,7 +112,7 @@ public class SteamRestClient
 
         request.AddBody(body, ContentType.FormUrlEncoded);
 
-        var response = await RestClient.ExecuteAsync(request, cancellationToken);
+        var response = await ExecuteAsync(request, cancellationToken);
 
         return response;
     }
@@ -100,7 +127,7 @@ public class SteamRestClient
 
         AddHeadersToRequest(request);
 
-        var response = await RestClient.ExecuteAsync(request, cancellationToken);
+        var response = await ExecuteAsync(request, cancellationToken);
 
         return response;
     }
@@ -117,7 +144,7 @@ public class SteamRestClient
 
         request.AddBody(body);
 
-        var response = await RestClient.ExecuteAsync(request, cancellationToken);
+        var response = await ExecuteAsync(request, cancellationToken);
 
         return response;
     }

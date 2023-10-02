@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
         <Title>SteamAuthentication</Title>
         <Description>TradeOn private SDA</Description>
-        <Version>1.0.16</Version>
+        <Version>1.0.17</Version>
     </PropertyGroup>
 
     <ItemGroup>
@@ -15,6 +15,7 @@
       <PackageReference Include="RestSharp" Version="110.2.0" />
       <PackageReference Include="SteamKit2" Version="2.5.0-Beta.1" />
       <PackageReference Include="System.Reactive" Version="5.0.0" />
+      <PackageReference Include="System.Threading.RateLimiting" Version="7.0.1" />
     </ItemGroup>
 
 </Project>
