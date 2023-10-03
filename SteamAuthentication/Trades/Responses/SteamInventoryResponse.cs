@@ -12,7 +12,7 @@ internal class SteamInventoryResponse
     [JsonProperty("descriptions")]
     public ItemDescription[]? Descriptions { get; set; }
 
-    [JsonProperty("success", Required = Required.Always)]
+    [JsonProperty("success")]
     public long Success { get; set; }
 
     [JsonConstructor]
@@ -38,7 +38,7 @@ public class InventoryItem
     [JsonConverter(typeof(ParseStringToLongConverter))]
     public long ClassId { get; private set; }
 
-    [JsonProperty("instanceid", Required = Required.Always)]
+    [JsonProperty("instanceid")]
     [JsonConverter(typeof(ParseStringToLongConverter))]
     public long InstanceId { get; private set; }
 
@@ -63,7 +63,7 @@ public class ItemDescription
     [JsonConverter(typeof(ParseStringToLongConverter))]
     public long ClassId { get; private set; }
 
-    [JsonProperty("instanceid", Required = Required.Always)]
+    [JsonProperty("instanceid")]
     [JsonConverter(typeof(ParseStringToLongConverter))]
     public long InstanceId { get; private set; }
 
@@ -82,7 +82,7 @@ public class ItemDescription
     [JsonProperty("descriptions")]
     public TypeDescription[]? Descriptions { get; private set; }
 
-    [JsonProperty("tradable", Required = Required.Always)]
+    [JsonProperty("tradable")]
     public long Tradable { get; private set; }
 
     [JsonProperty("actions", NullValueHandling = NullValueHandling.Ignore)]
