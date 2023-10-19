@@ -4,7 +4,7 @@
         <TargetFramework>net7.0</TargetFramework>
         <RuntimeIdentifiers>osx-x64</RuntimeIdentifiers>
         <Nullable>enable</Nullable>
-        <Version>1.7.0.0</Version>
+        <Version>1.8.0.0</Version>
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <ApplicationIcon>logo.ico</ApplicationIcon>
         <IsPackable>false</IsPackable>
