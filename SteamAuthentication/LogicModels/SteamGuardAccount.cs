@@ -376,23 +376,24 @@ public class SteamGuardAccount
         using var _ = _logger.CreateScopeForMethod(this);
 
         var configuration = SteamConfiguration.Create(builder => builder.WithHttpClientFactory(
-            () =>
-            {
-                var httpClientHandler = new HttpClientHandler
+                () =>
                 {
-                    Proxy = RestClient.Proxy,
-                };
+                    var httpClientHandler = new HttpClientHandler
+                    {
+                        Proxy = RestClient.Proxy,
+                    };
 
-                var client = new HttpClient(httpClientHandler);
+                    var client = new HttpClient(httpClientHandler);
 
-                return client;
-            })
+                    return client;
+                })
             .WithProtocolTypes(ProtocolTypes.WebSocket));
-        
+
+
         var steamClient = new SteamClient(configuration);
         var manager = new CallbackManager(steamClient);
         var tks = new TaskCompletionSource();
-        
+
         var cts = new CancellationTokenSource(TimeSpan.FromMinutes(1));
         var ct = cts.Token;
 
@@ -408,65 +409,73 @@ public class SteamGuardAccount
 
         steamClient.ConnectWithProxy(null, RestClient.Proxy);
 
-        var __ = Task.Run(() =>
+        try
         {
-            while (true)
+            var __ = Task.Run(() =>
             {
-                manager.RunWaitCallbacks(TimeSpan.FromSeconds(1));
+                while (true)
+                {
+                    manager.RunWaitCallbacks(TimeSpan.FromSeconds(1));
 
-                if (!ct.IsCancellationRequested) 
-                    continue;
-                
-                tks.TrySetException(new OperationCanceledException());
-                return;
-            }
-            
-            // ReSharper disable once FunctionNeverReturns
-        }, ct);
+                    if (!ct.IsCancellationRequested)
+                        continue;
 
-        await connectTask;
+                    tks.TrySetException(new OperationCanceledException());
+                    return;
+                }
 
-        var authSession = await steamClient.Authentication.BeginAuthSessionViaCredentialsAsync(new AuthSessionDetails
+                // ReSharper disable once FunctionNeverReturns
+            }, ct);
+
+            await connectTask;
+
+            var authSession = await steamClient.Authentication.BeginAuthSessionViaCredentialsAsync(
+                new AuthSessionDetails
+                {
+                    Username = username,
+                    Password = password,
+                    IsPersistentSession = false,
+                    Authenticator = new SteamGuardAuthenticator(this),
+                });
+
+            var pollResponse = await authSession.PollingWaitForResultAsync(cancellationToken);
+
+            steamUser.LogOn(new SteamUser.LogOnDetails
+            {
+                Username = pollResponse.AccountName,
+                AccessToken = pollResponse.RefreshToken,
+            });
+
+            var steamId = authSession.SteamID.ConvertToUInt64();
+            var steamLoginSecure = steamId + "%7C%7C" + pollResponse.AccessToken;
+
+            var newSession = new SteamSessionData(null!, steamLoginSecure, steamId);
+
+            var newMaFile = new SteamMaFile(
+                MaFile.SharedSecret,
+                MaFile.SerialNumber,
+                MaFile.RevocationCode,
+                MaFile.Uri,
+                MaFile.ServerTime,
+                MaFile.AccountName,
+                MaFile.TokenGuid,
+                MaFile.IdentitySecret,
+                MaFile.Secret1,
+                MaFile.Status,
+                MaFile.DeviceId,
+                MaFile.FullyEnrolled,
+                newSession);
+
+            MaFile = newMaFile;
+
+            _logger.LogDebug("MaFile data rewrited");
+
+            return null;
+        }
+        finally
         {
-            Username = username,
-            Password = password,
-            IsPersistentSession = false,
-            Authenticator = new SteamGuardAuthenticator(this),
-        });
-
-        var pollResponse = await authSession.PollingWaitForResultAsync(cancellationToken);
-
-        steamUser.LogOn(new SteamUser.LogOnDetails
-        {
-            Username = pollResponse.AccountName,
-            AccessToken = pollResponse.RefreshToken,
-        });
-
-        var steamId = authSession.SteamID.ConvertToUInt64();
-        var steamLoginSecure = steamId + "%7C%7C" + pollResponse.AccessToken;
-
-        var newSession = new SteamSessionData(null!, steamLoginSecure, steamId);
-        
-        var newMaFile = new SteamMaFile(
-            MaFile.SharedSecret,
-            MaFile.SerialNumber,
-            MaFile.RevocationCode,
-            MaFile.Uri,
-            MaFile.ServerTime,
-            MaFile.AccountName,
-            MaFile.TokenGuid,
-            MaFile.IdentitySecret,
-            MaFile.Secret1,
-            MaFile.Status,
-            MaFile.DeviceId,
-            MaFile.FullyEnrolled,
-            newSession);
-        
-        MaFile = newMaFile;
-        
-        _logger.LogDebug("MaFile data rewrited");
-
-        return null;
+            steamClient.Disconnect();
+        }
     }
 
     public override string ToString() => $"SteamGuardAccount, steamId: {MaFile.Session.SteamId}";
