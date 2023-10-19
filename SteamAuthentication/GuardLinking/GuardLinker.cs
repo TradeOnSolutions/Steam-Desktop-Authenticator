@@ -53,7 +53,7 @@ public class GuardLinker
             }));
 
         var steamClient = new SteamClient(configuration);
-        steamClient.Connect();
+        steamClient.ConnectWithProxy(null, _proxy);
 
         while (!steamClient.IsConnected)
             await Task.Delay(500, cancellationToken);
@@ -86,7 +86,7 @@ public class GuardLinker
 
         var query = new Dictionary<string, string>
         {
-            { "steamid", maFile.Session.SteamId.ToString() },
+            { "steamid", maFile.Session!.SteamId.ToString() },
             { "authenticator_code", guardCode },
             { "authenticator_time", (await _steamTime.GetCurrentSteamTimeAsync(cancellationToken)).ToString() },
             { "activation_code", smsCode },
