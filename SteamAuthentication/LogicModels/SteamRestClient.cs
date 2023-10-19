@@ -11,6 +11,8 @@ public class SteamRestClient
 
     private RateLimiter? _rateLimiter; 
     
+    public IWebProxy? Proxy { get; }
+    
     // ReSharper disable once MemberCanBeProtected.Global
     public SteamRestClient(IWebProxy? proxy)
     {
@@ -21,6 +23,8 @@ public class SteamRestClient
                 FollowRedirects = true,
                 AutomaticDecompression = DecompressionMethods.GZip,
             });
+
+        Proxy = proxy;
     }
 
     public SteamRestClient(HttpClient httpClient)

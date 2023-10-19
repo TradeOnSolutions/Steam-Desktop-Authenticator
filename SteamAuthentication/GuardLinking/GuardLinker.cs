@@ -50,7 +50,8 @@ public class GuardLinker
                 var client = new HttpClient(httpClientHandler);
 
                 return client;
-            }));
+            })
+            .WithProtocolTypes(ProtocolTypes.WebSocket));
 
         var steamClient = new SteamClient(configuration);
         steamClient.ConnectWithProxy(null, _proxy);
