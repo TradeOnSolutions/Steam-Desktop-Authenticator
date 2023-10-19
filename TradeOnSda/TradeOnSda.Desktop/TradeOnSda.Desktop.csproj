@@ -11,8 +11,8 @@
         <Authors />
         <Company>TradeOn</Company>
         <Product>TradeOnSda</Product>
-        <AssemblyVersion>1.7.0.0</AssemblyVersion>
-        <FileVersion>1.7.0.0</FileVersion>
+        <AssemblyVersion>1.8.0.0</AssemblyVersion>
+        <FileVersion>1.8.0.0</FileVersion>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -39,8 +39,8 @@
         <CFBundleName>TradeOn SDA</CFBundleName>
         <CFBundleDisplayName>TradeOn SDA</CFBundleDisplayName>
         <CFBundleIdentifier>com.TradeOn.Sda</CFBundleIdentifier>
-        <CFBundleVersion>1.7.0</CFBundleVersion>
-        <CFBundleShortVersionString>1.7.0</CFBundleShortVersionString>
+        <CFBundleVersion>1.8.0</CFBundleVersion>
+        <CFBundleShortVersionString>1.8.0</CFBundleShortVersionString>
         <CFBundlePackageType>APPL</CFBundlePackageType>
         <CFBundleSignature>tsda</CFBundleSignature>
         <CFBundleIconFile>TradeOnLogo.icns</CFBundleIconFile>
