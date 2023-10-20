@@ -402,7 +402,7 @@ public class SteamGuardAccount
             cts.Cancel();
             tks.SetResult();
         });
-
+        
         var steamUser = steamClient.GetHandler<SteamUser>()!;
 
         var connectTask = tks.Task;
@@ -449,7 +449,7 @@ public class SteamGuardAccount
             var steamId = authSession.SteamID.ConvertToUInt64();
             var steamLoginSecure = steamId + "%7C%7C" + pollResponse.AccessToken;
 
-            var newSession = new SteamSessionData(null!, steamLoginSecure, steamId);
+            var newSession = new SteamSessionData(steamClient.ID, steamLoginSecure, steamId);
 
             var newMaFile = new SteamMaFile(
                 MaFile.SharedSecret,
