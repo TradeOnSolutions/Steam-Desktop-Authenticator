@@ -434,7 +434,7 @@ public class SteamGuardAccount
                 {
                     Username = username,
                     Password = password,
-                    IsPersistentSession = false,
+                    IsPersistentSession = true,
                     Authenticator = new SteamGuardAuthenticator(this),
                 });
 

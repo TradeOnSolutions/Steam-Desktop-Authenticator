@@ -10,11 +10,11 @@ public class SteamGuardAuthenticator : IAuthenticator
     {
         _steamGuardAccount = steamGuardAccount;
     }
-    
-    public async Task<string> GetDeviceCodeAsync(bool previousCodeWasIncorrect) => 
+
+    public async Task<string> GetDeviceCodeAsync(bool previousCodeWasIncorrect) =>
         await _steamGuardAccount.GenerateSteamGuardCodeForTimeStampAsync();
 
-    public Task<string> GetEmailCodeAsync(string email, bool previousCodeWasIncorrect) => throw new NotSupportedException();
+    public Task<string> GetEmailCodeAsync(string email, bool previousCodeWasIncorrect) => Task.FromResult(string.Empty);
 
-    public Task<bool> AcceptDeviceConfirmationAsync() => throw new NotSupportedException();
+    public Task<bool> AcceptDeviceConfirmationAsync() => Task.FromResult(false);
 }
