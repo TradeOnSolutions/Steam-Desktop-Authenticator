@@ -113,8 +113,6 @@ This branch will continue to grow, depending on users' questions.
 
 ## Donation
 ####
-![crypto](https://github.com/Ximi1970/Donate/blob/master/paypal_btn_donateCC_LG_1.gif)
-
 [yoomoney](https://yoomoney.ru/to/410017355954352)
 
 If you would like to support our project, we have attached a crypto wallet
