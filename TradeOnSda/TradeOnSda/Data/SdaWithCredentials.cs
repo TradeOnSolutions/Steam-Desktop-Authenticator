@@ -58,13 +58,17 @@ public class SdaWithCredentials
         {
             var confirmations = (await SteamGuardAccount.FetchConfirmationAsync())
                 .Where(t => t.ConfirmationType is ConfirmationType.MarketSellTransaction
-                    or ConfirmationType.Trade);
+                    or ConfirmationType.Trade).ToArray();
 
-            foreach (var confirmation in confirmations)
+            if (confirmations.Length == 0)
             {
-                await SteamGuardAccount.AcceptConfirmationAsync(confirmation);
-                await Task.Delay(TimeSpan.FromSeconds(5));
+                await Task.Delay(SdaSettings.AutoConfirmDelay);
+                return;
             }
+            
+            await Task.Delay(TimeSpan.FromSeconds(10));
+
+            await SteamGuardAccount.AcceptConfirmationsAsync(confirmations.ToArray());
 
             await Task.Delay(SdaSettings.AutoConfirmDelay);
         }
