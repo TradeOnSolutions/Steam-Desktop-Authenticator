@@ -327,7 +327,7 @@ public class DefaultAccountViewCommandStrategy : IAccountViewCommandStrategy
             var confirmations = await _accountViewModel.SdaWithCredentials.SteamGuardAccount.FetchConfirmationAsync();
 
             confirmations = confirmations.Where(t =>
-                t.ConfirmationType is ConfirmationType.Trade or ConfirmationType.MarketSellTransaction
+                t.ConfirmationType is ConfirmationType.Trade or ConfirmationType.MarketSellTransaction or ConfirmationType.WebKey
                     or ConfirmationType.Recovery).ToArray();
 
             var window = new ConfirmationsWindow(confirmations, _accountViewModel.SdaWithCredentials.SteamGuardAccount);

@@ -57,4 +57,5 @@ public enum ConfirmationType
     UnknownConfirmation3,
     UnknownConfirmation4,
     Recovery,
+    WebKey = 9,
 }
