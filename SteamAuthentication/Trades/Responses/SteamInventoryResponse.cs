@@ -81,6 +81,9 @@ public class ItemDescription
 
     [JsonProperty("descriptions")]
     public TypeDescription[]? Descriptions { get; private set; }
+    
+    [JsonProperty("owner_descriptions")]
+    public TypeDescription[]? OwnerDescriptions { get; private set; }
 
     [JsonProperty("tradable")]
     public long Tradable { get; private set; }
