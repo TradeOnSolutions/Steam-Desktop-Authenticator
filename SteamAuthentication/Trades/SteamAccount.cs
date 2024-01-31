@@ -626,8 +626,14 @@ public class SteamAccount
         }
         catch (Exception e)
         {
+            var errorCreateBuyOrderResponse = JsonConvert.DeserializeObject<ErrorCreateBuyOrderResponse>(content)!;
+
+            if (errorCreateBuyOrderResponse.ErrorCode == 25)
+                throw new BalanceExceededException();
+
             _logger.LogError("Error deserialize NewBuyOrderResponse, content: {content}, exception: {exception}",
                 content, e.ToJson());
+            
             throw;
         }
 
