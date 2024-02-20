@@ -140,7 +140,7 @@ public class AddGuardViewModel : ViewModelBase
     private GuardLinker? _guardLinker;
     private string _steamIdString;
     private string _accountName;
-    private string _smsCode;
+    private string _verificationCode;
 
     #endregion
 
@@ -152,10 +152,10 @@ public class AddGuardViewModel : ViewModelBase
         set => RaiseAndSetIfPropertyChanged(ref _isFinalizeStep, value);
     }
 
-    public string SmsCode
+    public string VerificationCode
     {
-        get => _smsCode;
-        set => RaiseAndSetIfPropertyChanged(ref _smsCode, value);
+        get => _verificationCode;
+        set => RaiseAndSetIfPropertyChanged(ref _verificationCode, value);
     }
 
     public ICommand FinalizeCommand { get; }
@@ -179,7 +179,7 @@ public class AddGuardViewModel : ViewModelBase
         _askStepTitle = "";
         _isEnabledLoginButton = true;
         _isFirstStep = true;
-        _smsCode = "";
+        _verificationCode = "";
         _lastPhoneNumber = "";
 
         TryLoginCommand = ReactiveCommand.CreateFromTask(async () =>
@@ -334,17 +334,17 @@ public class AddGuardViewModel : ViewModelBase
 
         FinalizeCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-            if (string.IsNullOrWhiteSpace(SmsCode))
+            if (string.IsNullOrWhiteSpace(VerificationCode))
             {
                 await NotificationsMessageWindow.ShowWindow(
-                    $"Please, enter the SMS code",
+                    "Please, enter the verification code (email/SMS)",
                     ownerWindow);
                 return;
             }
 
             try
             {
-                await _guardLinker!.FinalizeAddGuardAsync(SmsCode, _maFile!, _pollResult!);
+                await _guardLinker!.FinalizeAddGuardAsync(VerificationCode, _maFile!, _pollResult!);
             }
             catch (RequestException e)
             {
@@ -387,7 +387,7 @@ public class AddGuardViewModel : ViewModelBase
         AddGuardCommand = null!;
         _steamIdString = null!;
         _accountName = null!;
-        _smsCode = null!;
+        _verificationCode = null!;
         _lastPhoneNumber = null!;
         FinalizeCommand = null!;
     }
