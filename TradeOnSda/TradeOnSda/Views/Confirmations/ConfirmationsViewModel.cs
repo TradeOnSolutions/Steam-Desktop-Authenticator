@@ -19,9 +19,9 @@ public class ConfirmationsViewModel : ViewModelBase
     public SdaConfirmation[] SdaConfirmations { get; private set; }
 
     public ObservableCollection<ConfirmationItemViewModel> ConfirmationsViewModels { get; }
-    
+
     public ICommand AcceptAllCommand { get; }
-    
+
     public ICommand DenyAllCommand { get; }
 
     public bool IsNoConfirmations
@@ -47,11 +47,14 @@ public class ConfirmationsViewModel : ViewModelBase
             try
             {
                 var newConfirmations = (await steamGuardAccount.FetchConfirmationAsync())
-                    .Where(t => t.ConfirmationType is ConfirmationType.Trade or ConfirmationType.MarketSellTransaction)
+                    .Where(t => t.ConfirmationType is ConfirmationType.Trade
+                        or ConfirmationType.MarketSellTransaction
+                        or ConfirmationType.Recovery
+                        or ConfirmationType.WebKey)
                     .ToArray();
 
                 SdaConfirmations = newConfirmations;
-                
+
                 ConfirmationsViewModels.Clear();
 
                 foreach (var confirmation in newConfirmations)
@@ -80,7 +83,7 @@ public class ConfirmationsViewModel : ViewModelBase
                 await steamGuardAccount.AcceptConfirmationsAsync(SdaConfirmations);
 
                 SdaConfirmations = Array.Empty<SdaConfirmation>();
-                
+
                 ConfirmationsViewModels.Clear();
             }
             catch (RequestException e)
@@ -103,7 +106,7 @@ public class ConfirmationsViewModel : ViewModelBase
                 await steamGuardAccount.DenyConfirmationsAsync(SdaConfirmations);
 
                 SdaConfirmations = Array.Empty<SdaConfirmation>();
-                
+
                 ConfirmationsViewModels.Clear();
             }
             catch (RequestException e)
