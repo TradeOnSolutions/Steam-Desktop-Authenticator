@@ -136,7 +136,7 @@ public class AccountViewModel : ViewModelBase
         SelectStrategyAsync(DefaultAccountViewCommandStrategy).GetAwaiter().GetResult();
 
         IsUnknownProxyState = true;
-        
+
         SdaWithCredentials.SdaState.WhenPropertyChanged(t => t.ProxyState)
             .Subscribe(valueWrapper =>
             {
@@ -161,7 +161,7 @@ public class AccountViewModel : ViewModelBase
                         break;
                 }
             });
-        
+
         FirstCommand = ReactiveCommand.CreateFromTask(async () =>
         {
             await SelectedAccountViewCommandStrategy.InvokeFirstCommandAsync();
@@ -179,24 +179,7 @@ public class AccountViewModel : ViewModelBase
 
         DoubleClickCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-            try
-            {
-                var confirmations = (await SdaWithCredentials.SteamGuardAccount.FetchConfirmationAsync()).Where(t =>
-                    t.ConfirmationType is ConfirmationType.Trade or ConfirmationType.MarketSellTransaction
-                        or ConfirmationType.Recovery).ToArray();
-
-                var window = new ConfirmationsWindow(confirmations, SdaWithCredentials.SteamGuardAccount);
-
-                window.Show();
-            }
-            catch (RequestException e)
-            {
-                await NotificationsMessageWindow.ShowWindow($"Cannot load confirmations. {e}", OwnerWindow);
-            }
-            catch (Exception e)
-            {
-                await NotificationsMessageWindow.ShowWindow($"Cannot load confirmations, message: {e.Message}", OwnerWindow);
-            }
+            await SelectedAccountViewCommandStrategy.InvokeSecondCommandAsync();
         });
 
         ToggleAutoConfirmCommand = ReactiveCommand.CreateFromTask(async () =>
@@ -233,7 +216,7 @@ public class AccountViewModel : ViewModelBase
             }
 
             sdaWithCredentials.SdaSettings.AutoConfirmDelay = TimeSpan.FromSeconds(delay);
-            
+
             await SdaManager.SaveSettingsAsync();
 
             var _ = Task.Run(async () =>
