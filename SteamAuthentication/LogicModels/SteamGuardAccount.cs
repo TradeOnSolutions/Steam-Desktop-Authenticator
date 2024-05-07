@@ -10,6 +10,7 @@ using SteamAuthentication.Models;
 using SteamAuthentication.Responses;
 using SteamKit2;
 using SteamKit2.Authentication;
+using SteamKit2.Internal;
 
 namespace SteamAuthentication.LogicModels;
 
@@ -435,7 +436,10 @@ public class SteamGuardAccount
                     Username = username,
                     Password = password,
                     IsPersistentSession = true,
+                    PlatformType = EAuthTokenPlatformType.k_EAuthTokenPlatformType_MobileApp,
+                    ClientOSType = EOSType.AndroidUnknown,
                     Authenticator = new SteamGuardAuthenticator(this),
+                    WebsiteID = "Mobile",
                 });
 
             var pollResponse = await authSession.PollingWaitForResultAsync(cancellationToken);
