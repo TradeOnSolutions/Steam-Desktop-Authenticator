@@ -213,7 +213,7 @@ public class GuardLinker
             addGuardResponse.Response.Status,
             _deviceId,
             true,
-            new SteamSessionData("", "", steamId));
+            new SteamSessionData("", "", "", steamId));
 
         return steamMaFile;
     }

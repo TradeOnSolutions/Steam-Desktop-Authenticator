@@ -17,6 +17,9 @@ public class SteamSessionData
     // [JsonProperty("OAuthToken", Required = Required.Always)]
     // public string OAuthToken { get; private set; } = null!;
 
+    [JsonProperty("RefreshToken")]
+    public string? RefreshToken { get; private set; }
+
     [JsonProperty("SteamID", Required = Required.Always)]
     public ulong SteamId { get; private set; }
 
@@ -26,11 +29,12 @@ public class SteamSessionData
     }
 
     internal SteamSessionData(string sessionId, string steamLoginSecure,
-        ulong steamId)
+        string refreshToken, ulong steamId)
     {
         SessionId = sessionId;
         SteamLoginSecure = steamLoginSecure;
         // OAuthToken = oAuthToken;
+        RefreshToken = refreshToken;
         SteamId = steamId;
     }
 

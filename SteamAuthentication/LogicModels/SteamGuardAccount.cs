@@ -453,7 +453,11 @@ public class SteamGuardAccount
             var steamId = authSession.SteamID.ConvertToUInt64();
             var steamLoginSecure = steamId + "%7C%7C" + pollResponse.AccessToken;
 
-            var newSession = new SteamSessionData(steamClient.ID, steamLoginSecure, steamId);
+            var newSession = new SteamSessionData(
+                steamClient.ID,
+                steamLoginSecure,
+                pollResponse.RefreshToken,
+                steamId);
 
             var newMaFile = new SteamMaFile(
                 MaFile.SharedSecret,
