@@ -181,7 +181,22 @@ public class AccountViewModel : ViewModelBase
         {
             try
             {
-                var confirmations = (await SdaWithCredentials.SteamGuardAccount.FetchConfirmationAsync()).Where(t =>
+                var confirmations = await SdaWithCredentials.SteamGuardAccount.TryFetchConfirmationAsync();
+
+                if (confirmations is null)
+                {
+                    var steamId = SdaWithCredentials.SteamGuardAccount.MaFile.Session.SteamId;
+                    var refreshToken = SdaWithCredentials.SteamGuardAccount.MaFile.Session.RefreshToken;
+
+                    var result =
+                        await SdaWithCredentials.SteamGuardAccount.GenerateAccessTokenAsync(steamId, refreshToken);
+
+                    confirmations = await SdaWithCredentials.SteamGuardAccount.FetchConfirmationAsync();
+
+                    await SdaManager.SaveMaFile(SdaWithCredentials.SteamGuardAccount);
+                }
+
+                confirmations = confirmations.Where(t =>
                     t.ConfirmationType is ConfirmationType.Trade or ConfirmationType.MarketSellTransaction
                         or ConfirmationType.Recovery).ToArray();
 
@@ -324,7 +339,20 @@ public class DefaultAccountViewCommandStrategy : IAccountViewCommandStrategy
     {
         try
         {
-            var confirmations = await _accountViewModel.SdaWithCredentials.SteamGuardAccount.FetchConfirmationAsync();
+            var confirmations = await _accountViewModel.SdaWithCredentials.SteamGuardAccount.TryFetchConfirmationAsync();
+
+            if (confirmations is null)
+            {
+                var steamId = _accountViewModel.SdaWithCredentials.SteamGuardAccount.MaFile.Session.SteamId;
+                var refreshToken = _accountViewModel.SdaWithCredentials.SteamGuardAccount.MaFile.Session.RefreshToken;
+
+                var result =
+                    await _accountViewModel.SdaWithCredentials.SteamGuardAccount.GenerateAccessTokenAsync(steamId, refreshToken);
+
+                confirmations = await _accountViewModel.SdaWithCredentials.SteamGuardAccount.FetchConfirmationAsync();
+
+                await _accountViewModel.SdaManager.SaveMaFile(_accountViewModel.SdaWithCredentials.SteamGuardAccount);
+            }
 
             confirmations = confirmations.Where(t =>
                 t.ConfirmationType is ConfirmationType.Trade or ConfirmationType.MarketSellTransaction or ConfirmationType.WebKey
