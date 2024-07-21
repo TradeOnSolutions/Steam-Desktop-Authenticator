@@ -338,7 +338,7 @@ public class DefaultAccountViewCommandStrategy : IAccountViewCommandStrategy
     public async Task InvokeSecondCommandAsync()
     {
         try
-        {
+        {   
             var confirmations = await _accountViewModel.SdaWithCredentials.SteamGuardAccount.TryFetchConfirmationAsync();
 
             if (confirmations is null)
@@ -366,9 +366,9 @@ public class DefaultAccountViewCommandStrategy : IAccountViewCommandStrategy
         {
             await NotificationsMessageWindow.ShowWindow($"Cannot load confirmations. {e}", _accountViewModel.OwnerWindow);
         }
-        catch (Exception)
+        catch (Exception e)
         {
-            await NotificationsMessageWindow.ShowWindow("Cannot load confirmations", _accountViewModel.OwnerWindow);
+            await NotificationsMessageWindow.ShowWindow($"Cannot load confirmations, message: {e.Message}", _accountViewModel.OwnerWindow);
         }
     }
 
