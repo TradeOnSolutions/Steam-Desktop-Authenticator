@@ -486,6 +486,120 @@ public class SteamGuardAccount
         }
     }
 
+    public async Task<string?> TryGenerateAccessTokenAsync(ulong steamId, string refreshToken,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            return await GenerateAccessTokenAsync(steamId, refreshToken, cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception)
+        {
+            return "unknown";
+        }
+    }
+
+    public async Task<string?> GenerateAccessTokenAsync(ulong steamId, string refreshToken,
+        CancellationToken cancellationToken = default)
+    {
+        using var _ = _logger.CreateScopeForMethod(this);
+
+        var configuration = SteamConfiguration.Create(builder => builder.WithHttpClientFactory(
+                () =>
+                {
+                    var httpClientHandler = new HttpClientHandler
+                    {
+                        Proxy = RestClient.Proxy,
+                    };
+
+                    var client = new HttpClient(httpClientHandler);
+
+                    return client;
+                })
+            .WithProtocolTypes(ProtocolTypes.WebSocket));
+
+
+        var steamClient = new SteamClient(configuration);
+        var manager = new CallbackManager(steamClient);
+        var tks = new TaskCompletionSource();
+
+        var cts = new CancellationTokenSource(TimeSpan.FromMinutes(1));
+        var ct = cts.Token;
+
+        manager.Subscribe<SteamClient.ConnectedCallback>(_ =>
+        {
+            cts.Cancel();
+            tks.SetResult();
+        });
+
+        var steamUser = steamClient.GetHandler<SteamUser>()!;
+
+        var connectTask = tks.Task;
+        
+        steamClient.ConnectWithProxy(null, RestClient.Proxy);
+
+        try
+        {
+            var __ = Task.Run(() =>
+            {
+                while (true)
+                {
+                    manager.RunWaitCallbacks(TimeSpan.FromSeconds(1));
+
+                    if (!ct.IsCancellationRequested)
+                        continue;
+
+                    tks.TrySetException(new OperationCanceledException());
+                    return;
+                }
+
+                // ReSharper disable once FunctionNeverReturns
+            }, ct);
+
+            await connectTask;
+
+            var newTokens =
+                await steamClient.Authentication.GenerateAccessTokenForAppAsync(new(steamId), refreshToken);
+
+            var steamLoginSecure = steamId + "%7C%7C" + newTokens.AccessToken;
+
+            var newSession = new SteamSessionData(
+                steamClient.ID,
+                steamLoginSecure,
+                string.IsNullOrEmpty(newTokens.RefreshToken) ? refreshToken : newTokens.RefreshToken,
+                steamId);
+
+            var newMaFile = new SteamMaFile(
+                MaFile.SharedSecret,
+                MaFile.SerialNumber,
+                MaFile.RevocationCode,
+                MaFile.Uri,
+                MaFile.ServerTime,
+                MaFile.AccountName,
+                MaFile.TokenGuid,
+                MaFile.IdentitySecret,
+                MaFile.Secret1,
+                MaFile.Status,
+                MaFile.DeviceId,
+                MaFile.FullyEnrolled,
+                newSession);
+
+            MaFile = newMaFile;
+
+            _logger.LogDebug("MaFile data rewrited");
+
+            return null;
+        }
+        finally
+        {
+            steamClient.Disconnect();
+        }
+    }
+
     public override string ToString() => $"SteamGuardAccount, steamId: {MaFile.Session.SteamId}";
 
     public static SteamGuardAccount Create(string maFileContent, SteamRestClient steamRestClient,
