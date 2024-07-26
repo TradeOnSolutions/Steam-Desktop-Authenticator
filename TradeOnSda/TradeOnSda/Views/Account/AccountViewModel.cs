@@ -181,28 +181,15 @@ public class AccountViewModel : ViewModelBase
         {
             try
             {
-                var confirmations = await SdaWithCredentials.SteamGuardAccount.TryFetchConfirmationAsync();
-
-                if (confirmations is null)
+                try
                 {
-                    var steamId = SdaWithCredentials.SteamGuardAccount.MaFile.Session.SteamId;
-                    var refreshToken = SdaWithCredentials.SteamGuardAccount.MaFile.Session.RefreshToken;
-
-                    var result =
-                        await SdaWithCredentials.SteamGuardAccount.GenerateAccessTokenAsync(steamId, refreshToken);
-
-                    confirmations = await SdaWithCredentials.SteamGuardAccount.FetchConfirmationAsync();
-
-                    await SdaManager.SaveMaFile(SdaWithCredentials.SteamGuardAccount);
+                    await LoadConfirmationsAsync();
                 }
-
-                confirmations = confirmations.Where(t =>
-                    t.ConfirmationType is ConfirmationType.Trade or ConfirmationType.MarketSellTransaction
-                        or ConfirmationType.Recovery).ToArray();
-
-                var window = new ConfirmationsWindow(confirmations, SdaWithCredentials.SteamGuardAccount);
-
-                window.Show();
+                catch (RequestException e) when (e.HttpStatusCode == HttpStatusCode.Unauthorized)
+                {
+                    await RefreshAccessTokenAsync();
+                    await LoadConfirmationsAsync();
+                }
             }
             catch (RequestException e)
             {
@@ -211,6 +198,27 @@ public class AccountViewModel : ViewModelBase
             catch (Exception e)
             {
                 await NotificationsMessageWindow.ShowWindow($"Cannot load confirmations, message: {e.Message}", OwnerWindow);
+            }
+
+            async Task LoadConfirmationsAsync()
+            {
+                var steamGuardAccount = SdaWithCredentials.SteamGuardAccount;
+                var confirmations = (await steamGuardAccount.FetchConfirmationAsync()).Where(t =>
+                    t.ConfirmationType is ConfirmationType.Trade or ConfirmationType.MarketSellTransaction
+                        or ConfirmationType.Recovery).ToArray();
+
+                var window = new ConfirmationsWindow(confirmations, steamGuardAccount);
+                window.Show();
+            }
+
+            async Task RefreshAccessTokenAsync()
+            {
+                var steamGuardAccount = SdaWithCredentials.SteamGuardAccount;
+                var steamId = steamGuardAccount.MaFile.Session.SteamId;
+                var refreshToken = steamGuardAccount.MaFile.Session.RefreshToken;
+
+                var result = await steamGuardAccount.GenerateAccessTokenAsync(steamId, refreshToken);
+                await SdaManager.SaveMaFile(steamGuardAccount);
             }
         });
 
@@ -338,27 +346,29 @@ public class DefaultAccountViewCommandStrategy : IAccountViewCommandStrategy
     public async Task InvokeSecondCommandAsync()
     {
         try
-        {   
-            var confirmations = await _accountViewModel.SdaWithCredentials.SteamGuardAccount.TryFetchConfirmationAsync();
+        {
+            var steamGuardAccount = _accountViewModel.SdaWithCredentials.SteamGuardAccount;
+
+            var confirmations = await steamGuardAccount.TryFetchConfirmationAsync();
 
             if (confirmations is null)
             {
-                var steamId = _accountViewModel.SdaWithCredentials.SteamGuardAccount.MaFile.Session.SteamId;
-                var refreshToken = _accountViewModel.SdaWithCredentials.SteamGuardAccount.MaFile.Session.RefreshToken;
+                var steamId = steamGuardAccount.MaFile.Session.SteamId;
+                var refreshToken = steamGuardAccount.MaFile.Session.RefreshToken;
 
                 var result =
-                    await _accountViewModel.SdaWithCredentials.SteamGuardAccount.GenerateAccessTokenAsync(steamId, refreshToken);
+                    await steamGuardAccount.GenerateAccessTokenAsync(steamId, refreshToken);
 
-                confirmations = await _accountViewModel.SdaWithCredentials.SteamGuardAccount.FetchConfirmationAsync();
+                await _accountViewModel.SdaManager.SaveMaFile(steamGuardAccount);
 
-                await _accountViewModel.SdaManager.SaveMaFile(_accountViewModel.SdaWithCredentials.SteamGuardAccount);
+                confirmations = await steamGuardAccount.FetchConfirmationAsync();
             }
 
             confirmations = confirmations.Where(t =>
                 t.ConfirmationType is ConfirmationType.Trade or ConfirmationType.MarketSellTransaction or ConfirmationType.WebKey
                     or ConfirmationType.Recovery).ToArray();
 
-            var window = new ConfirmationsWindow(confirmations, _accountViewModel.SdaWithCredentials.SteamGuardAccount);
+            var window = new ConfirmationsWindow(confirmations, steamGuardAccount);
 
             window.Show();
         }
