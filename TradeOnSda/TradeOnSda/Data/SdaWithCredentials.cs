@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
 using SteamAuthentication.Exceptions;
+using SteamAuthentication.Logic;
 using SteamAuthentication.LogicModels;
 using SteamAuthentication.Models;
 
@@ -56,6 +57,27 @@ public class SdaWithCredentials
 
         try
         {
+            if (SteamGuardAccount.MaFile?.Session is SteamSessionData sessionData)
+            {
+                var accessToken = sessionData.SteamLoginSecure?.Split("%7C%7C")[1];
+                var refreshToken = sessionData.RefreshToken;
+
+                if (refreshToken is not null &&
+                    accessToken is not null &&
+                    JwtTokenValidator.IsTokenExpired(accessToken))
+                {
+                    var steamId = sessionData.SteamId;
+
+                    var result =
+                        await SteamGuardAccount.TryGenerateAccessTokenAsync(steamId, refreshToken);
+
+                    if (result is null)
+                    {
+                        await _sdaManager.SaveMaFile(SteamGuardAccount);
+                    }
+                }
+            }
+
             var confirmations = (await SteamGuardAccount.FetchConfirmationAsync())
                 .Where(t => t.ConfirmationType is ConfirmationType.MarketSellTransaction
                     or ConfirmationType.Trade).ToArray();
@@ -76,23 +98,11 @@ public class SdaWithCredentials
         {
             await Task.Delay(SdaSettings.AutoConfirmDelay);
 
-            var accessTokenResult =
-                await SteamGuardAccount.TryGenerateAccessTokenAsync(SteamGuardAccount.MaFile.Session.SteamId,
-                    SteamGuardAccount.MaFile.Session.RefreshToken);
-
-            if (accessTokenResult is null)
-            {
-                await _sdaManager.SaveMaFile(SteamGuardAccount);
-                return;
-            }
-
-            await Task.Delay(SdaSettings.AutoConfirmDelay * 5);
-
-            var loginResult =
+            var result =
                 await SteamGuardAccount.TryLoginAgainAsync(SteamGuardAccount.MaFile.AccountName,
                     Credentials.Password);
 
-            if (loginResult is null)
+            if (result is null)
             {
                 await _sdaManager.SaveMaFile(SteamGuardAccount);
                 return;

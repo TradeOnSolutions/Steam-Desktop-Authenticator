@@ -8,8 +8,10 @@ using DynamicData.Binding;
 using Microsoft.Extensions.Logging.Abstractions;
 using ReactiveUI;
 using SteamAuthentication.Exceptions;
+using SteamAuthentication.Logic;
 using SteamAuthentication.LogicModels;
 using SteamAuthentication.Models;
+using SteamKit2.Internal;
 using TradeOnSda.Data;
 using TradeOnSda.ViewModels;
 using TradeOnSda.Windows.Confirmations;
@@ -136,7 +138,7 @@ public class AccountViewModel : ViewModelBase
         SelectStrategyAsync(DefaultAccountViewCommandStrategy).GetAwaiter().GetResult();
 
         IsUnknownProxyState = true;
-        
+
         SdaWithCredentials.SdaState.WhenPropertyChanged(t => t.ProxyState)
             .Subscribe(valueWrapper =>
             {
@@ -161,7 +163,7 @@ public class AccountViewModel : ViewModelBase
                         break;
                 }
             });
-        
+
         FirstCommand = ReactiveCommand.CreateFromTask(async () =>
         {
             await SelectedAccountViewCommandStrategy.InvokeFirstCommandAsync();
@@ -181,15 +183,33 @@ public class AccountViewModel : ViewModelBase
         {
             try
             {
-                try
+                var steamGuardAccount = SdaWithCredentials.SteamGuardAccount;
+
+                if (steamGuardAccount.MaFile?.Session is SteamSessionData sessionData)
                 {
-                    await LoadConfirmationsAsync();
+                    var accessToken = sessionData.SteamLoginSecure?.Split("%7C%7C")[1];
+                    var refreshToken = sessionData.RefreshToken;
+
+                    if (refreshToken is not null &&
+                        accessToken is not null &&
+                        JwtTokenValidator.IsTokenExpired(accessToken))
+                    {
+                        var steamId = sessionData.SteamId;
+
+                        var result =
+                            await steamGuardAccount.GenerateAccessTokenAsync(steamId, refreshToken);
+
+                        await SdaManager.SaveMaFile(steamGuardAccount);
+                    }
                 }
-                catch (RequestException e) when (e.HttpStatusCode == HttpStatusCode.Unauthorized)
-                {
-                    await RefreshAccessTokenAsync();
-                    await LoadConfirmationsAsync();
-                }
+
+                var confirmations = (await steamGuardAccount.FetchConfirmationAsync()).Where(t =>
+                    t.ConfirmationType is ConfirmationType.Trade or ConfirmationType.MarketSellTransaction
+                        or ConfirmationType.Recovery).ToArray();
+
+                var window = new ConfirmationsWindow(confirmations, steamGuardAccount);
+
+                window.Show();
             }
             catch (RequestException e)
             {
@@ -198,27 +218,6 @@ public class AccountViewModel : ViewModelBase
             catch (Exception e)
             {
                 await NotificationsMessageWindow.ShowWindow($"Cannot load confirmations, message: {e.Message}", OwnerWindow);
-            }
-
-            async Task LoadConfirmationsAsync()
-            {
-                var steamGuardAccount = SdaWithCredentials.SteamGuardAccount;
-                var confirmations = (await steamGuardAccount.FetchConfirmationAsync()).Where(t =>
-                    t.ConfirmationType is ConfirmationType.Trade or ConfirmationType.MarketSellTransaction
-                        or ConfirmationType.Recovery).ToArray();
-
-                var window = new ConfirmationsWindow(confirmations, steamGuardAccount);
-                window.Show();
-            }
-
-            async Task RefreshAccessTokenAsync()
-            {
-                var steamGuardAccount = SdaWithCredentials.SteamGuardAccount;
-                var steamId = steamGuardAccount.MaFile.Session.SteamId;
-                var refreshToken = steamGuardAccount.MaFile.Session.RefreshToken;
-
-                var result = await steamGuardAccount.GenerateAccessTokenAsync(steamId, refreshToken);
-                await SdaManager.SaveMaFile(steamGuardAccount);
             }
         });
 
@@ -256,7 +255,7 @@ public class AccountViewModel : ViewModelBase
             }
 
             sdaWithCredentials.SdaSettings.AutoConfirmDelay = TimeSpan.FromSeconds(delay);
-            
+
             await SdaManager.SaveSettingsAsync();
 
             var _ = Task.Run(async () =>
@@ -349,20 +348,25 @@ public class DefaultAccountViewCommandStrategy : IAccountViewCommandStrategy
         {
             var steamGuardAccount = _accountViewModel.SdaWithCredentials.SteamGuardAccount;
 
-            var confirmations = await steamGuardAccount.TryFetchConfirmationAsync();
-
-            if (confirmations is null)
+            if (steamGuardAccount.MaFile?.Session is SteamSessionData sessionData)
             {
-                var steamId = steamGuardAccount.MaFile.Session.SteamId;
-                var refreshToken = steamGuardAccount.MaFile.Session.RefreshToken;
+                var accessToken = sessionData.SteamLoginSecure?.Split("%7C%7C")[1];
+                var refreshToken = sessionData.RefreshToken;
 
-                var result =
-                    await steamGuardAccount.GenerateAccessTokenAsync(steamId, refreshToken);
+                if (refreshToken is not null &&
+                    accessToken is not null &&
+                    JwtTokenValidator.IsTokenExpired(accessToken))
+                {
+                    var steamId = sessionData.SteamId;
 
-                await _accountViewModel.SdaManager.SaveMaFile(steamGuardAccount);
+                    var result =
+                        await steamGuardAccount.GenerateAccessTokenAsync(steamId, refreshToken);
 
-                confirmations = await steamGuardAccount.FetchConfirmationAsync();
+                    await _accountViewModel.SdaManager.SaveMaFile(steamGuardAccount);
+                }
             }
+
+            var confirmations = await steamGuardAccount.FetchConfirmationAsync();
 
             confirmations = confirmations.Where(t =>
                 t.ConfirmationType is ConfirmationType.Trade or ConfirmationType.MarketSellTransaction or ConfirmationType.WebKey
