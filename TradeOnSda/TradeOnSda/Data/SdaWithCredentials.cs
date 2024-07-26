@@ -65,48 +65,44 @@ public class SdaWithCredentials
                 await Task.Delay(SdaSettings.AutoConfirmDelay);
                 return;
             }
-            
+
             await Task.Delay(TimeSpan.FromSeconds(10));
 
             await SteamGuardAccount.AcceptConfirmationsAsync(confirmations.ToArray());
 
             await Task.Delay(SdaSettings.AutoConfirmDelay);
         }
-        catch (RequestException e)
+        catch (RequestException e) when (e.HttpStatusCode == HttpStatusCode.Unauthorized)
         {
-            if (e.HttpStatusCode == HttpStatusCode.Unauthorized)
+            await Task.Delay(SdaSettings.AutoConfirmDelay);
+
+            var accessTokenResult =
+                await SteamGuardAccount.TryGenerateAccessTokenAsync(SteamGuardAccount.MaFile.Session.SteamId,
+                    SteamGuardAccount.MaFile.Session.RefreshToken);
+
+            if (accessTokenResult is null)
             {
-                await Task.Delay(SdaSettings.AutoConfirmDelay);
-                
-                try
-                {
-                    var result =
-                        await SteamGuardAccount.LoginAgainAsync(SteamGuardAccount.MaFile.AccountName,
-                            Credentials.Password);
-
-                    if (result != null)
-                    {
-                        await Task.Delay(SdaSettings.AutoConfirmDelay * 5);
-                        return;
-                    }
-
-                    await _sdaManager.SaveMaFile(SteamGuardAccount);
-                    return;
-                }
-                catch (Exception)
-                {
-                    await Task.Delay(SdaSettings.AutoConfirmDelay * 5);
-                    return;
-                }
-            }
-
-            if (e.HttpStatusCode == HttpStatusCode.TooManyRequests)
-            {
-                await Task.Delay(3 * SdaSettings.AutoConfirmDelay);
+                await _sdaManager.SaveMaFile(SteamGuardAccount);
                 return;
             }
 
-            await Task.Delay(SdaSettings.AutoConfirmDelay);
+            await Task.Delay(SdaSettings.AutoConfirmDelay * 5);
+
+            var loginResult =
+                await SteamGuardAccount.TryLoginAgainAsync(SteamGuardAccount.MaFile.AccountName,
+                    Credentials.Password);
+
+            if (loginResult is null)
+            {
+                await _sdaManager.SaveMaFile(SteamGuardAccount);
+                return;
+            }
+
+            await Task.Delay(SdaSettings.AutoConfirmDelay * 5);
+        }
+        catch (RequestException e) when (e.HttpStatusCode == HttpStatusCode.TooManyRequests)
+        {
+            await Task.Delay(3 * SdaSettings.AutoConfirmDelay);
         }
         catch (Exception)
         {
