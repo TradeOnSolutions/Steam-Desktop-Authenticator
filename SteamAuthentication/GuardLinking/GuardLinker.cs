@@ -65,8 +65,9 @@ public class GuardLinker
             Password = _password,
             IsPersistentSession = false,
             PlatformType = EAuthTokenPlatformType.k_EAuthTokenPlatformType_MobileApp,
-            ClientOSType = EOSType.Android9,
+            ClientOSType = EOSType.AndroidUnknown,
             Authenticator = _authenticator,
+            WebsiteID = "Mobile",
         });
 
         var pollResponse = await authSession.PollingWaitForResultAsync(cancellationToken);
@@ -212,7 +213,7 @@ public class GuardLinker
             addGuardResponse.Response.Status,
             _deviceId,
             true,
-            new SteamSessionData("", "", steamId));
+            new SteamSessionData("", "", "", steamId));
 
         return steamMaFile;
     }

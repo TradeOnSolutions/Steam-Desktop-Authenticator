@@ -8,8 +8,10 @@ using DynamicData.Binding;
 using Microsoft.Extensions.Logging.Abstractions;
 using ReactiveUI;
 using SteamAuthentication.Exceptions;
+using SteamAuthentication.Logic;
 using SteamAuthentication.LogicModels;
 using SteamAuthentication.Models;
+using SteamKit2.Internal;
 using TradeOnSda.Data;
 using TradeOnSda.ViewModels;
 using TradeOnSda.Windows.Confirmations;
@@ -136,7 +138,7 @@ public class AccountViewModel : ViewModelBase
         SelectStrategyAsync(DefaultAccountViewCommandStrategy).GetAwaiter().GetResult();
 
         IsUnknownProxyState = true;
-        
+
         SdaWithCredentials.SdaState.WhenPropertyChanged(t => t.ProxyState)
             .Subscribe(valueWrapper =>
             {
@@ -161,7 +163,7 @@ public class AccountViewModel : ViewModelBase
                         break;
                 }
             });
-        
+
         FirstCommand = ReactiveCommand.CreateFromTask(async () =>
         {
             await SelectedAccountViewCommandStrategy.InvokeFirstCommandAsync();
@@ -181,11 +183,31 @@ public class AccountViewModel : ViewModelBase
         {
             try
             {
-                var confirmations = (await SdaWithCredentials.SteamGuardAccount.FetchConfirmationAsync()).Where(t =>
+                var steamGuardAccount = SdaWithCredentials.SteamGuardAccount;
+
+                if (steamGuardAccount.MaFile?.Session is SteamSessionData sessionData)
+                {
+                    var accessToken = sessionData.SteamLoginSecure?.Split("%7C%7C")[1];
+                    var refreshToken = sessionData.RefreshToken;
+
+                    if (refreshToken is not null &&
+                        accessToken is not null &&
+                        JwtTokenValidator.IsTokenExpired(accessToken))
+                    {
+                        var steamId = sessionData.SteamId;
+
+                        var result =
+                            await steamGuardAccount.GenerateAccessTokenAsync(steamId, refreshToken);
+
+                        await SdaManager.SaveMaFile(steamGuardAccount);
+                    }
+                }
+
+                var confirmations = (await steamGuardAccount.FetchConfirmationAsync()).Where(t =>
                     t.ConfirmationType is ConfirmationType.Trade or ConfirmationType.MarketSellTransaction
                         or ConfirmationType.Recovery).ToArray();
 
-                var window = new ConfirmationsWindow(confirmations, SdaWithCredentials.SteamGuardAccount);
+                var window = new ConfirmationsWindow(confirmations, steamGuardAccount);
 
                 window.Show();
             }
@@ -233,7 +255,7 @@ public class AccountViewModel : ViewModelBase
             }
 
             sdaWithCredentials.SdaSettings.AutoConfirmDelay = TimeSpan.FromSeconds(delay);
-            
+
             await SdaManager.SaveSettingsAsync();
 
             var _ = Task.Run(async () =>
@@ -324,13 +346,33 @@ public class DefaultAccountViewCommandStrategy : IAccountViewCommandStrategy
     {
         try
         {
-            var confirmations = await _accountViewModel.SdaWithCredentials.SteamGuardAccount.FetchConfirmationAsync();
+            var steamGuardAccount = _accountViewModel.SdaWithCredentials.SteamGuardAccount;
+
+            if (steamGuardAccount.MaFile?.Session is SteamSessionData sessionData)
+            {
+                var accessToken = sessionData.SteamLoginSecure?.Split("%7C%7C")[1];
+                var refreshToken = sessionData.RefreshToken;
+
+                if (refreshToken is not null &&
+                    accessToken is not null &&
+                    JwtTokenValidator.IsTokenExpired(accessToken))
+                {
+                    var steamId = sessionData.SteamId;
+
+                    var result =
+                        await steamGuardAccount.GenerateAccessTokenAsync(steamId, refreshToken);
+
+                    await _accountViewModel.SdaManager.SaveMaFile(steamGuardAccount);
+                }
+            }
+
+            var confirmations = await steamGuardAccount.FetchConfirmationAsync();
 
             confirmations = confirmations.Where(t =>
                 t.ConfirmationType is ConfirmationType.Trade or ConfirmationType.MarketSellTransaction or ConfirmationType.WebKey
                     or ConfirmationType.Recovery).ToArray();
 
-            var window = new ConfirmationsWindow(confirmations, _accountViewModel.SdaWithCredentials.SteamGuardAccount);
+            var window = new ConfirmationsWindow(confirmations, steamGuardAccount);
 
             window.Show();
         }
@@ -338,9 +380,9 @@ public class DefaultAccountViewCommandStrategy : IAccountViewCommandStrategy
         {
             await NotificationsMessageWindow.ShowWindow($"Cannot load confirmations. {e}", _accountViewModel.OwnerWindow);
         }
-        catch (Exception)
+        catch (Exception e)
         {
-            await NotificationsMessageWindow.ShowWindow("Cannot load confirmations", _accountViewModel.OwnerWindow);
+            await NotificationsMessageWindow.ShowWindow($"Cannot load confirmations, message: {e.Message}", _accountViewModel.OwnerWindow);
         }
     }
 
