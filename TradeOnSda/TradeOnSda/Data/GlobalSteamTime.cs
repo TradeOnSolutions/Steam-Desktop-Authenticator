@@ -37,17 +37,18 @@ public class GlobalSteamTime : ISteamTime
         if (_timeDifference != null)
             return GetCurrentSteamTimeInternal();
 
-        await _asyncLock.LockAsync(cancellationToken);
+        using (await _asyncLock.LockAsync(cancellationToken))
+        {
+            if (_timeDifference != null)
+                return GetCurrentSteamTimeInternal();
 
-        if (_timeDifference != null)
+            var steamTime = await _timeDeferenceRestClient.GetSteamTimeAsync(cancellationToken);
+
+            var clientTime = GetCurrentClientTime();
+
+            _timeDifference = steamTime - clientTime;
+
             return GetCurrentSteamTimeInternal();
-
-        var steamTime = await _timeDeferenceRestClient.GetSteamTimeAsync(cancellationToken);
-
-        var clientTime = GetCurrentClientTime();
-
-        _timeDifference = steamTime - clientTime;
-
-        return GetCurrentSteamTimeInternal();
+        }
     }
 }
