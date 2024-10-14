@@ -10,6 +10,7 @@ using SteamAuthentication.Models;
 using SteamAuthentication.Responses;
 using SteamKit2;
 using SteamKit2.Authentication;
+using SteamKit2.Discovery;
 
 namespace SteamAuthentication.LogicModels;
 
@@ -375,39 +376,61 @@ public class SteamGuardAccount
     {
         using var _ = _logger.CreateScopeForMethod(this);
 
-        var configuration = SteamConfiguration.Create(builder => builder.WithHttpClientFactory(
-                () =>
-                {
-                    var httpClientHandler = new HttpClientHandler
+        var configuration = SteamConfiguration.Create(builder =>
+        {
+            builder.WithHttpClientFactory(
+                    () =>
                     {
-                        Proxy = RestClient.Proxy,
-                    };
+                        var httpClientHandler = new HttpClientHandler
+                        {
+                            Proxy = RestClient.Proxy,
+                        };
 
-                    var client = new HttpClient(httpClientHandler);
+                        var client = new HttpClient(httpClientHandler);
 
-                    return client;
-                })
-            .WithProtocolTypes(ProtocolTypes.WebSocket));
+                        return client;
+                    })
+                .WithProtocolTypes(ProtocolTypes.WebSocket)
+                .WithServerListProvider(new SteamServersProvider());
+
+            if (RestClient.Proxy != null) 
+                builder.WithWebSocketProxy(RestClient.Proxy);
+            
+        });
 
 
         var steamClient = new SteamClient(configuration);
         var manager = new CallbackManager(steamClient);
         var tks = new TaskCompletionSource();
 
-        var cts = new CancellationTokenSource(TimeSpan.FromMinutes(1));
+        var cts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
         var ct = cts.Token;
-
+        
+        // var server = ServerRecord.CreateWebSocketServer("ext1-sto1.steamserver.net:27030");
+        
         manager.Subscribe<SteamClient.ConnectedCallback>(_ =>
         {
             cts.Cancel();
             tks.SetResult();
+        });
+
+        manager.Subscribe<SteamClient.DisconnectedCallback>(a =>
+        {
+            Task.Run(async () =>
+            {
+                var candidate = await steamClient.Servers.GetNextServerCandidateAsync(ProtocolTypes.WebSocket);
+
+                Console.WriteLine(candidate!.EndPoint);
+                
+                steamClient.Connect();
+            }, ct);
         });
         
         var steamUser = steamClient.GetHandler<SteamUser>()!;
 
         var connectTask = tks.Task;
 
-        steamClient.ConnectWithProxy(null, RestClient.Proxy);
+        steamClient.Connect();
 
         try
         {

@@ -39,22 +39,29 @@ public class GuardLinker
     public async Task<(CredentialsAuthSession authSession, AuthPollResult pollResponse, ulong steamId)>
         StartLinkingGuardAsync(CancellationToken cancellationToken = default)
     {
-        var configuration = SteamConfiguration.Create(builder => builder.WithHttpClientFactory(
-            () =>
-            {
-                var httpClientHandler = new HttpClientHandler
-                {
-                    Proxy = _proxy,
-                };
+        var configuration = SteamConfiguration.Create(builder =>
+        {
+            builder
+                .WithHttpClientFactory(
+                    () =>
+                    {
+                        var httpClientHandler = new HttpClientHandler
+                        {
+                            Proxy = _proxy,
+                        };
 
-                var client = new HttpClient(httpClientHandler);
+                        var client = new HttpClient(httpClientHandler);
 
-                return client;
-            })
-            .WithProtocolTypes(ProtocolTypes.WebSocket));
+                        return client;
+                    })
+                .WithProtocolTypes(ProtocolTypes.WebSocket);
+
+            if (_proxy != null)
+                builder.WithWebSocketProxy(_proxy);
+        });
 
         var steamClient = new SteamClient(configuration);
-        steamClient.ConnectWithProxy(null, _proxy);
+        steamClient.Connect();
 
         while (!steamClient.IsConnected)
             await Task.Delay(500, cancellationToken);
