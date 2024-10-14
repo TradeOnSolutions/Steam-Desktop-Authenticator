@@ -28,7 +28,8 @@
                         <Button Grid.Column="0" Classes="TopButton" Content="Import account"
                                 Command="{Binding ImportAccountsCommand}" />
                         <Button Grid.Column="1" Classes="TopButton" Content="Add guard"
-                                Command="{Binding AddGuardCommand}" />
+                                Command="{Binding AddGuardCommand}"
+                                IsEnabled="False"/>
                         <Button Grid.Column="2" Classes="TopButton"
                                 Classes.Default="{Binding !IsReLoginSuccess}"
                                 Classes.Success="{Binding IsReLoginSuccess}"
