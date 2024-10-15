@@ -85,10 +85,10 @@
                                 Orientation="Vertical">
                                 <TextBlock
                                     Classes="Text"
-                                    Text="Enter SMS code" />
+                                    Text="Enter the verification code (email/SMS)" />
                                 <TextBox
-                                    Watermark="SMS code"
-                                    Text="{Binding SmsCode}">
+                                    Watermark="Verification code"
+                                    Text="{Binding VerificationCode}">
                                 </TextBox>
                             </StackPanel>
                             <Grid

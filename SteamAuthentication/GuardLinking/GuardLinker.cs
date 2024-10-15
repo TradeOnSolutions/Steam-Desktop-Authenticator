@@ -83,7 +83,7 @@ public class GuardLinker
         return (authSession, pollResponse, steamId);
     }
 
-    public async Task FinalizeAddGuardAsync(string smsCode, SteamMaFile maFile,
+    public async Task FinalizeAddGuardAsync(string verificationCode, SteamMaFile maFile,
         AuthPollResult pollResult,
         CancellationToken cancellationToken = default)
     {
@@ -97,7 +97,7 @@ public class GuardLinker
             { "steamid", maFile.Session!.SteamId.ToString() },
             { "authenticator_code", guardCode },
             { "authenticator_time", (await _steamTime.GetCurrentSteamTimeAsync(cancellationToken)).ToString() },
-            { "activation_code", smsCode },
+            { "activation_code", verificationCode },
             { "validate_sms_code", "1" },
         };
 
@@ -138,7 +138,7 @@ public class GuardLinker
                 finalizeContent, null);
 
         if (finalizeResponse.Response.Status == 89)
-            throw new RequestException("Wrong SMS code", response.StatusCode, response.Content, null);
+            throw new RequestException("Wrong verification code", response.StatusCode, response.Content, null);
 
         if (!finalizeResponse.Response.Success)
             throw new RequestException("Error while FinalizeAddAuthenticator", response.StatusCode, response.Content,
