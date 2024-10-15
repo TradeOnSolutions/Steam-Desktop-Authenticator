@@ -20,7 +20,7 @@ namespace TradeOnSda.Views.ConfirmationItem;
 public class ConfirmationItemViewModel : ViewModelBase
 {
     private IImage? _userImage;
-    
+
     public SteamGuardAccount SteamGuardAccount { get; }
 
     public SdaConfirmation SdaConfirmation { get; }
@@ -45,13 +45,13 @@ public class ConfirmationItemViewModel : ViewModelBase
         {
             ConfirmationType.Trade => "Trade",
             ConfirmationType.MarketSellTransaction => "Market",
-            ConfirmationType.Recovery => "Account",
+            ConfirmationType.Recovery or ConfirmationType.WebKey => "Account",
             _ => "",
         };
 
         var creationTime = TimeHelpers.FromTimeStamp(sdaConfirmation.CreationTimeStamp);
         var delta = DateTime.UtcNow - creationTime;
-        
+
         var humanizedTime = delta.Humanize(2, new CultureInfo("en-US"));
         ConfirmationTime = humanizedTime + " ago";
 
@@ -69,7 +69,7 @@ public class ConfirmationItemViewModel : ViewModelBase
             try
             {
                 await SteamGuardAccount.AcceptConfirmationAsync(SdaConfirmation);
-                
+
                 confirmationsViewModel.RemoveViewModel(this);
             }
             catch (RequestException e)
@@ -88,7 +88,7 @@ public class ConfirmationItemViewModel : ViewModelBase
             try
             {
                 await SteamGuardAccount.DenyConfirmationAsync(SdaConfirmation);
-                
+
                 confirmationsViewModel.RemoveViewModel(this);
             }
             catch (RequestException e)
