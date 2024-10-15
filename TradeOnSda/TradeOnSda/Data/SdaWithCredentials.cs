@@ -38,6 +38,9 @@ public class SdaWithCredentials
 
     private async Task AutoConfirmWorkingLoop()
     {
+        var autoConfirmDelayInSeconds = SdaSettings.AutoConfirmDelay.Seconds;
+        var initialDelay = Random.Shared.Next(minValue: 0, maxValue: autoConfirmDelayInSeconds + 1);
+        await Task.Delay(TimeSpan.FromSeconds(initialDelay));
         while (true)
         {
             await ProcessAutoConfirmAsync();
